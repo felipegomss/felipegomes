@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { FileCode2, Loader } from "lucide-react";
+import Link from "next/link";
 
 export default function About({ paragraph, button }: any) {
   const [download, setDownload] = useState(false);
@@ -24,26 +24,17 @@ export default function About({ paragraph, button }: any) {
             Felipe Gomes
           </h1>
           <p className="text-zinc-400">{paragraph}</p>
-          <a
-            href="./Curriculo - Felipe Gomes.pdf"
+          <Link
+            href="/curriculum"
             className={` group relative flex gap-4 justify-center items-center py-4 px-8 border-2 border-white my-10 rounded-2xl cursor-pointer`}
-            download
-            onClick={handleDownload}
+            target="_blank"
           >
             <h2
               className={`md:text-3xl text-xl font-extrabold flex gap-4 items-center`}
             >
               {button}
-              {!download ? (
-                <FileCode2
-                  size={32}
-                  className="duration-500 opacity-0 group-hover:opacity-100 animate-bounce-right"
-                />
-              ) : (
-                <Loader size={32} className="ease-out animate-spin" />
-              )}
             </h2>
-          </a>
+          </Link>
         </article>
         <Image src="/felipephoto.webp" alt="" width={500} height={500} />
       </main>

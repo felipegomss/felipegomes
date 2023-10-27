@@ -8,10 +8,35 @@
     "paragraph": "Criador de Experiências Digitais Vibrantes. 90+ milhões de usuários impactados por projetos que transcendem limites. Pronto para superar desafios e criar soluções inovadoras?"
   },
   "About": {
-    "paragraph": " Olá! Sou uma pessoa apaixonada, com um profundo amor pela música, tecnologia, jogos e futebol. Como desenvolvedor de front-end, aprimorei minhas habilidades ao longo de 4 anos, especializando-me em criar interfaces de usuário responsivas e interativas. Me destaco em projetos desafiadores que exigem solução de problemas e criação de soluções inovadoras. \n Durante minha trajetória profissional, tive o privilégio de trabalhar em projetos impactantes que alcançaram mais de 90 milhões de usuários. Essa experiência me proporcionou o desenvolvimento da capacidade de atuar sob pressão e me destacar na gestão de projetos. A colaboração com equipes diversas e multidisciplinares em ambientes exigentes também enriqueceu minha experiência profissional. \n Estou sempre entusiasmado para abraçar novas oportunidades e enfrentar desafios emocionantes. Acredito na importância da aprendizagem contínua e em acompanhar as últimas tendências tecnológicas. Por isso, estou sempre buscando atualizar minhas habilidades para entregar o melhor trabalho possível. \n Fique à vontade para entrar em contato comigo em português ou inglês. Estou disponível para colaborações, novos projetos ou mesmo para uma conversa sobre nossas paixões em comum. \n Vamos criar algo incrível juntos!",
-    "button": "Baixe meu curriculo"
+    "paragraph": " Olá! Sou uma pessoa apaixonada, com um profundo amor pela música, tecnologia, jogos e futebol. Como desenvolvedor de fullstack, aprimorei minhas habilidades ao longo de 4 anos, especializando-me em criar interfaces de usuário responsivas e interativas. Me destaco em projetos desafiadores que exigem solução de problemas e criação de soluções inovadoras. \n Durante minha trajetória profissional, tive o privilégio de trabalhar em projetos impactantes que alcançaram mais de 90 milhões de usuários. Essa experiência me proporcionou o desenvolvimento da capacidade de atuar sob pressão e me destacar na gestão de projetos. A colaboração com equipes diversas e multidisciplinares em ambientes exigentes também enriqueceu minha experiência profissional. \n Estou sempre entusiasmado para abraçar novas oportunidades e enfrentar desafios emocionantes. Acredito na importância da aprendizagem contínua e em acompanhar as últimas tendências tecnológicas. Por isso, estou sempre buscando atualizar minhas habilidades para entregar o melhor trabalho possível. \n Fique à vontade para entrar em contato comigo em português ou inglês. Estou disponível para colaborações, novos projetos ou mesmo para uma conversa sobre nossas paixões em comum. \n Vamos criar algo incrível juntos!",
+    "button": "Detalhes da Carreira"
   },
   "Contact": {
     "title": "Me mande um email"
+  },
+  "Curriculum": {
+    "moment": "Atual",
+    "profile": {
+      "title": "Perfil",
+      "description": "Sou um desenvolvedor fullstack apaixonado por tecnologia e música. Com mais de 4 anos de experiência adquiri habilidades sólidas no desenvolvimento de interfaces de usuário responsivas e interativas. Adoro trabalhar em projetos desafiadores que envolvam a resolução de problemas e a criação de soluções inovadoras. Como um entusiasta da tecnologia, estou sempre aprendendo novas habilidades e explorando novas tecnologias. Já tive a oportunidade de trabalhar em projetos de grande impacto, esta experiência me ensinou a trabalhar sob pressão, aprimorar minhas habilidades de gerenciamento de projetos e me permitiu colaborar com equipes multidisciplinares em ambientes desafiadores."
+    },
+    "skills": {
+      "title": "Principais Habilidades"
+    },
+    "employment": {
+      "title": "Histórico Profissional",
+      "brandMonitor": {
+        "title": "Desenvolvedor FullStack",
+        "description": "Como desenvolvedor full stack na Brand Monitor, sou responsável pelo desenvolvimento e manutenção de sistemas essenciais, incluindo portais de clientes e internos. Minhas principais tecnologias incluem ReactJS, Golang e NestJS, permitindo-me criar soluções eficazes e eficientes para atender às necessidades da empresa. Minhas responsabilidades incluem a criação de APIs REST usando NestJS, o que contribui para a conectividade e a funcionalidade dos sistemas. Além disso, mantenho um rigoroso controle de versão usando o GitHub no sistema GitFlow, garantindo um ambiente de desenvolvimento colaborativo e organizado. Destaco também o meu envolvimento no desenvolvimento de automações com Golang, que otimizam processos e melhoram a eficiência operacional da empresa"
+      },
+      "eisa": {
+        "title": "Analista de software",
+        "description": "Eu contribuí para a qualidade das aplicações críticas da VIVO - Telefônica, realizando testes abrangentes e resolvendo defeitos. Também participei ativamente na integração de sistemas e na aprovação de projetos. Possuo habilidades em linguagens de programação como Ruby e Java, além de expertise em gerenciamento de dados utilizando Oracle PL/SQL e MongoDB. Tenho experiência em diversas tecnologias, incluindo Kafka, Phoenix e Hadoop. Além disso, sou especializado em solução de problemas e na integração de sistemas."
+      },
+      "parallel": {
+        "title": "Desenvolvedor Full Cycle",
+        "description": "Com contribuições significativas em desenvolvimento web, destaco minha experiência em aprimorar uma plataforma de vendas de cursos usando React, Node.js e MySql. Além disso, gerenciei Web Host e Cloud com CPANEL e utilizei metodologias ágeis como Scrum e Kanban.  Também tenho conhecimento avançado em Git para controle de versão. Participei do desenvolvimento de um aplicativo de monitoramento de sinais vitais e tecnologia wearable, envolvendo IoT com tecnologia LoRa, Arduino (C++), processamento de dados com Python, plataforma web com Flask e exibição de dados com Google Graphs (JavaScript).  Minha experiência diversificada me permite enfrentar com sucesso desafios em desenvolvimento de software, IoT e análise de dados."
+      }
+    }
   }
 }

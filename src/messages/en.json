@@ -8,10 +8,35 @@
     "paragraph": "Creator of Vibrant Digital Experiences. 90+ million users impacted by projects that transcend boundaries. Ready to overcome challenges and create innovative solutions?"
   },
   "About": {
-    "paragraph": "Hello! I am a passionate person, with a deep love for music, technology, games and soccer. As a front-end developer, I have improved my skills over 4 years, specializing in creating responsive and interactive user interfaces. I excel in challenging projects that require problem solving and creating innovative solutions. \n During my professional career, I had the privilege of working on impactful projects that reached more than 90 million users. This experience gave me the development of the ability to work under pressure and excel in project management. Collaboration with diverse and multidisciplinary teams in demanding environments also enriched my professional experience. \n I am always excited to embrace new opportunities and face exciting challenges. I believe in the importance of continuous learning and keeping up with the latest technological trends. That’s why I’m always looking to update my skills to deliver the best work possible. \n Feel free to contact me in Portuguese or English. I am available for collaborations, new projects or even for a chat about our common passions. \n Let’s create something amazing together!",
-    "button": "Download my curriculum"
+    "paragraph": "Hello! I am a passionate person, with a deep love for music, technology, games and soccer. As a fullstack developer, I have improved my skills over 4 years, specializing in creating responsive and interactive user interfaces. I excel in challenging projects that require problem solving and creating innovative solutions. \n During my professional career, I had the privilege of working on impactful projects that reached more than 90 million users. This experience gave me the development of the ability to work under pressure and excel in project management. Collaboration with diverse and multidisciplinary teams in demanding environments also enriched my professional experience. \n I am always excited to embrace new opportunities and face exciting challenges. I believe in the importance of continuous learning and keeping up with the latest technological trends. That’s why I’m always looking to update my skills to deliver the best work possible. \n Feel free to contact me in Portuguese or English. I am available for collaborations, new projects or even for a chat about our common passions. \n Let’s create something amazing together!",
+    "button": "Career Details"
   },
   "Contact": {
     "title": "Send me a email"
+  },
+  "Curriculum": {
+    "moment": "Current",
+    "profile": {
+      "title": "Profile",
+      "description": "I am a technology and music enthusiast fullstack developer with over 4 years of experience. I have acquired strong skills in the development of responsive and interactive user interfaces. I love working on challenging projects that involve problem-solving and the creation of innovative solutions. As a technology enthusiast, I am always learning new skills and exploring new technologies. I have had the opportunity to work on high-impact projects, and this experience has taught me to work under pressure, enhance my project management skills, and collaborate with multidisciplinary teams in demanding environments."
+    },
+    "skills": {
+      "title": "Key Skills"
+    },
+    "employment": {
+      "title": "Employment History",
+      "brandMonitor": {
+        "title": "FullStack Developer",
+        "description": "As a full-stack developer at Brand Monitor, I am responsible for the development and maintenance of essential systems, including customer and internal portals. My primary technologies include ReactJS, Golang, and NestJS, allowing me to create effective and efficient solutions to meet the company's needs. My responsibilities include creating RESTful APIs using NestJS, which contribute to system connectivity and functionality. Additionally, I maintain strict version control using GitHub with the GitFlow system, ensuring a collaborative and organized development environment. I also highlight my involvement in developing automations with Golang that optimize processes and improve the company's operational efficiency."
+      },
+      "eisa": {
+        "title": "Software Analyst",
+        "description": "I contributed to the quality of critical applications at VIVO - Telefônica by conducting comprehensive testing and resolving defects. I also actively participated in system integration and project approval. I have skills in programming languages such as Ruby and Java, as well as expertise in data management using Oracle PL/SQL and MongoDB. I have experience with various technologies, including Kafka, Phoenix, and Hadoop. Additionally, I specialize in problem-solving and system integration."
+      },
+      "parallel": {
+        "title": "Full Cycle Developer",
+        "description": "With significant contributions to web development, I highlight my experience in enhancing a course sales platform using React, Node.js, and MySQL. I also managed Web Host and Cloud with CPANEL and used agile methodologies like Scrum and Kanban. I have advanced knowledge in Git for version control. I participated in the development of a vital signs monitoring app and wearable technology involving IoT with LoRa technology, Arduino (C++), data processing with Python, web platform with Flask, and data visualization with Google Graphs (JavaScript). My diverse experience allows me to successfully tackle challenges in software development, IoT, and data analysis."
+      }
+    }
   }
 }
