@@ -10,7 +10,7 @@ export default function Curriculum() {
   const t = useTranslations("Curriculum");
   return (
     <div className="min-h-screen bg-stone-100">
-      <main className="flex flex-col gap-8 px-4 py-10 m-auto sm:px-0 max-w-7xl">
+      <main className="flex flex-col gap-8 px-4 py-10 m-auto 2xl:px-0 max-w-7xl">
         <section>
           <div className="grid sm:grid-cols-2">
             <div>
