@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 import { useLocale } from "next-intl";
 import { notFound } from "next/navigation";
 
+import { Analytics } from "@vercel/analytics/react";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,6 +24,7 @@ export default function RootLayout({ children, params }: any) {
   return (
     <html lang={locale}>
       <body className={inter.className}>{children}</body>
+      <Analytics />
     </html>
   );
 }
