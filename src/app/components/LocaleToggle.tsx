@@ -9,7 +9,7 @@ export default function LocaleToggle() {
   const params = useParams();
   const locale = params.locale;
   return (
-    <div className="fixed z-50 flex flex-col bg-black border-4 border-white divide-y-4 rounded-full cursor-pointer md:flex-row drop-shadow-xl right-20 md:right-10 bottom-8 md:divide-x-4 md:divide-y-0">
+    <div className="fixed z-50 hidden bg-black border-4 border-whiteß rounded-full cursor-pointer md:flex flex-row drop-shadow-xl right-10 bottom-8 divide-x-4 divide-y-0">
       <div
         className={`${
           locale == "pt-BR" ? "shadow-inner bg-zinc-500" : ""
