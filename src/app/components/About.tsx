@@ -32,7 +32,7 @@ export default function About({ paragraph, button }: any) {
         </article>
         <div className="grid w-full place-items-center">
           <Image
-            src="/zyro-image.png"
+            src="/memoji-felipe.png"
             alt=""
             width={350}
             height={350}
