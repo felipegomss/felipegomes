@@ -12,7 +12,8 @@
     "button": "Detalhes da Carreira"
   },
   "Contact": {
-    "title": "Me mande um email"
+    "title": "Me mande um email",
+    "wppCall": "Ou se preferir um contato mais direto, me chame no"
   },
   "Curriculum": {
     "moment": "Atual",

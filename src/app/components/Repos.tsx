@@ -77,14 +77,16 @@ export default function Repos() {
       </ul>
       <div className="m-auto my-10 md:w-1/3">
         <button
-          className="relative flex items-center justify-center w-full gap-4 px-8 py-4 my-10 border-8 border-black cursor-pointer group rounded-2xl shadow-neobrutalism"
+          className="relative flex items-center justify-center w-full gap-4 px-8 py-4 my-10 cursor-pointer group rounded-2xl"
           onClick={handleLoadMore}
           disabled={loading}
         >
           {loading ? (
             <Loader size={32} className="ease-out animate-spin" />
           ) : (
-            <h2 className="text-xl font-extrabold md:text-2xl">Mostrar mais</h2>
+            <h2 className="text-xl font-extrabold ease-in-out border-b hover:scale-105 md:text-lg">
+              Mostrar mais
+            </h2>
           )}
         </button>
       </div>

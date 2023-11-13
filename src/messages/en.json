@@ -12,7 +12,8 @@
     "button": "Career Details"
   },
   "Contact": {
-    "title": "Send me a email"
+    "title": "Send me a email",
+    "wppCall": "Or, if you prefer a more direct contact, call me at"
   },
   "Curriculum": {
     "moment": "Current",

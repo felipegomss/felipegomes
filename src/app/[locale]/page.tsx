@@ -9,6 +9,7 @@ import Repos from "../components/Repos";
 import Contact from "../components/Contact";
 import LocaleToggle from "../components/LocaleToggle";
 import { useTranslations } from "next-intl";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const tHead = useTranslations("Header");
@@ -28,7 +29,8 @@ export default function Home() {
       <Projects />
       <Articles />
       <Repos />
-      <Contact title={tContact("title")} />
+      <Contact title={tContact("title")} wppCall={tContact("wppCall")} />
+      <Footer />
       <LocaleToggle />
     </main>
   );
