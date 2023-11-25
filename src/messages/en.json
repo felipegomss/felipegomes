@@ -28,16 +28,19 @@
       "title": "Employment History",
       "brandMonitor": {
         "title": "FullStack Developer",
-        "description": "As a full-stack developer at Brand Monitor, I am responsible for the development and maintenance of essential systems, including customer and internal portals. My primary technologies include ReactJS, Golang, and NestJS, allowing me to create effective and efficient solutions to meet the company's needs. My responsibilities include creating RESTful APIs using NestJS, which contribute to system connectivity and functionality. Additionally, I maintain strict version control using GitHub with the GitFlow system, ensuring a collaborative and organized development environment. I also highlight my involvement in developing automations with Golang that optimize processes and improve the company's operational efficiency."
+        "description": "Utilizing Golang to develop internal portals, robots, and web crawlers, boosting system efficiency and functionality.\nImplementing effective solutions with ReactJS and NestJS to overcome challenges and meet company demands.\nUsing MongoDB for efficient data management, ensuring system robustness and scalability.\nManaging development, staging, and production environments, ensuring consistency and reliability of implemented versions.\nPlaying an active role in QA, promoting test-driven development and creating detailed test cases.\nGuiding the testing team throughout the project, ensuring the quality and integrity of developed systems.\nCollaborating in internet brand protection for large clients in Brazil and internationally, expanding company visibility and reputation."
       },
       "eisa": {
         "title": "Software Analyst",
-        "description": "I contributed to the quality of critical applications at VIVO - Telefônica by conducting comprehensive testing and resolving defects. I also actively participated in system integration and project approval. I have skills in programming languages such as Ruby and Java, as well as expertise in data management using Oracle PL/SQL and MongoDB. I have experience with various technologies, including Kafka, Phoenix, and Hadoop. Additionally, I specialize in problem-solving and system integration."
+        "description": "Successfully leading the migration of repositories from TortoiseSVN to GitLab, significantly enhancing efficiency and collaboration among teams.\nActively contributing to elevate the quality of critical VIVO - Telefônica applications, reaching over 90 million people through comprehensive testing and proactive defect resolution.\nDemonstrating expertise in languages like Ruby, Java, and advanced skills in data management using Oracle PL/SQL and MongoDB.\nSpecialized in resolving complex challenges and integrating systems to drive progress and innovation."
       },
       "parallel": {
         "title": "Full Cycle Developer",
-        "description": "With significant contributions to web development, I highlight my experience in enhancing a course sales platform using React, Node.js, and MySQL. I also managed Web Host and Cloud with CPANEL and used agile methodologies like Scrum and Kanban. I have advanced knowledge in Git for version control. I participated in the development of a vital signs monitoring app and wearable technology involving IoT with LoRa technology, Arduino (C++), data processing with Python, web platform with Flask, and data visualization with Google Graphs (JavaScript). My diverse experience allows me to successfully tackle challenges in software development, IoT, and data analysis."
+        "description": "Driving significant improvements in a course sales platform using technologies like React, Node.js, and MySql, enhancing user experience and sales results.\nEfficiently managing Web Host and Cloud with CPANEL, applying agile methodologies like Scrum and Kanban to optimize processes.\nDemonstrating advanced knowledge in Git for version control, ensuring efficient source code management.\nContributing to the successful development of an innovative vital signs monitoring application and wearable technology, combining IoT, Python, and web platforms to deliver a complete solution."
       }
+    },
+    "licenses": {
+      "title": "Certifications and Competencies"
     }
   }
 }
