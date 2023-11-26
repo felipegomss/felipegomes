@@ -16,7 +16,11 @@ export default function About({ paragraph, button }: any) {
             <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-yellow-200 via-emerald-200 to-yellow-200">
               Felipe Gomes
             </h1>
-            <p className="text-zinc-400">{paragraph}</p>
+            <span className="text-zinc-400">
+              {paragraph.split("\n").map((c: string, k: number) => {
+                return <p key={k}>{c}</p>;
+              })}
+            </span>
           </div>
           <Link
             href="/curriculum"
