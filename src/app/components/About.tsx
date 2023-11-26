@@ -34,7 +34,7 @@ export default function About({ paragraph, button }: any) {
             </h2>
           </Link>
         </article>
-        <div className="grid w-full place-items-center">
+        <div className="flex items-center justify-center w-full md:justify-end">
           <Image
             src="/memoji-felipe.png"
             alt=""
