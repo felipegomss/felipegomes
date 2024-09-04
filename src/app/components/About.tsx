@@ -3,8 +3,16 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 export default function About({ paragraph, button }: any) {
+  const router = useParams();
+  const currentLocale = router.locale;
+  const resumeID =
+    currentLocale === "en"
+      ? process.env.EN_RESUME_ID
+      : process.env.BR_RESUME_ID;
+
   return (
     <div
       id="about"
@@ -23,7 +31,7 @@ export default function About({ paragraph, button }: any) {
             </span>
           </div>
           <Link
-            href="/curriculum"
+            href={`https://docs.google.com/document/d/${resumeID}/export?format=pdf`}
             className={` group relative flex gap-4 justify-center items-center py-4 px-8 border-2 border-white rounded-2xl cursor-pointer`}
             target="_blank"
           >
