@@ -19,29 +19,29 @@ const c = {
 
 const s = StyleSheet.create({
   page: {
-    padding: 36,
-    paddingHorizontal: 42,
+    padding: 30,
+    paddingHorizontal: 36,
     fontFamily: "Helvetica",
-    fontSize: 9,
-    lineHeight: 1.45,
+    fontSize: 8.5,
+    lineHeight: 1.4,
     color: c.black,
   },
   // ── header ──
   name: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Helvetica-Bold",
     letterSpacing: 0.3,
   },
   role: {
-    fontSize: 9.5,
+    fontSize: 9,
     color: c.dark,
-    marginTop: 3,
+    marginTop: 6,
   },
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 8,
-    fontSize: 8,
+    marginTop: 6,
+    fontSize: 7.5,
     color: c.mid,
     gap: 2,
   },
@@ -49,22 +49,22 @@ const s = StyleSheet.create({
   link: { color: c.mid, textDecoration: "none" },
   // ── divider ──
   divider: {
-    borderBottomWidth: 0.6,
+    borderBottomWidth: 0.5,
     borderBottomColor: c.line,
-    marginTop: 12,
-    marginBottom: 10,
+    marginTop: 8,
+    marginBottom: 7,
   },
   // ── section ──
   sectionTitle: {
-    fontSize: 9,
+    fontSize: 8.5,
     fontFamily: "Helvetica-Bold",
     textTransform: "uppercase",
     letterSpacing: 2,
     color: c.dark,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   // ── job ──
-  jobBlock: { marginBottom: 14 },
+  jobBlock: { marginBottom: 10 },
   jobRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -72,23 +72,23 @@ const s = StyleSheet.create({
   },
   jobCompany: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 10,
+    fontSize: 9,
   },
   jobPeriod: {
-    fontSize: 8,
+    fontSize: 7.5,
     color: c.light,
     fontFamily: "Helvetica",
   },
   jobRole: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: c.mid,
     marginTop: 1,
-    marginBottom: 4,
+    marginBottom: 3,
   },
   bullet: {
-    fontSize: 8.5,
-    lineHeight: 1.5,
-    marginBottom: 3,
+    fontSize: 8,
+    lineHeight: 1.45,
+    marginBottom: 2,
     paddingLeft: 6,
     color: c.dark,
   },
@@ -107,15 +107,15 @@ const s = StyleSheet.create({
     color: c.light,
   },
   eduSub: {
-    fontSize: 8,
+    fontSize: 7.5,
     color: c.mid,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   // ── skills ──
   skillsText: {
-    fontSize: 8.5,
+    fontSize: 8,
     color: c.dark,
-    lineHeight: 1.7,
+    lineHeight: 1.6,
   },
 });
 
@@ -173,9 +173,8 @@ function CvDocument({ locale }: { locale: string }) {
           </View>
         ))}
 
-      </Page>
+        <View style={s.divider} />
 
-      <Page size="A4" style={s.page}>
         {/* ── Education ── */}
         <Text style={s.sectionTitle}>{cv.sections.education}</Text>
 
