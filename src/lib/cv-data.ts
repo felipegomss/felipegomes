@@ -8,12 +8,29 @@ export const contact = {
 };
 
 export const skills = [
-  "JavaScript/TypeScript", "Go (Golang)", "Python", "Java", "Ruby", "PHP",
-  "React.js", "AngularJS", "Node.js", "NestJS", "Next.js",
-  "RabbitMQ", "Apache Kafka", "GraphQL",
-  "MySQL", "MongoDB", "Oracle PL/SQL", "PostgreSQL",
-  "AWS", "Azure", "Oracle", "Heroku", "Docker", "GitHub Actions",
-  "Linux", "Selenium", "Cucumber", "Papertrail",
+  // frontend core (ambas vagas pedem)
+  "React", "TypeScript", "Next.js", "Angular",
+  // state, forms, data
+  "Zustand", "React Hook Form", "Zod", "TanStack Query",
+  // UI, design systems (vaga 1: design systems, componentizacao)
+  "Radix UI", "Tailwind CSS", "shadcn/ui", "Design Systems", "Storybook",
+  // testing (ambas pedem Jest/Vitest/Cypress/Playwright)
+  "Vitest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber",
+  // animation
+  "Framer Motion", "GSAP",
+  // PWA (vaga 2: Workbox, service workers)
+  "PWA", "Service Workers",
+  // backend & APIs
+  "Node.js", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Ruby",
+  "REST", "GraphQL", "SignalR", "RabbitMQ", "Apache Kafka",
+  // databases
+  "PostgreSQL", "Supabase", "Prisma", "MySQL", "MongoDB", "Oracle PL/SQL",
+  // infra, CI/CD, observability (vaga 1: Azure, CI/CD)
+  "Azure DevOps", "AWS", "Docker", "GitHub Actions", "CI/CD", "Sentry",
+  // integrations
+  "Stripe", "Resend",
+  // OS
+  "Linux",
 ];
 
 export type CvStrings = {
@@ -43,7 +60,7 @@ export type CvStrings = {
 export const cvStrings: Record<string, CvStrings> = {
   "pt-BR": {
     objective: "Desenvolvedor Full Stack",
-    subtitle: "Arq. Escalável & Foco em Produto",
+    subtitle: "Arquitetura frontend, design systems e foco em produto.",
     sections: {
       experience: "Experiência Profissional",
       education: "Educação",
@@ -63,11 +80,11 @@ export const cvStrings: Record<string, CvStrings> = {
         period: "06.2024 — atual",
         location: "Salvador/BA",
         highlights: [
-          "Liderei a reconstrução da UX da principal plataforma SaaS de logística (AUTOLOAD) — interface moderna e responsiva em React/Next.js, integrada ao backend.",
-          "Desenvolvi o frontend completo do AUTOMED, sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012, em AngularJS.",
-          "Mantenho aplicações em ambiente Azure e Oracle como parte da modernização da arquitetura.",
-          "Conduzi code reviews e padronizei o fluxo de Pull Requests do time.",
-          "Defini especificações técnicas e planejei Sprints junto com Produto, UX/UI e Backend.",
+          "Liderei a modernização do AUTOLOAD (legado → Next.js 14 + React 18 + TypeScript) com backend .NET 8, SignalR e PostgreSQL multi-tenant.",
+          "Criei e publico a @automind/react-components — design system com Radix UI, Storybook e Chromatic, consumida pelo frontend e pelo KIOSK.",
+          "Desenvolvi o frontend do AUTOMED (Angular), sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012.",
+          "Implementei Vitest + Playwright no pipeline do Azure DevOps — smoke tests em PR e regressão completa em release.",
+          "Escrevo specs e documentação de requisitos com stakeholders. Conduzo code reviews e mentoro devs juniores.",
         ],
       },
       {
@@ -102,15 +119,13 @@ export const cvStrings: Record<string, CvStrings> = {
         highlights: [
           "Desenvolvi funcionalidades em React (frontend) e Node.js (backend) que melhoraram a conversão de vendas da plataforma.",
           "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL.",
-          "Mantive a infraestrutura de hospedagem via cPanel.",
-          "Participei dos rituais ágeis (Scrum/Kanban) e mantive o tracking de tarefas atualizado.",
         ],
       },
     ],
   },
   en: {
     objective: "Full Stack Developer",
-    subtitle: "Scalable Architecture & Product Focus",
+    subtitle: "Frontend architecture, design systems and product focus.",
     sections: {
       experience: "Professional Experience",
       education: "Education",
@@ -130,11 +145,11 @@ export const cvStrings: Record<string, CvStrings> = {
         period: "06.2024 — present",
         location: "Salvador/BA",
         highlights: [
-          "Led the UX rebuild of the main logistics SaaS platform (AUTOLOAD) — modern, responsive interface in React/Next.js integrated with the backend.",
-          "Built the complete frontend for AUTOMED, a measurement management system compliant with ABNT NBR ISO 10012, using AngularJS.",
-          "Maintain applications in Azure and Oracle environments as part of the tech architecture modernization.",
-          "Ran code reviews and standardized the team's Pull Request workflow.",
-          "Defined technical specs and planned Sprints with Product, UX/UI and Backend teams.",
+          "Led the modernization of AUTOLOAD (legacy → Next.js 14 + React 18 + TypeScript) with .NET 8 backend, SignalR and multi-tenant PostgreSQL.",
+          "Created and publish @automind/react-components — design system with Radix UI, Storybook and Chromatic, consumed by the frontend and KIOSK app.",
+          "Built the frontend for AUTOMED (Angular), a measurement management system compliant with ABNT NBR ISO 10012.",
+          "Implemented Vitest + Playwright in the Azure DevOps pipeline — smoke tests on PR and full regression on release.",
+          "Write specs and requirements docs with stakeholders. Run code reviews and mentor junior devs.",
         ],
       },
       {
@@ -169,8 +184,6 @@ export const cvStrings: Record<string, CvStrings> = {
         highlights: [
           "Built React (frontend) and Node.js (backend) features that improved the platform's sales conversion.",
           "Created auxiliary Python APIs and managed data persistence in MySQL.",
-          "Maintained hosting infrastructure via cPanel.",
-          "Participated in Agile rituals (Scrum/Kanban) and kept task tracking up to date.",
         ],
       },
     ],

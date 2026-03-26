@@ -1,8 +1,8 @@
 {
   "sidebar": {
     "years": "anos",
-    "stack": "JS/TS · React · Node · Go",
-    "subtitle": "Penso em produto, entrego com CI/CD.",
+    "stack": "JS/TS · React · Node · Go · .NET",
+    "subtitle": "Arquitetura frontend, design systems e foco em produto.",
     "education": "Educação",
     "mba": "MBA em Eng. de Software",
     "mbaInfo": "USP/Esalq — 2026 (em andamento)",
@@ -18,11 +18,11 @@
       "role": "Analista de Software",
       "period": "06.2024 — atual",
       "location": "Salvador/BA",
-      "h1": "Liderei a reconstrução da UX da principal plataforma SaaS de logística (AUTOLOAD) — interface moderna e responsiva em React/Next.js, integrada ao backend.",
-      "h2": "Desenvolvi o frontend completo do AUTOMED, sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012, em AngularJS.",
-      "h3": "Mantenho aplicações em ambiente Azure e Oracle como parte da modernização da arquitetura.",
-      "h4": "Conduzi code reviews e padronizei o fluxo de Pull Requests do time.",
-      "h5": "Defini especificações técnicas e planejei Sprints junto com Produto, UX/UI e Backend."
+      "h1": "Liderei a modernização do AUTOLOAD (legado → Next.js 14 + React 18 + TypeScript) com backend .NET 8, SignalR e PostgreSQL multi-tenant.",
+      "h2": "Criei e publico a @automind/react-components — design system com Radix UI, Storybook e Chromatic, consumida pelo frontend e pelo KIOSK.",
+      "h3": "Desenvolvi o frontend do AUTOMED (Angular), sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012.",
+      "h4": "Implementei Vitest + Playwright no pipeline do Azure DevOps — smoke tests em PR e regressão completa em release.",
+      "h5": "Escrevo specs e documentação de requisitos com stakeholders. Conduzo code reviews e mentoro devs juniores."
     },
     "branddi": {
       "role": "Desenvolvedor FullStack",
@@ -47,16 +47,17 @@
       "period": "09.2020 — 04.2021",
       "location": "Salvador/BA",
       "h1": "Desenvolvi funcionalidades em React (frontend) e Node.js (backend) que melhoraram a conversão de vendas da plataforma.",
-      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL.",
-      "h3": "Mantive a infraestrutura de hospedagem via cPanel.",
-      "h4": "Participei dos rituais ágeis (Scrum/Kanban) e mantive o tracking de tarefas atualizado."
+      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL."
     }
   },
   "skills": {
     "title": "Skills Técnicas",
     "projects": "Projetos",
     "agentSkillsDesc": "Skills customizadas para Claude Code — contribuição ao ecossistema de AI-assisted dev.",
+    "wigDesc": "App Next.js com Supabase, Stripe, Sentry, Vitest e Playwright. PWA com service workers.",
     "shadcnIssueDesc": "Identifiquei e reportei a necessidade de upgrade pro Tailwind v4. Issue resolvida pela comunidade.",
+    "jacosegDesc": "Site institucional para distribuidora de EPIs. Next.js, Tailwind e Google Maps.",
+    "biancaDesc": "Site para psicóloga clínica. Next.js, agendamento e integração com WhatsApp.",
     "portfolioDesc": "Este site. Next.js 16, Tailwind 4, i18n server-side, PDF dinâmico e halftone shader.",
     "languages": "Idiomas",
     "portuguese": "Português",
