@@ -1,30 +1,75 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-
-import { useLocale } from "next-intl";
-import { notFound } from "next/navigation";
-
+import { JetBrains_Mono, Geist_Mono } from "next/font/google";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import { Analytics } from "@vercel/analytics/react";
+import { routing } from "@/i18n/routing";
+import { notFound } from "next/navigation";
+import { IntroScreen } from "./components/intro-screen";
 
-const inter = Inter({ subsets: ["latin"] });
+const geistMonoHeading = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "Felipe Gomes",
-  description: "Seu proximo dev front end!",
+  title: "Luis Felipe N. Gomes — Full Stack Developer",
+  description:
+    "Full Stack · 5+ years · JS/TS, React, Node, Go · Product-minded, ships with CI/CD.",
+  openGraph: {
+    title: "LFNG — Full Stack Developer",
+    description:
+      "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+    type: "website",
+    url: "https://lfng.dev",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LFNG — Full Stack Developer",
+    description:
+      "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
+    images: ["/og.png"],
+  },
 };
 
-export default function RootLayout({ children, params }: any) {
-  const locale = useLocale();
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
-  // Show a 404 error if the user requests an unknown locale
-  if (params.locale !== locale) {
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
+
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
   return (
-    <html lang={locale}>
-      <body className={inter.className}>{children}</body>
-      <Analytics />
+    <html
+      lang={locale}
+      className={`${jetbrainsMono.variable} ${geistMonoHeading.variable}`}
+    >
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          <IntroScreen>{children}</IntroScreen>
+        </NextIntlClientProvider>
+        <Analytics />
+      </body>
     </html>
   );
 }

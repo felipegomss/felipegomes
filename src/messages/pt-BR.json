@@ -1,46 +1,66 @@
 {
-  "Header": {
-    "title": "Sobre & Projetos"
+  "sidebar": {
+    "years": "anos",
+    "stack": "JS/TS · React · Node · Go",
+    "subtitle": "Penso em produto, entrego com CI/CD.",
+    "education": "Educação",
+    "mba": "MBA em Eng. de Software",
+    "mbaInfo": "USP/Esalq — 2026 (em andamento)",
+    "degree": "Análise e Dev. de Sistemas",
+    "degreeInfo": "Faculdade Estácio — 2025 · CR: 8,52/10",
+    "degreeCore": "Core: Java, Python, JavaScript, SQL, Android e Cloud Computing.",
+    "contact": "Contato",
+    "download": "Baixar CV"
   },
-  "Hero": {
-    "greeting": "Olá",
-    "title": "eu sou o",
-    "paragraph": "Criador de Experiências Digitais Vibrantes. 90+ milhões de usuários impactados por projetos que transcendem limites. Pronto para superar desafios e criar soluções inovadoras?"
-  },
-  "About": {
-    "paragraph": " Olá! Sou uma pessoa apaixonada, com um profundo amor pela música, tecnologia, jogos e futebol. Como desenvolvedor de fullstack, aprimorei minhas habilidades ao longo de 4 anos, especializando-me em criar interfaces de usuário responsivas e interativas. Me destaco em projetos desafiadores que exigem solução de problemas e criação de soluções inovadoras. \n Durante minha trajetória profissional, tive o privilégio de trabalhar em projetos impactantes que alcançaram milhões de usuários. Essa experiência me proporcionou o desenvolvimento da capacidade de atuar sob pressão e me destacar na gestão de projetos. A colaboração com equipes diversas e multidisciplinares em ambientes exigentes também enriqueceu minha experiência profissional. \n Estou sempre entusiasmado para abraçar novas oportunidades e enfrentar desafios emocionantes. Acredito na importância da aprendizagem contínua e em acompanhar as últimas tendências tecnológicas. Por isso, estou sempre buscando atualizar minhas habilidades para entregar o melhor trabalho possível. \n Fique à vontade para entrar em contato comigo em português ou inglês. Estou disponível para colaborações, novos projetos ou mesmo para uma conversa sobre nossas paixões em comum. \n Vamos criar algo incrível juntos!",
-    "button": "Detalhes da Carreira"
-  },
-  "Contact": {
-    "title": "Me mande um email",
-    "wppCall": "Ou se preferir um contato mais direto, me chame no"
-  },
-  "Curriculum": {
-    "moment": "Atual",
-    "profile": {
-      "title": "Perfil",
-      "description": "Sou um desenvolvedor fullstack apaixonado por tecnologia e música. Com mais de 4 anos de experiência adquiri habilidades sólidas no desenvolvimento de interfaces de usuário responsivas e interativas. Adoro trabalhar em projetos desafiadores que envolvam a resolução de problemas e a criação de soluções inovadoras. Como um entusiasta da tecnologia, estou sempre aprendendo novas habilidades e explorando novas tecnologias. Já tive a oportunidade de trabalhar em projetos de grande impacto, esta experiência me ensinou a trabalhar sob pressão, aprimorar minhas habilidades de gerenciamento de projetos e me permitiu colaborar com equipes multidisciplinares em ambientes desafiadores."
+  "experience": {
+    "title": "Experiências Profissionais",
+    "automind": {
+      "role": "Analista de Software",
+      "period": "06.2024 — atual",
+      "location": "Salvador/BA",
+      "h1": "Liderei a reconstrução da UX da principal plataforma SaaS de logística (AUTOLOAD) — interface moderna e responsiva em React/Next.js, integrada ao backend.",
+      "h2": "Desenvolvi o frontend completo do AUTOMED, sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012, em AngularJS.",
+      "h3": "Mantenho aplicações em ambiente Azure e Oracle como parte da modernização da arquitetura.",
+      "h4": "Conduzi code reviews e padronizei o fluxo de Pull Requests do time.",
+      "h5": "Defini especificações técnicas e planejei Sprints junto com Produto, UX/UI e Backend."
     },
-    "skills": {
-      "title": "Principais Habilidades"
+    "branddi": {
+      "role": "Desenvolvedor FullStack",
+      "period": "04.2023 — 06.2024",
+      "location": "Remoto",
+      "h1": "Arquitetei uma solução End-to-End de gestão de infrações — core em REST (NestJS) com integrações ao Pipefy via GraphQL.",
+      "h2": "Integrei Go (Golang) com filas RabbitMQ para processar dados em massa via Web Crawlers e microsserviços.",
+      "h3": "Montei a stack de observabilidade: logs centralizados (Papertrail), alertas de Healthcheck e monitoramento de Downtime.",
+      "h4": "Gerenciei deploys em AWS e automatizei pipelines de CI/CD com GitHub Actions.",
+      "h5": "Liderei aprovação de PRs e defini a estratégia de testes unitários do time."
     },
-    "employment": {
-      "title": "Histórico Profissional",
-      "brandMonitor": {
-        "title": "Desenvolvedor FullStack",
-        "description": "Liderança em projetos utilizando Golang para portais internos, robôs e web crawlers, assegurando alto desempenho e eficiência.\nImplementação de soluções robustas com ReactJS no frontend e NestJS no backend, proporcionando experiências dinâmicas e escaláveis.\nUtilização do MongoDB para garantir o gerenciamento eficiente de dados, assegurando robustez e escalabilidade nos sistemas.\nResponsável pela gestão de ambientes de desenvolvimento, staging e produção, garantindo consistência e confiabilidade nas versões implementadas.\nAtuação ativa em QA, promovendo o desenvolvimento orientado por testes e liderando a equipe na criação de casos de teste detalhados.\nColaboração ativa na proteção de marcas na internet para clientes de grande porte no Brasil e internacionalmente, ampliando a visibilidade e reputação da empresa.\nColaboração ativa na proteção de marcas na internet para clientes de grande porte no Brasil e internacionalmente, ampliando a visibilidade e reputação da empresa.\nUtilização eficaz de Redux e Context API para gerenciamento de estado no frontend, proporcionando uma experiência de usuário fluida e consistente."
-      },
-      "eisa": {
-        "title": "Analista de software",
-        "description": "Liderando com sucesso a migração de repositórios do TortoiseSVN para o GitLab,aumentando significativamente a eficiência e colaboração entre equipes.\nContribuindo ativamente para elevar a qualidade das aplicações críticas da VIVO - Telefônica, responsáveis por atingir mais de 90 milhões de pessoas, por meio de testes abrangentes e resolução proativa de defeitos.\nDemonstrando expertise em linguagens como Ruby, Java, e habilidades avançadas em gerenciamento de dados com Oracle PL/SQL e MongoDB.\nEspecializado em resolver desafios complexos e integrar sistemas para impulsionar o progresso e a inovação."
-      },
-      "parallel": {
-        "title": "Desenvolvedor Full Cycle",
-        "description": "Impulsionando melhorias significativas em uma plataforma de vendas de cursos com tecnologias como React, Node.js e MySql, elevando a experiência do usuário e os resultados de vendas\nGerenciando de forma eficaz Web Host e Cloud com CPANEL, aplicando metodologias ágeis como Scrum e Kanban para otimizar processos.\nDemonstrando conhecimento avançado em Git para controle de versão, garantindo uma gestão eficiente do código fonte.\nContribuindo para o desenvolvimento bem-sucedido de um aplicativo inovador de monitoramento de sinais vitais e tecnologia wearable, combinando IoT, Python e plataformas web para oferecer uma solução completa."
-      }
+    "eisa": {
+      "role": "Analista de Software — QA",
+      "period": "05.2021 — 04.2023",
+      "location": "Remoto",
+      "h1": "Automatizei testes E2E com Selenium WebDriver, Cucumber e Ruby para sistemas da VIVO — 90M+ usuários.",
+      "h2": "Validei fluxos assíncronos em Apache Kafka e executei scripts PL/SQL (Oracle) em ambiente Linux.",
+      "h3": "Liderei a migração de repositórios legados (TortoiseSVN → GitLab)."
     },
-    "licenses": {
-      "title": "Certificações e Competências"
+    "parallel": {
+      "role": "Desenvolvedor FullStack",
+      "period": "09.2020 — 04.2021",
+      "location": "Salvador/BA",
+      "h1": "Desenvolvi funcionalidades em React (frontend) e Node.js (backend) que melhoraram a conversão de vendas da plataforma.",
+      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL.",
+      "h3": "Mantive a infraestrutura de hospedagem via cPanel.",
+      "h4": "Participei dos rituais ágeis (Scrum/Kanban) e mantive o tracking de tarefas atualizado."
     }
+  },
+  "skills": {
+    "title": "Skills Técnicas",
+    "projects": "Projetos",
+    "agentSkillsDesc": "Skills customizadas para Claude Code — contribuição ao ecossistema de AI-assisted dev.",
+    "shadcnIssueDesc": "Identifiquei e reportei a necessidade de upgrade pro Tailwind v4. Issue resolvida pela comunidade.",
+    "portfolioDesc": "Este site. Next.js 16, Tailwind 4, i18n server-side, PDF dinâmico e halftone shader.",
+    "languages": "Idiomas",
+    "portuguese": "Português",
+    "english": "Inglês",
+    "native": "Nativo"
   }
 }
