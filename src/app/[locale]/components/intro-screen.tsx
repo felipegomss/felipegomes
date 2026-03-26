@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useMountEffect } from "@/hooks/use-mount-effect";
 
+const INITIAL = "CODE";
 const TARGET = "LFNG";
 const CHARS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>{}[]=/\\|~^";
@@ -27,54 +29,112 @@ function markVisited() {
 
 export function IntroScreen({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<"intro" | "fading" | "done">("intro");
-  const [display, setDisplay] = useState(() => TARGET.split(""));
-  const lockedRef = useRef(new Array(TARGET.length).fill(false) as boolean[]);
-  const startRef = useRef(0);
+  const [display, setDisplay] = useState(() => INITIAL.split(""));
+  const lockedRef = useRef([false, false, false, false]);
+  const stageRef = useRef<"hold" | "unlock" | "scramble" | "lock">("hold");
+  const stageStartRef = useRef(0);
   const rafRef = useRef(0);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const fastRef = useRef(false);
 
-  const animate = useCallback(() => {
-    const fast = fastRef.current;
-    const scrambleDuration = fast ? 600 : 2000;
-    const lockStagger = fast ? 120 : 350;
-    const fadeDelay = fast ? 200 : 600;
+  useMountEffect(() => {
+    const fast = isRevisit();
 
-    const elapsed = Date.now() - startRef.current;
+    const HOLD = fast ? 200 : 500;
+    const UNLOCK_STAGGER = fast ? 100 : 250;
+    const SCRAMBLE = fast ? 400 : 1200;
+    const LOCK_STAGGER = fast ? 120 : 300;
+    const FADE_DELAY = fast ? 200 : 600;
+    const FADE_OUT = fast ? 400 : 800;
 
-    const next = Array.from({ length: TARGET.length }, (_, i) => {
-      if (lockedRef.current[i]) return TARGET[i];
-      const lockAt = scrambleDuration + i * lockStagger;
-      if (elapsed >= lockAt) {
-        lockedRef.current[i] = true;
-        return TARGET[i];
+    const unlockedRef = [false, false, false, false];
+    stageStartRef.current = Date.now();
+
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = now - stageStartRef.current;
+
+      // phase 1: hold "CODE" then unlock letter by letter
+      if (stageRef.current === "hold") {
+        if (elapsed >= HOLD) {
+          stageRef.current = "unlock";
+          stageStartRef.current = now;
+        } else {
+          rafRef.current = requestAnimationFrame(tick);
+          return;
+        }
       }
-      return randomChar();
-    });
 
-    setDisplay(next);
+      // phase 2: unlock CODE letters one by one into scramble
+      if (stageRef.current === "unlock") {
+        const unlockElapsed = now - stageStartRef.current;
+        for (let i = 0; i < INITIAL.length; i++) {
+          if (!unlockedRef[i] && unlockElapsed >= i * UNLOCK_STAGGER) {
+            unlockedRef[i] = true;
+          }
+        }
+        if (unlockedRef.every(Boolean)) {
+          stageRef.current = "scramble";
+          stageStartRef.current = now;
+        }
+      }
 
-    if (lockedRef.current.every(Boolean)) {
-      markVisited();
-      timersRef.current.push(
-        setTimeout(() => setPhase("fading"), fadeDelay),
-        setTimeout(() => setPhase("done"), fadeDelay + (fast ? 400 : 800)),
-      );
-      return;
-    }
+      // phase 3: pure scramble
+      if (stageRef.current === "scramble") {
+        if (now - stageStartRef.current >= SCRAMBLE) {
+          stageRef.current = "lock";
+          stageStartRef.current = now;
+        }
+      }
 
-    rafRef.current = requestAnimationFrame(animate);
-  }, []);
+      const lockElapsed = stageRef.current === "lock" ? now - stageStartRef.current : -1;
 
-  useEffect(() => {
-    fastRef.current = isRevisit();
-    startRef.current = Date.now();
-    rafRef.current = requestAnimationFrame(animate);
+      const next: string[] = [];
+      let allLocked = true;
+
+      for (let i = 0; i < TARGET.length; i++) {
+        if (lockedRef.current[i]) {
+          next.push(TARGET[i]);
+          continue;
+        }
+
+        if (lockElapsed >= 0 && lockElapsed >= i * LOCK_STAGGER) {
+          lockedRef.current[i] = true;
+          next.push(TARGET[i]);
+          continue;
+        }
+
+        // during unlock phase, show INITIAL for not-yet-unlocked letters
+        if (stageRef.current === "unlock" && !unlockedRef[i]) {
+          next.push(INITIAL[i]);
+          allLocked = false;
+          continue;
+        }
+
+        allLocked = false;
+        next.push(randomChar());
+      }
+
+      setDisplay(next);
+
+      if (allLocked) {
+        markVisited();
+        timersRef.current.push(
+          setTimeout(() => setPhase("fading"), FADE_DELAY),
+          setTimeout(() => setPhase("done"), FADE_DELAY + FADE_OUT),
+        );
+        return;
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
     return () => {
       cancelAnimationFrame(rafRef.current);
       timersRef.current.forEach(clearTimeout);
     };
-  }, [animate]);
+  });
 
   if (phase === "done") return children;
 
@@ -92,7 +152,9 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
               key={i}
               suppressHydrationWarning
               className={`font-heading text-6xl font-black tracking-tight transition-colors duration-150 md:text-9xl ${
-                lockedRef.current[i] ? "text-white" : "text-white/20"
+                lockedRef.current[i] || stageRef.current === "hold"
+                  ? "text-white"
+                  : "text-white/20"
               }`}
               style={{
                 fontVariantNumeric: "tabular-nums",
