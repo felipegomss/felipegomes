@@ -231,7 +231,7 @@ export default async function Home({
             <li>
               <div>
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">Bianca PSC</p>
+                  <p className="text-sm font-bold">Bianca Psi.</p>
                   <a href="https://www.bianca.psc.br" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
                     <IconGlobe size={14} />
                   </a>
