@@ -57,19 +57,16 @@ export default async function Home({
           </div>
 
           <section>
-            <h2 className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+            <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               {sidebar("education")}
+              <IconAward size={14} />
             </h2>
             <div>
-              <p className="flex items-center gap-1.5 text-sm">
-                <IconAward size={14} className="shrink-0 text-muted-foreground/40" />
-                {sidebar("mba")}
-              </p>
+              <p className="text-sm">{sidebar("mba")}</p>
               <p className="text-xs text-muted-foreground/60">{sidebar("mbaInfo")}</p>
             </div>
             <div className="mt-3">
-              <a href="/diploma.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
-                <IconAward size={14} className="shrink-0 text-muted-foreground/40" />
+              <a href="/diploma.pdf" target="_blank" rel="noopener noreferrer" className="text-sm underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                 {sidebar("degree")}
               </a>
               <p className="text-xs text-muted-foreground/60">{sidebar("degreeInfo")}</p>
