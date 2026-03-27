@@ -176,7 +176,7 @@ export default async function Home({
               <span className="text-xs text-muted-foreground/50">{sk("native")}</span>
             </li>
             <li className="flex items-baseline justify-between">
-              <a href="https://cert.efset.org/VLZ6f9" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+              <a href="https://cert.efset.org/VLZ6f9" target="_blank" rel="noopener noreferrer" className="underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                 {sk("english")}
               </a>
               <span className="text-xs text-muted-foreground/50">B2 · EF SET</span>
