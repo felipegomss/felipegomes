@@ -15,6 +15,8 @@ const TIMING = {
   fast: { hold: 80, unlockStagger: 40, scramble: 160, lockStagger: 50, fadeDelay: 80, fadeOut: 200 },
 } as const;
 
+const MAX_SCRAMBLE = 5000;
+
 type Phase = "intro" | "fading" | "done";
 type Stage = "hold" | "unlock" | "scramble" | "lock";
 
@@ -84,7 +86,12 @@ export function useDecryptAnimation() {
         }
       }
 
-      if (stageRef.current === "scramble" && now - stageStartRef.current >= t.scramble) {
+      const scrambleElapsed = now - stageStartRef.current;
+      if (
+        stageRef.current === "scramble" &&
+        scrambleElapsed >= t.scramble &&
+        (document.readyState === "complete" || scrambleElapsed >= MAX_SCRAMBLE)
+      ) {
         stageRef.current = "lock";
         stageStartRef.current = now;
       }
