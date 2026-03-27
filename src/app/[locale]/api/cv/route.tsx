@@ -7,8 +7,13 @@ import {
   StyleSheet,
   Link,
 } from "@react-pdf/renderer";
-import { contact, skills, cvStrings } from "@/lib/cv-data";
+import { contact, skills } from "@/lib/cv-data";
+import { jobs } from "../../data/portfolio";
 import { CV_CACHE_MAX_AGE } from "@/lib/constants";
+import ptBR from "@/messages/pt-BR.json";
+import en from "@/messages/en.json";
+
+const messages: Record<string, typeof ptBR> = { "pt-BR": ptBR, en };
 
 /** Semantic color palette for the PDF CV. */
 const c = {
@@ -28,7 +33,6 @@ const s = StyleSheet.create({
     lineHeight: 1.4,
     color: c.black,
   },
-  // ── header ──
   name: {
     fontSize: 14,
     fontFamily: "Helvetica-Bold",
@@ -49,14 +53,12 @@ const s = StyleSheet.create({
   },
   sep: { marginHorizontal: 5 },
   link: { color: c.mid, textDecoration: "none" },
-  // ── divider ──
   divider: {
     borderBottomWidth: 0.5,
     borderBottomColor: c.line,
     marginTop: 8,
     marginBottom: 7,
   },
-  // ── section ──
   sectionTitle: {
     fontSize: 8.5,
     fontFamily: "Helvetica-Bold",
@@ -65,7 +67,6 @@ const s = StyleSheet.create({
     color: c.dark,
     marginBottom: 6,
   },
-  // ── job ──
   jobBlock: { marginBottom: 10 },
   jobRow: {
     flexDirection: "row",
@@ -94,7 +95,6 @@ const s = StyleSheet.create({
     paddingLeft: 6,
     color: c.dark,
   },
-  // ── education ──
   eduRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -113,7 +113,6 @@ const s = StyleSheet.create({
     color: c.mid,
     marginBottom: 4,
   },
-  // ── skills ──
   skillsText: {
     fontSize: 8,
     color: c.dark,
@@ -122,16 +121,17 @@ const s = StyleSheet.create({
 });
 
 function CvDocument({ locale }: { locale: string }) {
-  const cv = cvStrings[locale] || cvStrings["pt-BR"];
+  const msg = messages[locale] || messages["pt-BR"];
+  const sidebar = msg.sidebar;
+  const exp = msg.experience;
 
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        {/* ── Header ── */}
         <View>
           <Text style={s.name}>{contact.name}</Text>
           <Text style={s.role}>
-            {cv.objective} · {cv.subtitle}
+            {sidebar.subtitle}
           </Text>
           <View style={s.contactRow}>
             <Text>{contact.location}</Text>
@@ -154,50 +154,48 @@ function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
-        {/* ── Experience ── */}
-        <Text style={s.sectionTitle}>{cv.sections.experience}</Text>
-        {cv.jobs.map((job, i) => (
-          <View key={i} style={s.jobBlock} wrap={false}>
-            <View style={s.jobRow}>
-              <Text style={s.jobCompany}>
-                {job.company}
-                {job.location ? ` — ${job.location}` : ""}
-              </Text>
-              <Text style={s.jobPeriod}>{job.period}</Text>
+        <Text style={s.sectionTitle}>{exp.title}</Text>
+        {jobs.map((job, i) => {
+          const data = exp[job.key as keyof typeof exp] as Record<string, string>;
+          return (
+            <View key={i} style={s.jobBlock} wrap={false}>
+              <View style={s.jobRow}>
+                <Text style={s.jobCompany}>
+                  {job.company}
+                  {data.location ? ` — ${data.location}` : ""}
+                </Text>
+                <Text style={s.jobPeriod}>{data.period}</Text>
+              </View>
+              <Text style={s.jobRole}>{data.role}</Text>
+              {Array.from({ length: job.count }, (_, j) => (
+                <Text key={j} style={s.bullet}>
+                  •{"  "}
+                  {data[`h${j + 1}`]}
+                </Text>
+              ))}
             </View>
-            <Text style={s.jobRole}>{job.role}</Text>
-            {job.highlights.map((h, j) => (
-              <Text key={j} style={s.bullet}>
-                •{"  "}
-                {h}
-              </Text>
-            ))}
-          </View>
-        ))}
+          );
+        })}
 
         <View style={s.divider} />
 
-        {/* ── Education ── */}
-        <Text style={s.sectionTitle}>{cv.sections.education}</Text>
-
+        <Text style={s.sectionTitle}>{sidebar.education}</Text>
         <View>
           <View style={s.eduRow}>
-            <Text style={s.eduTitle}>{cv.education.mba}</Text>
-            <Text style={s.eduRight}>{cv.education.mbaInfo}</Text>
+            <Text style={s.eduTitle}>{sidebar.mba}</Text>
+            <Text style={s.eduRight}>{sidebar.mbaInfo}</Text>
           </View>
           <Text style={s.eduSub}> </Text>
-
           <View style={s.eduRow}>
-            <Text style={s.eduTitle}>{cv.education.degree}</Text>
-            <Text style={s.eduRight}>{cv.education.degreeInfo}</Text>
+            <Text style={s.eduTitle}>{sidebar.degree}</Text>
+            <Text style={s.eduRight}>{sidebar.degreeInfo}</Text>
           </View>
-          <Text style={s.eduSub}>{cv.education.degreeCore}</Text>
+          <Text style={s.eduSub}>{sidebar.degreeCore}</Text>
         </View>
 
         <View style={s.divider} />
 
-        {/* ── Skills ── */}
-        <Text style={s.sectionTitle}>{cv.sections.skills}</Text>
+        <Text style={s.sectionTitle}>{msg.skills.title}</Text>
         <Text style={s.skillsText}>{skills.join("  ·  ")}</Text>
       </Page>
     </Document>
@@ -206,7 +204,7 @@ function CvDocument({ locale }: { locale: string }) {
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ locale: string }> }
+  { params }: { params: Promise<{ locale: string }> },
 ) {
   const { locale } = await params;
   const buffer = await renderToBuffer(<CvDocument locale={locale} />);

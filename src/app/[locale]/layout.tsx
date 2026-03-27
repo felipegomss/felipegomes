@@ -1,12 +1,12 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { JetBrains_Mono, Geist_Mono } from "next/font/google";
-import { getMessages, setRequestLocale } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
-import { Analytics } from "@vercel/analytics/react";
 import { routing } from "@/i18n/routing";
+import { Analytics } from "@vercel/analytics/react";
+import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
+import "./globals.css";
 
 const headingFont = Geist_Mono({
   subsets: ["latin"],
@@ -24,8 +24,7 @@ export const metadata: Metadata = {
     "Full Stack · 5+ years · JS/TS, React, Node, Go · Product-minded, ships with CI/CD.",
   openGraph: {
     title: "LFNG — Full Stack Developer",
-    description:
-      "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
+    description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
     type: "website",
     url: "https://lfng.dev",
@@ -33,8 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "LFNG — Full Stack Developer",
-    description:
-      "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
+    description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
     images: ["/og.png"],
   },
 };
@@ -65,7 +63,10 @@ export default async function RootLayout({
       className={`${bodyFont.variable} ${headingFont.variable}`}
     >
       <body>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[99999] focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:text-foreground focus:shadow-lg">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-99999 focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:text-foreground focus:shadow-lg"
+        >
           Skip to content
         </a>
         <NextIntlClientProvider messages={messages}>
