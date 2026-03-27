@@ -16,13 +16,13 @@ export function ProjectItem({ name, description, repo, site }: ProjectItemProps)
           <p className="text-sm font-bold">{name}</p>
           <div className="flex gap-3">
             {repo && (
-              <a href={repo} target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                <IconGithub size={14} />
+              <a href={repo} target="_blank" rel="noopener noreferrer" aria-label={`${name} repository`} className="text-muted-foreground/40 hover:text-foreground">
+                <IconGithub size={14} aria-hidden="true" />
               </a>
             )}
             {site && (
-              <a href={site} target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                <IconGlobe size={14} />
+              <a href={site} target="_blank" rel="noopener noreferrer" aria-label={`${name} website`} className="text-muted-foreground/40 hover:text-foreground">
+                <IconGlobe size={14} aria-hidden="true" />
               </a>
             )}
           </div>

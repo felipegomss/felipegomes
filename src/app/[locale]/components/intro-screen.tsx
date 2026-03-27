@@ -37,6 +37,14 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useMountEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      markVisited();
+      setDisplay(TARGET.split(""));
+      setPhase("done");
+      return;
+    }
+
     const fast = isRevisit();
 
     const HOLD = fast ? 200 : 500;
@@ -141,6 +149,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div
+        aria-hidden="true"
         className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a] transition-opacity duration-700 ${
           phase === "fading" ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
@@ -168,7 +177,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
           ))}
         </div>
 
-        <div className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10">
+        <div className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10" lang="pt-BR">
           LUIS FELIPE NASCIMENTO GOMES
         </div>
       </div>

@@ -26,7 +26,6 @@ const jobs = [
   { key: "parallel", company: "Parallel Consulting & Training", count: 2 },
 ];
 
-
 export default async function Home({
   params,
 }: {
@@ -43,7 +42,7 @@ export default async function Home({
 
   return (
     <div className="mx-auto max-w-7xl border-x border-border md:grid md:grid-cols-[260px_1fr_1fr] md:min-h-screen">
-      <aside className="flex flex-col justify-between border-b border-border p-6 md:sticky md:top-0 md:h-screen md:border-b-0 md:border-r">
+      <aside aria-label="Sidebar" className="flex flex-col justify-between border-b border-border p-6 md:sticky md:top-0 md:h-screen md:border-b-0 md:border-r">
         <div className="space-y-8">
           <div className="flex items-start justify-between">
             <div>
@@ -71,10 +70,10 @@ export default async function Home({
             </p>
           </div>
 
-          <section>
+          <section aria-label={sidebar("education")}>
             <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               {sidebar("education")}
-              <IconAward size={14} />
+              <IconAward size={14} aria-hidden="true" />
             </h2>
             <div>
               <p className="text-sm">{sidebar("mba")}</p>
@@ -83,6 +82,7 @@ export default async function Home({
             <div className="mt-3">
               <a href="/diploma.pdf" target="_blank" rel="noopener noreferrer" className="text-sm underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                 {sidebar("degree")}
+                <span className="sr-only"> (opens in new tab)</span>
               </a>
               <p className="text-xs text-muted-foreground/60">{sidebar("degreeInfo")}</p>
               <p className="text-xs text-muted-foreground/60">{sidebar("degreeCr")}</p>
@@ -92,10 +92,10 @@ export default async function Home({
         </div>
 
         <div className="mt-8 space-y-4 md:mt-0">
-          <section>
+          <section aria-label={sidebar("contact")}>
             <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               {sidebar("contact")}
-              <IconMailbox size={14} />
+              <IconMailbox size={14} aria-hidden="true" />
             </h2>
             <ul className="space-y-1 text-sm">
               <li>
@@ -114,20 +114,20 @@ export default async function Home({
               download
               className="mt-3 inline-block text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
             >
-              ↓ {sidebar("download")}
+              <span aria-hidden="true">↓ </span>{sidebar("download")}
             </a>
           </section>
 
-          <nav>
+          <nav aria-label="Social">
             <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               Social
             </h2>
             <div className="flex gap-3">
-              <a href={`https://${contact.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
-                <IconLinkedin size={18} />
+              <a href={`https://${contact.linkedin}`} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-muted-foreground transition-colors hover:text-foreground">
+                <IconLinkedin size={18} aria-hidden="true" />
               </a>
-              <a href={`https://${contact.github}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground transition-colors hover:text-foreground">
-                <IconGithub size={18} />
+              <a href={`https://${contact.github}`} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground transition-colors hover:text-foreground">
+                <IconGithub size={18} aria-hidden="true" />
               </a>
             </div>
           </nav>
@@ -138,11 +138,11 @@ export default async function Home({
         <HalftoneImage src="/felipe.jpeg" alt={contact.name} width={3111} height={3111} />
       </div>
 
-      <main className="border-b border-border md:border-b-0 md:border-r">
+      <main id="main-content" className="border-b border-border md:border-b-0 md:border-r">
         <div className="border-b border-border p-6">
           <h2 className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {exp("title")}
-            <IconArchive size={14} />
+            <IconArchive size={14} aria-hidden="true" />
           </h2>
         </div>
 
@@ -158,10 +158,10 @@ export default async function Home({
                 {exp.has(`${job.key}.location`) && ` · ${exp(`${job.key}.location`)}`}
               </p>
             </div>
-            <ul className="space-y-1.5">
+            <ul className="experience-list space-y-1.5">
               {Array.from({ length: job.count }, (_, i) => (
                 <li key={i} className="text-sm leading-relaxed text-muted-foreground">
-                  — {exp(`${job.key}.h${i + 1}`)}
+                  {exp(`${job.key}.h${i + 1}`)}
                 </li>
               ))}
             </ul>
@@ -169,7 +169,7 @@ export default async function Home({
         ))}
       </main>
 
-      <aside className="flex flex-col">
+      <aside aria-label="Skills and projects" className="flex flex-col">
         <div className="hidden border-b border-border md:block">
           <HalftoneImage src="/felipe.jpeg" alt={contact.name} width={3111} height={3111} />
         </div>
@@ -177,7 +177,7 @@ export default async function Home({
         <div className="border-b border-border p-6">
           <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("title")}
-            <IconStar size={14} />
+            <IconStar size={14} aria-hidden="true" />
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {skills.map((skill) => (
@@ -191,7 +191,7 @@ export default async function Home({
         <div className="border-b border-border p-6">
           <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("languages")}
-            <IconQuote size={14} />
+            <IconQuote size={14} aria-hidden="true" />
           </h2>
           <ul className="space-y-1.5 text-sm">
             <li className="flex items-baseline justify-between">
@@ -201,8 +201,9 @@ export default async function Home({
             <li className="flex items-baseline justify-between">
               <a href="https://cert.efset.org/VLZ6f9" target="_blank" rel="noopener noreferrer" className="underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                 {sk("english")}
+                <span className="sr-only"> — B2 EF SET (opens in new tab)</span>
               </a>
-              <span className="text-xs text-muted-foreground/50">B2 · EF SET</span>
+              <span aria-hidden="true" className="text-xs text-muted-foreground/50">B2 · EF SET</span>
             </li>
           </ul>
         </div>
@@ -210,7 +211,7 @@ export default async function Home({
         <div className="border-b border-border p-6">
           <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("projects")}
-            <IconFolder size={14} />
+            <IconFolder size={14} aria-hidden="true" />
           </h2>
           <ul className="space-y-4">
             {projects.map((p) => (
@@ -222,7 +223,7 @@ export default async function Home({
         <div className="border-b border-border p-6">
           <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             Open Source
-            <IconAbstract size={14} />
+            <IconAbstract size={14} aria-hidden="true" />
           </h2>
           <ul className="space-y-3">
             <li>
@@ -239,6 +240,7 @@ export default async function Home({
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {sk("shadcnIssueDesc")}
                 </p>
+                <span className="sr-only">(opens in new tab)</span>
               </a>
             </li>
           </ul>

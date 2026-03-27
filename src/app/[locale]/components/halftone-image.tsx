@@ -119,6 +119,7 @@ export function HalftoneImage({
   return (
     <div
       ref={containerRef}
+      role="img"
       className={`overflow-hidden ${className}`}
       aria-label={alt}
       style={{
@@ -128,6 +129,7 @@ export function HalftoneImage({
     >
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         className={`block h-full w-full ${ready ? "opacity-100" : "opacity-0"}`}
       />
     </div>
