@@ -88,10 +88,10 @@ export async function Sidebar({ locale }: { locale: string }) {
           <ul className="space-y-1 text-sm">
             <li>
               <a
-                href={`mailto:${contact.email}`}
+                href={`mailto:${sidebar("email")}`}
                 className={"external-link text-muted-foreground"}
               >
-                {contact.email}
+                {sidebar("email")}
               </a>
             </li>
             <li>

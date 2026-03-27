@@ -3,8 +3,6 @@ export const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000; // accounts for leap ye
 
 export const contact = {
   name: "Luis Felipe Nascimento Gomes",
-  location: "Salvador/BA — Brasil",
-  email: "ola@lfng.dev",
   phone: "+55 (71) 9 9265-5188",
   linkedin: "linkedin.com/in/felipegomss",
   github: "github.com/felipegomss",

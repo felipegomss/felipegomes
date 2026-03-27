@@ -147,10 +147,10 @@ export function CvDocument({ locale }: { locale: string }) {
           <Text style={s.name}>{contact.name}</Text>
           <Text style={s.role}>{sidebar.subtitle}</Text>
           <View style={s.contactRow}>
-            <Text>{contact.location}</Text>
+            <Text>{sidebar.location}</Text>
             <Text style={s.sep}>|</Text>
-            <Link src={`mailto:${contact.email}`} style={s.link}>
-              <Text>{contact.email}</Text>
+            <Link src={`mailto:${sidebar.email}`} style={s.link}>
+              <Text>{sidebar.email}</Text>
             </Link>
             <Text style={s.sep}>|</Text>
             <Text>{contact.phone}</Text>
