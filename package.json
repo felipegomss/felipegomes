@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "tsx scripts/generate-static-cv.tsx",
     "build": "next build",
-    "postbuild": "tsx scripts/generate-static-cv.tsx",
     "start": "next start",
     "lint": "next lint"
   },
