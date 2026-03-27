@@ -1,4 +1,4 @@
-import { renderToBuffer } from "@react-pdf/renderer";
+import { renderToBuffer, Font } from "@react-pdf/renderer";
 import {
   Document,
   Page,
@@ -7,14 +7,22 @@ import {
   StyleSheet,
   Link,
 } from "@react-pdf/renderer";
-import { contact, skills, CV_CACHE_MAX_AGE } from "@/lib/constants";
-import { jobs } from "../../data/portfolio";
+import { contact, skillsByCategory, CV_CACHE_MAX_AGE } from "@/lib/constants";
+import { jobs, projects } from "../../data/portfolio";
 import ptBR from "@/messages/pt-BR.json";
 import en from "@/messages/en.json";
 
+Font.register({
+  family: "Inter",
+  fonts: [
+    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hiJ-Ek-_EeA.woff2", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff2", fontWeight: 700 },
+  ],
+});
+
 const messages: Record<string, typeof ptBR> = { "pt-BR": ptBR, en };
 
-/** Semantic color palette for the PDF CV. */
 const c = {
   black: "#111",
   dark: "#333",
@@ -25,16 +33,16 @@ const c = {
 
 const s = StyleSheet.create({
   page: {
-    padding: 30,
-    paddingHorizontal: 36,
-    fontFamily: "Helvetica",
+    padding: 34,
+    paddingHorizontal: 38,
+    fontFamily: "Inter",
     fontSize: 8.5,
     lineHeight: 1.4,
     color: c.black,
   },
   name: {
     fontSize: 14,
-    fontFamily: "Helvetica-Bold",
+    fontWeight: 700,
     letterSpacing: 0.3,
   },
   role: {
@@ -60,7 +68,7 @@ const s = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 8.5,
-    fontFamily: "Helvetica-Bold",
+    fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: 2,
     color: c.dark,
@@ -73,13 +81,12 @@ const s = StyleSheet.create({
     alignItems: "flex-start",
   },
   jobCompany: {
-    fontFamily: "Helvetica-Bold",
+    fontWeight: 700,
     fontSize: 9,
   },
   jobPeriod: {
     fontSize: 7.5,
     color: c.light,
-    fontFamily: "Helvetica",
   },
   jobRole: {
     fontSize: 8,
@@ -100,7 +107,7 @@ const s = StyleSheet.create({
     marginBottom: 1,
   },
   eduTitle: {
-    fontFamily: "Helvetica-Bold",
+    fontWeight: 700,
     fontSize: 9,
   },
   eduRight: {
@@ -112,26 +119,61 @@ const s = StyleSheet.create({
     color: c.mid,
     marginBottom: 4,
   },
-  skillsText: {
+  skillRow: {
+    flexDirection: "row",
+    marginBottom: 3,
     fontSize: 8,
+  },
+  skillLabel: {
+    fontWeight: 600,
     color: c.dark,
-    lineHeight: 1.6,
+    width: 80,
+  },
+  skillValue: {
+    color: c.dark,
+    flex: 1,
+  },
+  projectRow: {
+    flexDirection: "row",
+    marginBottom: 2,
+    fontSize: 8,
+  },
+  projectName: {
+    fontWeight: 600,
+    color: c.dark,
+  },
+  projectDesc: {
+    color: c.mid,
+  },
+  langRow: {
+    flexDirection: "row",
+    fontSize: 8,
+    marginBottom: 2,
+  },
+  langName: {
+    color: c.dark,
+    width: 80,
+  },
+  langLevel: {
+    color: c.light,
   },
 });
+
+const categoryKeys = ["frontend", "backend", "data", "infra", "testing"] as const;
 
 function CvDocument({ locale }: { locale: string }) {
   const msg = messages[locale] || messages["pt-BR"];
   const sidebar = msg.sidebar;
   const exp = msg.experience;
+  const sk = msg.skills;
 
   return (
-    <Document>
+    <Document title={`${contact.name} — CV`} author={contact.name}>
       <Page size="A4" style={s.page}>
+        {/* Header */}
         <View>
           <Text style={s.name}>{contact.name}</Text>
-          <Text style={s.role}>
-            {sidebar.subtitle}
-          </Text>
+          <Text style={s.role}>{sidebar.subtitle}</Text>
           <View style={s.contactRow}>
             <Text>{contact.location}</Text>
             <Text style={s.sep}>|</Text>
@@ -153,9 +195,13 @@ function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
+        {/* Experience */}
         <Text style={s.sectionTitle}>{exp.title}</Text>
         {jobs.map((job, i) => {
-          const data = exp[job.key as keyof typeof exp] as Record<string, string>;
+          const data = exp[job.key as keyof typeof exp] as Record<
+            string,
+            string
+          >;
           return (
             <View key={i} style={s.jobBlock} wrap={false}>
               <View style={s.jobRow}>
@@ -178,6 +224,7 @@ function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
+        {/* Education */}
         <Text style={s.sectionTitle}>{sidebar.education}</Text>
         <View>
           <View style={s.eduRow}>
@@ -189,13 +236,57 @@ function CvDocument({ locale }: { locale: string }) {
             <Text style={s.eduTitle}>{sidebar.degree}</Text>
             <Text style={s.eduRight}>{sidebar.degreeInfo}</Text>
           </View>
-          <Text style={s.eduSub}>{sidebar.degreeCore}</Text>
+          <Text style={s.eduSub}>
+            {sidebar.degreeCr} — {sidebar.degreeCore}
+          </Text>
         </View>
 
         <View style={s.divider} />
 
-        <Text style={s.sectionTitle}>{msg.skills.title}</Text>
-        <Text style={s.skillsText}>{skills.join("  ·  ")}</Text>
+        {/* Skills — categorized */}
+        <Text style={s.sectionTitle}>{sk.title}</Text>
+        {categoryKeys.map((key) => (
+          <View key={key} style={s.skillRow}>
+            <Text style={s.skillLabel}>
+              {sk[key]}
+            </Text>
+            <Text style={s.skillValue}>
+              {skillsByCategory[key].join("  ·  ")}
+            </Text>
+          </View>
+        ))}
+
+        <View style={s.divider} />
+
+        {/* Projects */}
+        <Text style={s.sectionTitle}>{sk.projects}</Text>
+        {projects.map((p) => (
+          <View key={p.name} style={s.projectRow}>
+            <Link
+              src={p.site || p.repo || ""}
+              style={{ ...s.link, flexDirection: "row" }}
+            >
+              <Text style={s.projectName}>{p.name}</Text>
+              <Text style={s.projectDesc}>
+                {"  —  "}
+                {sk[p.descKey as keyof typeof sk]}
+              </Text>
+            </Link>
+          </View>
+        ))}
+
+        <View style={s.divider} />
+
+        {/* Languages */}
+        <Text style={s.sectionTitle}>{sk.languages}</Text>
+        <View style={s.langRow}>
+          <Text style={s.langName}>{sk.portuguese}</Text>
+          <Text style={s.langLevel}>{sk.native}</Text>
+        </View>
+        <View style={s.langRow}>
+          <Text style={s.langName}>{sk.english}</Text>
+          <Text style={s.langLevel}>B2 · EF SET</Text>
+        </View>
       </Page>
     </Document>
   );

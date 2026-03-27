@@ -62,7 +62,12 @@
     "languages": "Idiomas",
     "portuguese": "Português",
     "english": "Inglês",
-    "native": "Nativo"
+    "native": "Nativo",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "data": "Bancos de Dados",
+    "infra": "Infra & DevOps",
+    "testing": "Testes"
   },
   "openSource": {
     "title": "Open Source"

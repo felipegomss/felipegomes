@@ -36,3 +36,11 @@ export const skills = [
   // OS
   "Linux",
 ];
+
+export const skillsByCategory = {
+  frontend: ["React", "TypeScript", "Next.js", "Angular", "Tailwind CSS", "Radix UI", "shadcn/ui", "Storybook"],
+  backend: ["Node.js", "NestJS", ".NET", "Go (Golang)", "Python", "REST", "GraphQL", "RabbitMQ", "Apache Kafka"],
+  data: ["PostgreSQL", "Supabase", "MySQL", "MongoDB", "Oracle PL/SQL", "Prisma"],
+  infra: ["AWS", "Azure DevOps", "Docker", "GitHub Actions", "CI/CD", "Sentry", "Linux"],
+  testing: ["Vitest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber"],
+};
