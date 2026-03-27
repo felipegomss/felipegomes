@@ -52,7 +52,7 @@ export async function SkillsPanel() {
               href="https://cert.efset.org/VLZ6f9"
               target="_blank"
               rel="noopener noreferrer"
-              className="styled-link"
+              className="external-link"
             >
               {sk("english")}
               <span className="sr-only"> — B2 EF SET (opens in new tab)</span>
@@ -93,7 +93,7 @@ export async function SkillsPanel() {
               rel="noopener noreferrer"
               className="group block"
             >
-              <p className={"styled-link text-sm group-hover:decoration-foreground group-hover:text-foreground"}>
+              <p className={"external-link text-sm group-hover:decoration-foreground group-hover:text-foreground"}>
                 <span className="font-bold">shadcn/ui</span>
                 <span className="ml-1.5 text-xs text-muted-foreground/50">
                   #6427

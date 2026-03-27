@@ -61,7 +61,7 @@ export async function Sidebar({ locale }: { locale: string }) {
               href="/diploma.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className={"styled-link text-sm"}
+              className={"external-link text-sm"}
             >
               {sidebar("degree")}
               <span className="sr-only"> (opens in new tab)</span>
@@ -88,7 +88,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 href={`mailto:${contact.email}`}
-                className={"styled-link text-muted-foreground"}
+                className={"external-link text-muted-foreground"}
               >
                 {contact.email}
               </a>
@@ -96,7 +96,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 href={`tel:+55${contact.phone.replace(/\D/g, "")}`}
-                className={"styled-link text-muted-foreground"}
+                className={"external-link text-muted-foreground"}
               >
                 {contact.phone}
               </a>
