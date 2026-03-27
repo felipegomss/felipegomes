@@ -1,9 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
-import { IconGlobe, IconAward, IconMailbox, IconStar, IconFolder, IconQuote, IconAbstract, IconArchive } from "nucleo-isometric";
+import { IconAward, IconMailbox, IconStar, IconFolder, IconQuote, IconAbstract, IconArchive } from "nucleo-isometric";
 import { HalftoneImage } from "./components/halftone-image";
 import { LocaleSwitcher } from "./components/locale-switcher";
 import { contact, skills } from "@/lib/cv-data";
+import { ProjectItem } from "./components/project-item";
 
 const jobs = [
   { key: "automind", company: "Automind", count: 5 },
@@ -199,81 +200,11 @@ export default async function Home({
             <IconFolder size={14} />
           </h2>
           <ul className="space-y-4">
-            <li>
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">agent-skills</p>
-                  <div className="flex gap-3">
-                    <a href="https://github.com/felipegomss/agent-skills" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                      <IconGithub size={14} />
-                    </a>
-                    <a href="https://skills.sh/felipegomss/agent-skills" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                      <IconGlobe size={14} />
-                    </a>
-                  </div>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {sk("agentSkillsDesc")}
-                </p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">WIG</p>
-                  <a href="https://wig.app.br" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                    <IconGlobe size={14} />
-                  </a>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {sk("wigDesc")}
-                </p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">JacoSeg</p>
-                  <a href="https://jacoseg.com.br" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                    <IconGlobe size={14} />
-                  </a>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {sk("jacosegDesc")}
-                </p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">Bianca Psi.</p>
-                  <a href="https://www.bianca.psc.br" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                    <IconGlobe size={14} />
-                  </a>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {sk("biancaDesc")}
-                </p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-bold">lfng.dev</p>
-                  <div className="flex gap-3">
-                    <a href="https://github.com/felipegomss/felipegomes" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                      <IconGithub size={14} />
-                    </a>
-                    <a href="https://lfng.dev" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                      <IconGlobe size={14} />
-                    </a>
-                  </div>
-                </div>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {sk("portfolioDesc")}
-                </p>
-              </div>
-            </li>
+            <ProjectItem name="agent-skills" description={sk("agentSkillsDesc")} repo="https://github.com/felipegomss/agent-skills" site="https://skills.sh/felipegomss/agent-skills" />
+            <ProjectItem name="lfng.dev" description={sk("portfolioDesc")} repo="https://github.com/felipegomss/felipegomes" site="https://lfng.dev" />
+            <ProjectItem name="WIG" description={sk("wigDesc")} site="https://wig.app.br" />
+            <ProjectItem name="JacoSeg" description={sk("jacosegDesc")} site="https://jacoseg.com.br" />
+            <ProjectItem name="Bianca Psi." description={sk("biancaDesc")} site="https://www.bianca.psc.br" />
           </ul>
         </div>
 
