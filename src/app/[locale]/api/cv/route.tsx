@@ -1,4 +1,4 @@
-import { renderToBuffer, Font } from "@react-pdf/renderer";
+import { renderToBuffer } from "@react-pdf/renderer";
 import {
   Document,
   Page,
@@ -8,18 +8,9 @@ import {
   Link,
 } from "@react-pdf/renderer";
 import { contact, skillsByCategory, CV_CACHE_MAX_AGE } from "@/lib/constants";
-import { jobs, projects } from "../../data/portfolio";
+import { jobs } from "../../data/portfolio";
 import ptBR from "@/messages/pt-BR.json";
 import en from "@/messages/en.json";
-
-Font.register({
-  family: "Inter",
-  fonts: [
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hiJ-Ek-_EeA.woff2", fontWeight: 600 },
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff2", fontWeight: 700 },
-  ],
-});
 
 const messages: Record<string, typeof ptBR> = { "pt-BR": ptBR, en };
 
@@ -35,14 +26,14 @@ const s = StyleSheet.create({
   page: {
     padding: 34,
     paddingHorizontal: 38,
-    fontFamily: "Inter",
+    fontFamily: "Helvetica",
     fontSize: 8.5,
     lineHeight: 1.4,
     color: c.black,
   },
   name: {
     fontSize: 14,
-    fontWeight: 700,
+    fontFamily: "Helvetica-Bold",
     letterSpacing: 0.3,
   },
   role: {
@@ -63,25 +54,25 @@ const s = StyleSheet.create({
   divider: {
     borderBottomWidth: 0.5,
     borderBottomColor: c.line,
-    marginTop: 8,
-    marginBottom: 7,
+    marginTop: 6,
+    marginBottom: 5,
   },
   sectionTitle: {
     fontSize: 8.5,
-    fontWeight: 700,
+    fontFamily: "Helvetica-Bold",
     textTransform: "uppercase",
     letterSpacing: 2,
     color: c.dark,
-    marginBottom: 6,
+    marginBottom: 4,
   },
-  jobBlock: { marginBottom: 10 },
+  jobBlock: { marginBottom: 8 },
   jobRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
   jobCompany: {
-    fontWeight: 700,
+    fontFamily: "Helvetica-Bold",
     fontSize: 9,
   },
   jobPeriod: {
@@ -107,7 +98,7 @@ const s = StyleSheet.create({
     marginBottom: 1,
   },
   eduTitle: {
-    fontWeight: 700,
+    fontFamily: "Helvetica-Bold",
     fontSize: 9,
   },
   eduRight: {
@@ -125,37 +116,13 @@ const s = StyleSheet.create({
     fontSize: 8,
   },
   skillLabel: {
-    fontWeight: 600,
+    fontFamily: "Helvetica-Bold",
     color: c.dark,
     width: 80,
   },
   skillValue: {
     color: c.dark,
     flex: 1,
-  },
-  projectRow: {
-    flexDirection: "row",
-    marginBottom: 2,
-    fontSize: 8,
-  },
-  projectName: {
-    fontWeight: 600,
-    color: c.dark,
-  },
-  projectDesc: {
-    color: c.mid,
-  },
-  langRow: {
-    flexDirection: "row",
-    fontSize: 8,
-    marginBottom: 2,
-  },
-  langName: {
-    color: c.dark,
-    width: 80,
-  },
-  langLevel: {
-    color: c.light,
   },
 });
 
@@ -231,7 +198,7 @@ function CvDocument({ locale }: { locale: string }) {
             <Text style={s.eduTitle}>{sidebar.mba}</Text>
             <Text style={s.eduRight}>{sidebar.mbaInfo}</Text>
           </View>
-          <Text style={s.eduSub}> </Text>
+          <Text style={{ ...s.eduSub, marginBottom: 2 }}> </Text>
           <View style={s.eduRow}>
             <Text style={s.eduTitle}>{sidebar.degree}</Text>
             <Text style={s.eduRight}>{sidebar.degreeInfo}</Text>
@@ -256,37 +223,13 @@ function CvDocument({ locale }: { locale: string }) {
           </View>
         ))}
 
-        <View style={s.divider} />
-
-        {/* Projects */}
-        <Text style={s.sectionTitle}>{sk.projects}</Text>
-        {projects.map((p) => (
-          <View key={p.name} style={s.projectRow}>
-            <Link
-              src={p.site || p.repo || ""}
-              style={{ ...s.link, flexDirection: "row" }}
-            >
-              <Text style={s.projectName}>{p.name}</Text>
-              <Text style={s.projectDesc}>
-                {"  —  "}
-                {sk[p.descKey as keyof typeof sk]}
-              </Text>
-            </Link>
-          </View>
-        ))}
-
-        <View style={s.divider} />
-
-        {/* Languages */}
-        <Text style={s.sectionTitle}>{sk.languages}</Text>
-        <View style={s.langRow}>
-          <Text style={s.langName}>{sk.portuguese}</Text>
-          <Text style={s.langLevel}>{sk.native}</Text>
+        <View style={s.skillRow}>
+          <Text style={s.skillLabel}>{sk.languages}</Text>
+          <Text style={s.skillValue}>
+            {sk.portuguese} ({sk.native})  ·  {sk.english} (B2 · EF SET)
+          </Text>
         </View>
-        <View style={s.langRow}>
-          <Text style={s.langName}>{sk.english}</Text>
-          <Text style={s.langLevel}>B2 · EF SET</Text>
-        </View>
+
       </Page>
     </Document>
   );
