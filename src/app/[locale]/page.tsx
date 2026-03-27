@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
-import { IconGlobe, IconAward, IconMailbox, IconStar, IconFolder, IconQuote, IconAbstract, IconBag } from "nucleo-isometric";
+import { IconGlobe, IconAward, IconMailbox, IconStar, IconFolder, IconQuote, IconAbstract, IconArchive } from "nucleo-isometric";
 import { HalftoneImage } from "./components/halftone-image";
 import { LocaleSwitcher } from "./components/locale-switcher";
 import { contact, skills } from "@/lib/cv-data";
@@ -126,7 +126,7 @@ export default async function Home({
         <div className="border-b border-border p-6">
           <h2 className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {exp("title")}
-            <IconBag size={14} />
+            <IconArchive size={14} />
           </h2>
         </div>
 
