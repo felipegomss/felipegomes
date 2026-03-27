@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
-import { IconGlobe, IconAward } from "nucleo-isometric";
+import { IconGlobe, IconAward, IconMailbox, IconStar, IconFolder, IconQuote, IconAbstract, IconBag } from "nucleo-isometric";
 import { HalftoneImage } from "./components/halftone-image";
 import { LocaleSwitcher } from "./components/locale-switcher";
 import { contact, skills } from "@/lib/cv-data";
@@ -77,8 +77,9 @@ export default async function Home({
 
         <div className="mt-8 space-y-4 md:mt-0">
           <section>
-            <h2 className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+            <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               {sidebar("contact")}
+              <IconMailbox size={14} />
             </h2>
             <ul className="space-y-1 text-sm">
               <li>
@@ -123,8 +124,9 @@ export default async function Home({
 
       <main className="border-b border-border md:border-b-0 md:border-r">
         <div className="border-b border-border p-6">
-          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {exp("title")}
+            <IconBag size={14} />
           </h2>
         </div>
 
@@ -157,8 +159,9 @@ export default async function Home({
         </div>
 
         <div className="border-b border-border p-6">
-          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("title")}
+            <IconStar size={14} />
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {skills.map((skill) => (
@@ -170,8 +173,9 @@ export default async function Home({
         </div>
 
         <div className="border-b border-border p-6">
-          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("languages")}
+            <IconQuote size={14} />
           </h2>
           <ul className="space-y-1.5 text-sm">
             <li className="flex items-baseline justify-between">
@@ -188,8 +192,9 @@ export default async function Home({
         </div>
 
         <div className="border-b border-border p-6">
-          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             {sk("projects")}
+            <IconFolder size={14} />
           </h2>
           <ul className="space-y-4">
             <li>
@@ -266,8 +271,9 @@ export default async function Home({
         </div>
 
         <div className="border-b border-border p-6">
-          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
             Open Source
+            <IconAbstract size={14} />
           </h2>
           <ul className="space-y-3">
             <li>
