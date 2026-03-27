@@ -15,7 +15,7 @@ export default async function Home({
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto max-w-7xl border-x border-border md:grid md:grid-cols-[260px_1fr_1fr] md:min-h-screen">
+    <div className="mx-auto max-w-screen-2xl border-x border-border md:grid md:grid-cols-[0.5fr_1.5fr_1fr] md:min-h-screen">
       <Sidebar locale={locale} />
 
       <div className="border-b border-border md:hidden">
