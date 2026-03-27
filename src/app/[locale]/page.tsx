@@ -83,12 +83,12 @@ export default async function Home({
             </h2>
             <ul className="space-y-1 text-sm">
               <li>
-                <a href={`mailto:${contact.email}`} className="text-muted-foreground hover:text-foreground">
+                <a href={`mailto:${contact.email}`} className="text-muted-foreground underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                   {contact.email}
                 </a>
               </li>
               <li>
-                <a href={`tel:+55${contact.phone.replace(/\D/g, "")}`} className="text-muted-foreground hover:text-foreground">
+                <a href={`tel:+55${contact.phone.replace(/\D/g, "")}`} className="text-muted-foreground underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
                   {contact.phone}
                 </a>
               </li>
