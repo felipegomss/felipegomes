@@ -12,7 +12,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
     <>
       <div
         aria-hidden="true"
-        className={`fixed inset-0 z-9999 flex items-center justify-center bg-[#0a0a0a] transition-opacity duration-700 ${
+        className={`fixed inset-0 z-9999 flex items-center justify-center bg-neutral-950 transition-opacity duration-700 ${
           phase === "fading" ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
         suppressHydrationWarning
@@ -38,7 +38,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
         </div>
 
         <div
-          className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10"
+          className="absolute bottom-8 text-xs tracking-widest text-white/10"
           lang="pt-BR"
         >
           {contact.name.toUpperCase()}

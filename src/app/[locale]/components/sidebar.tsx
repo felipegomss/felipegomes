@@ -41,7 +41,7 @@ export async function Sidebar({ locale }: { locale: string }) {
           <p className="mt-1 text-xs text-muted-foreground">
             {sidebar("stack")}
           </p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground/50">
+          <p className="mt-0.5 text-2xs text-muted-foreground/50">
             {sidebar("subtitle")}
           </p>
         </div>
@@ -113,7 +113,7 @@ export async function Sidebar({ locale }: { locale: string }) {
         </section>
 
         <nav aria-label="Social">
-          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 text-2xs font-bold uppercase tracking-widest text-muted-foreground/60">
             Social
           </h2>
           <div className="flex gap-3">
