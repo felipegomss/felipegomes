@@ -25,15 +25,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LFNG — Full Stack Developer",
     description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
-    images: [{ url: "/og.png", width: 1200, height: 630 }],
+    images: [{ url: "https://lfng.dev/og.png", width: 1200, height: 630 }],
     type: "website",
     url: "https://lfng.dev",
+    siteName: "LFNG",
   },
   twitter: {
     card: "summary_large_image",
     title: "LFNG — Full Stack Developer",
     description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
-    images: ["/og.png"],
+    images: ["https://lfng.dev/og.png"],
   },
 };
 
