@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { IconArchive } from "nucleo-isometric";
 import type { Job } from "../data/portfolio";
+import { SectionHeading } from "./section-heading";
 
 export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
   const exp = await getTranslations("experience");
@@ -11,10 +12,9 @@ export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
       className="border-b border-border md:border-b-0 md:border-r"
     >
       <div className="border-b border-border p-6">
-        <h2 className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        <SectionHeading className="mb-0" icon={<IconArchive size={14} aria-hidden="true" />}>
           {exp("title")}
-          <IconArchive size={14} aria-hidden="true" />
-        </h2>
+        </SectionHeading>
       </div>
 
       {jobs.map((job) => (

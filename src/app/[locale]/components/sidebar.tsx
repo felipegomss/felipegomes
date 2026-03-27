@@ -3,6 +3,8 @@ import { IconGithub, IconLinkedin } from "nucleo-social-media";
 import { IconAward, IconMailbox } from "nucleo-isometric";
 import { contact, CAREER_START, MS_PER_YEAR } from "@/lib/constants";
 import { LocaleSwitcher } from "./locale-switcher";
+import { SectionHeading } from "./section-heading";
+import { linkStyles } from "./styles";
 
 export async function Sidebar({ locale }: { locale: string }) {
   const sidebar = await getTranslations("sidebar");
@@ -46,10 +48,9 @@ export async function Sidebar({ locale }: { locale: string }) {
         </div>
 
         <section aria-label={sidebar("education")}>
-          <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <SectionHeading className="mb-2" icon={<IconAward size={14} aria-hidden="true" />}>
             {sidebar("education")}
-            <IconAward size={14} aria-hidden="true" />
-          </h2>
+          </SectionHeading>
           <div>
             <p className="text-sm">{sidebar("mba")}</p>
             <p className="text-xs text-muted-foreground/60">
@@ -61,7 +62,7 @@ export async function Sidebar({ locale }: { locale: string }) {
               href="/diploma.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground"
+              className={`text-sm ${linkStyles}`}
             >
               {sidebar("degree")}
               <span className="sr-only"> (opens in new tab)</span>
@@ -81,15 +82,14 @@ export async function Sidebar({ locale }: { locale: string }) {
 
       <div className="mt-8 space-y-4 md:mt-0">
         <section aria-label={sidebar("contact")}>
-          <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+          <SectionHeading className="mb-2" icon={<IconMailbox size={14} aria-hidden="true" />}>
             {sidebar("contact")}
-            <IconMailbox size={14} aria-hidden="true" />
-          </h2>
+          </SectionHeading>
           <ul className="space-y-1 text-sm">
             <li>
               <a
                 href={`mailto:${contact.email}`}
-                className="text-muted-foreground underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground"
+                className={`text-muted-foreground ${linkStyles}`}
               >
                 {contact.email}
               </a>
@@ -97,7 +97,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 href={`tel:+55${contact.phone.replace(/\D/g, "")}`}
-                className="text-muted-foreground underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground"
+                className={`text-muted-foreground ${linkStyles}`}
               >
                 {contact.phone}
               </a>

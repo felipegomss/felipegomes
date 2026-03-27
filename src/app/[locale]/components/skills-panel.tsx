@@ -4,6 +4,8 @@ import { contact, skills } from "@/lib/constants";
 import { projects } from "../data/portfolio";
 import { HalftoneImage } from "./halftone-image";
 import { ProjectItem } from "./project-item";
+import { SectionHeading } from "./section-heading";
+import { linkStyles } from "./styles";
 
 export async function SkillsPanel() {
   const sk = await getTranslations("skills");
@@ -20,10 +22,9 @@ export async function SkillsPanel() {
       </div>
 
       <div className="border-b border-border p-6">
-        <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        <SectionHeading icon={<IconStar size={14} aria-hidden="true" />}>
           {sk("title")}
-          <IconStar size={14} aria-hidden="true" />
-        </h2>
+        </SectionHeading>
         <div className="flex flex-wrap gap-1.5">
           {skills.map((skill) => (
             <span
@@ -37,10 +38,9 @@ export async function SkillsPanel() {
       </div>
 
       <div className="border-b border-border p-6">
-        <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        <SectionHeading icon={<IconQuote size={14} aria-hidden="true" />}>
           {sk("languages")}
-          <IconQuote size={14} aria-hidden="true" />
-        </h2>
+        </SectionHeading>
         <ul className="space-y-1.5 text-sm">
           <li className="flex items-baseline justify-between">
             <span>{sk("portuguese")}</span>
@@ -53,7 +53,7 @@ export async function SkillsPanel() {
               href="https://cert.efset.org/VLZ6f9"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground"
+              className={linkStyles}
             >
               {sk("english")}
               <span className="sr-only"> — B2 EF SET (opens in new tab)</span>
@@ -66,10 +66,9 @@ export async function SkillsPanel() {
       </div>
 
       <div className="border-b border-border p-6">
-        <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        <SectionHeading icon={<IconFolder size={14} aria-hidden="true" />}>
           {sk("projects")}
-          <IconFolder size={14} aria-hidden="true" />
-        </h2>
+        </SectionHeading>
         <ul className="space-y-4">
           {projects.map((p) => (
             <ProjectItem
@@ -84,10 +83,9 @@ export async function SkillsPanel() {
       </div>
 
       <div className="border-b border-border p-6">
-        <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+        <SectionHeading icon={<IconAbstract size={14} aria-hidden="true" />}>
           Open Source
-          <IconAbstract size={14} aria-hidden="true" />
-        </h2>
+        </SectionHeading>
         <ul className="space-y-3">
           <li>
             <a
@@ -96,7 +94,7 @@ export async function SkillsPanel() {
               rel="noopener noreferrer"
               className="group block"
             >
-              <p className="text-sm underline decoration-muted-foreground/30 underline-offset-2 group-hover:decoration-foreground group-hover:text-foreground">
+              <p className={`text-sm ${linkStyles} group-hover:decoration-foreground group-hover:text-foreground`}>
                 <span className="font-bold">shadcn/ui</span>
                 <span className="ml-1.5 text-xs text-muted-foreground/50">
                   #6427
