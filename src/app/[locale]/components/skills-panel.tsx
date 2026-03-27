@@ -11,7 +11,7 @@ export async function SkillsPanel() {
 
   return (
     <aside aria-label="Skills and projects" className="flex flex-col">
-      <div className="hidden border-b border-border md:block">
+      <div className="hidden max-h-96 overflow-hidden border-b border-border md:block">
         <HalftoneImage
           src="/felipe.jpeg"
           alt={contact.name}
