@@ -1,15 +1,46 @@
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { IconStar, IconQuote, IconFolder } from "nucleo-isometric";
+import { IconStar, IconQuote, IconFolder, IconCube } from "nucleo-isometric";
 import { contact, skills } from "@/lib/constants";
-import { projects } from "../data/portfolio";
+import { projects, type Project } from "../data/portfolio";
 import { HalftoneImage } from "./halftone-image";
 import { OpenSourceSection } from "./open-source-section";
 import { ProjectItem } from "./project-item";
 import { SectionHeading } from "./section-heading";
 
+async function getGitHubDirCount(apiPath: string): Promise<number | null> {
+  try {
+    const res = await fetch(
+      `https://api.github.com/${apiPath}`,
+      { next: { revalidate: 86400 }, signal: AbortSignal.timeout(5000) },
+    );
+    if (!res.ok) return null;
+    const data: unknown[] = await res.json();
+    return data.length;
+  } catch {
+    return null;
+  }
+}
+
+function ProjectBadge({ count, label }: { count: number; label: string }) {
+  return (
+    <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground-subtle">
+      <IconCube size={10} aria-hidden="true" />
+      <span className="tracking-tighter">{count} {label}</span>
+    </span>
+  );
+}
+
 export async function SkillsPanel() {
-  const sk = await getTranslations("skills");
+  const projectsWithCount = projects.filter((p) => p.countApi);
+  const [sk, ...counts] = await Promise.all([
+    getTranslations("skills"),
+    ...projectsWithCount.map((p) => getGitHubDirCount(p.countApi!)),
+  ]);
+
+  const countMap = new Map<Project, number | null>(
+    projectsWithCount.map((p, i) => [p, counts[i]]),
+  );
 
   return (
     <aside aria-label="Skills and projects" className="flex flex-col">
@@ -71,15 +102,23 @@ export async function SkillsPanel() {
           {sk("projects")}
         </SectionHeading>
         <ul className="space-y-4">
-          {projects.map((p) => (
-            <ProjectItem
-              key={p.name}
-              name={p.name}
-              description={sk(p.descKey)}
-              repo={p.repo}
-              site={p.site}
-            />
-          ))}
+          {projects.map((p) => {
+            const count = countMap.get(p);
+            return (
+              <ProjectItem
+                key={p.name}
+                name={p.name}
+                description={sk(p.descKey)}
+                repo={p.repo}
+                site={p.site}
+                badge={
+                  count != null && p.countLabel
+                    ? <ProjectBadge count={count} label={p.countLabel} />
+                    : undefined
+                }
+              />
+            );
+          })}
         </ul>
       </div>
 

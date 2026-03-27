@@ -6,13 +6,17 @@ interface ProjectItemProps {
   description: string;
   repo?: string;
   site?: string;
+  badge?: React.ReactNode;
 }
 
-export function ProjectItem({ name, description, repo, site }: ProjectItemProps) {
+export function ProjectItem({ name, description, repo, site, badge }: ProjectItemProps) {
   return (
     <li>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold">{name}</p>
+        <p className="flex items-center gap-1.5 text-sm font-bold">
+          {name}
+          {badge}
+        </p>
         <div className="flex gap-3">
           {repo && (
             <a href={repo} target="_blank" rel="noopener noreferrer" aria-label={`${name} repository`} className="text-muted-foreground/40 hover:text-foreground">

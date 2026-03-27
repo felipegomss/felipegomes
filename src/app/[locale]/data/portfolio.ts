@@ -3,6 +3,9 @@ export interface Project {
   descKey: string;
   repo?: string;
   site?: string;
+  /** GitHub API path to count items in a directory (e.g. "repos/user/repo/contents/skills") */
+  countApi?: string;
+  countLabel?: string;
 }
 
 export interface Job {
@@ -12,7 +15,7 @@ export interface Job {
 }
 
 export const projects: Project[] = [
-  { name: "agent-skills", descKey: "agentSkillsDesc", repo: "https://github.com/felipegomss/agent-skills", site: "https://skills.sh/felipegomss/agent-skills" },
+  { name: "agent-skills", descKey: "agentSkillsDesc", repo: "https://github.com/felipegomss/agent-skills", site: "https://skills.sh/felipegomss/agent-skills", countApi: "repos/felipegomss/agent-skills/contents/skills", countLabel: "skills" },
   { name: "lfng.dev", descKey: "portfolioDesc", repo: "https://github.com/felipegomss/felipegomes", site: "https://lfng.dev" },
   { name: "WIG", descKey: "wigDesc", site: "https://wig.app.br" },
   { name: "JacoSeg", descKey: "jacosegDesc", site: "https://jacoseg.com.br" },
