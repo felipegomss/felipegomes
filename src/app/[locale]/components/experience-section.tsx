@@ -24,7 +24,7 @@ export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
             <p className="text-sm text-muted-foreground">
               {exp(`${job.key}.role`)}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground-subtle">
               {exp(`${job.key}.period`)}
               {exp.has(`${job.key}.location`) &&
                 ` · ${exp(`${job.key}.location`)}`}
