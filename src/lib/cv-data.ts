@@ -1,7 +1,7 @@
 export const contact = {
   name: "Luis Felipe Nascimento Gomes",
   location: "Salvador/BA — Brasil",
-  email: "luisfng123@gmail.com",
+  email: "ola@lfng.dev",
   phone: "+55 (71) 9 9265-5188",
   linkedin: "linkedin.com/in/felipegomss",
   github: "github.com/felipegomss",
