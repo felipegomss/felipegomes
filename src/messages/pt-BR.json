@@ -30,7 +30,7 @@
       "period": "04.2023 — 06.2024",
       "location": "Remoto",
       "h1": "Arquitetei uma solução End-to-End de gestão de infrações — core em REST (NestJS) com integrações ao Pipefy via GraphQL.",
-      "h2": "Integrei Go (Golang) com filas RabbitMQ para processar dados em massa via Web Crawlers e microsserviços.",
+      "h2": "Integrei Golang com filas RabbitMQ para processar dados em massa via Web Crawlers e microsserviços.",
       "h3": "Montei a stack de observabilidade: logs centralizados (Papertrail), alertas de Healthcheck e monitoramento de Downtime.",
       "h4": "Gerenciei deploys em AWS e automatizei pipelines de CI/CD com GitHub Actions.",
       "h5": "Liderei aprovação de PRs e defini a estratégia de testes unitários do time."
@@ -56,7 +56,7 @@
     "projects": "Projetos",
     "agentSkillsDesc": "Skills modulares para agentes generativos — cada skill é autocontida com docs, regras e referências.",
     "wigDesc": "Feed personalizado com scoring por geolocalização e afinidade, cache em Redis e cron jobs para push notifications. Stripe para assinaturas, Supabase Auth com RLS, rate limiting via proxy e PWA standalone.",
-    "jacosegDesc": "Landing page com foco em conversão e web design responsivo. Dashboard B2B com Prisma + PostgreSQL multi-branch, NextAuth com RBAC, server actions com validação Zod e tabelas com drag-and-drop.",
+    "jacosegDesc": "Landing page com foco em conversão e web design responsivo. Dashboard interno com Prisma + PostgreSQL multi-filial, NextAuth com RBAC, server actions com validação Zod e tabelas com drag-and-drop.",
     "biancaDesc": "Landing page autoral com tipografia serif, animações em Framer Motion e layout pensado para transmitir acolhimento. Firebase Auth, formulário com reCAPTCHA e envio de e-mail via Nodemailer.",
     "portfolioDesc": "SSG com revalidação incremental, Server Components com Suspense e fetches resilientes (Promise.allSettled + timeout). CV gerado server-side em PDF, open source auto-alimentado pela GitHub API.",
     "languages": "Idiomas",
