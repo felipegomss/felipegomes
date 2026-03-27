@@ -42,7 +42,7 @@ function markVisited() {
 export function useDecryptAnimation() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [display, setDisplay] = useState(() => INITIAL.split(""));
-  const lockedRef = useRef([false, false, false, false]);
+  const lockedRef = useRef(Array.from({ length: TARGET.length }, () => false));
   const stageRef = useRef<Stage>("hold");
   const stageStartRef = useRef(0);
   const rafRef = useRef(0);
@@ -57,7 +57,7 @@ export function useDecryptAnimation() {
     }
 
     const t = TIMING[isRevisit() ? "fast" : "slow"];
-    const unlocked = [false, false, false, false];
+    const unlocked = Array.from({ length: TARGET.length }, () => false);
     stageStartRef.current = Date.now();
 
     const tick = () => {

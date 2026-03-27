@@ -1,6 +1,7 @@
 "use client";
 
 import { useDecryptAnimation } from "@/hooks/use-decrypt-animation";
+import { contact } from "@/lib/constants";
 
 export function IntroScreen({ children }: { children: React.ReactNode }) {
   const { phase, display, isLocked, isHolding } = useDecryptAnimation();
@@ -40,7 +41,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
           className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10"
           lang="pt-BR"
         >
-          LUIS FELIPE NASCIMENTO GOMES
+          {contact.name.toUpperCase()}
         </div>
       </div>
       <div
