@@ -58,7 +58,7 @@
     "wigDesc": "App Next.js com Supabase, Stripe, Sentry, Vitest e Playwright. PWA com service workers.",
     "jacosegDesc": "Site institucional para distribuidora de EPIs. Next.js, Tailwind e Google Maps.",
     "biancaDesc": "Site para psicóloga clínica. Next.js, agendamento e integração com WhatsApp.",
-    "portfolioDesc": "Este site. Next.js 16, Tailwind 4, i18n server-side, CV em PDF, halftone shader e open source dinâmico via GitHub API.",
+    "portfolioDesc": "SSG com revalidação incremental, Server Components com Suspense e fetches resilientes (Promise.allSettled + timeout). CV gerado server-side em PDF, open source auto-alimentado pela GitHub API.",
     "languages": "Idiomas",
     "portuguese": "Português",
     "english": "Inglês",
