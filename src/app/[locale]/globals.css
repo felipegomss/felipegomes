@@ -131,6 +131,10 @@
     }
 }
 
+.styled-link {
+  @apply underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground;
+}
+
 .experience-list li::before {
   content: "—\00a0";
   /* CSS-generated content on list items is presentational

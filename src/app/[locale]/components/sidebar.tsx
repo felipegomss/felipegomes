@@ -4,7 +4,6 @@ import { IconAward, IconMailbox } from "nucleo-isometric";
 import { contact, CAREER_START, MS_PER_YEAR } from "@/lib/constants";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SectionHeading } from "./section-heading";
-import { linkStyles } from "./styles";
 
 export async function Sidebar({ locale }: { locale: string }) {
   const sidebar = await getTranslations("sidebar");
@@ -62,7 +61,7 @@ export async function Sidebar({ locale }: { locale: string }) {
               href="/diploma.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className={`text-sm ${linkStyles}`}
+              className={"styled-link text-sm"}
             >
               {sidebar("degree")}
               <span className="sr-only"> (opens in new tab)</span>
@@ -89,7 +88,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 href={`mailto:${contact.email}`}
-                className={`text-muted-foreground ${linkStyles}`}
+                className={"styled-link text-muted-foreground"}
               >
                 {contact.email}
               </a>
@@ -97,7 +96,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 href={`tel:+55${contact.phone.replace(/\D/g, "")}`}
-                className={`text-muted-foreground ${linkStyles}`}
+                className={"styled-link text-muted-foreground"}
               >
                 {contact.phone}
               </a>
