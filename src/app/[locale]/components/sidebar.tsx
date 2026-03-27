@@ -24,7 +24,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">Luis Felipe</p>
             <p className="text-sm text-muted-foreground">Nascimento Gomes</p>
-            <p className="mt-1 text-xs text-muted-foreground/60">
+            <p className="mt-1 text-xs text-muted-foreground">
               Salvador/BA
             </p>
           </div>
@@ -41,7 +41,7 @@ export async function Sidebar({ locale }: { locale: string }) {
           <p className="mt-1 text-xs text-muted-foreground">
             {sidebar("stack")}
           </p>
-          <p className="mt-0.5 text-2xs text-muted-foreground/50">
+          <p className="mt-0.5 text-2xs text-muted-foreground/80">
             {sidebar("subtitle")}
           </p>
         </div>
@@ -52,7 +52,7 @@ export async function Sidebar({ locale }: { locale: string }) {
           </SectionHeading>
           <div>
             <p className="text-sm">{sidebar("mba")}</p>
-            <p className="text-xs text-muted-foreground/60">
+            <p className="text-xs text-muted-foreground">
               {sidebar("mbaInfo")}
             </p>
           </div>
@@ -66,10 +66,10 @@ export async function Sidebar({ locale }: { locale: string }) {
               {sidebar("degree")}
               <span className="sr-only"> (opens in new tab)</span>
             </a>
-            <p className="text-xs text-muted-foreground/60">
+            <p className="text-xs text-muted-foreground">
               {sidebar("degreeInfo")}
             </p>
-            <p className="text-xs text-muted-foreground/60">
+            <p className="text-xs text-muted-foreground">
               {sidebar("degreeCr")}
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
@@ -113,7 +113,7 @@ export async function Sidebar({ locale }: { locale: string }) {
         </section>
 
         <nav aria-label="Social">
-          <h2 className="mb-3 text-2xs font-bold uppercase tracking-widest text-muted-foreground/60">
+          <h2 className="mb-3 text-2xs font-bold uppercase tracking-widest text-muted-foreground">
             Social
           </h2>
           <div className="flex gap-3">

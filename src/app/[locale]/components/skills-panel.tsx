@@ -43,7 +43,7 @@ export async function SkillsPanel() {
         <ul className="space-y-1.5 text-sm">
           <li className="flex items-baseline justify-between">
             <span>{sk("portuguese")}</span>
-            <span className="text-xs text-muted-foreground/50">
+            <span className="text-xs text-muted-foreground/80">
               {sk("native")}
             </span>
           </li>
@@ -57,7 +57,7 @@ export async function SkillsPanel() {
               {sk("english")}
               <span className="sr-only"> — B2 EF SET (opens in new tab)</span>
             </a>
-            <span aria-hidden="true" className="text-xs text-muted-foreground/50">
+            <span aria-hidden="true" className="text-xs text-muted-foreground/80">
               B2 · EF SET
             </span>
           </li>
@@ -95,7 +95,7 @@ export async function SkillsPanel() {
             >
               <p className={"external-link text-sm group-hover:decoration-foreground group-hover:text-foreground"}>
                 <span className="font-bold">shadcn/ui</span>
-                <span className="ml-1.5 text-xs text-muted-foreground/50">
+                <span className="ml-1.5 text-xs text-muted-foreground/80">
                   #6427
                 </span>
               </p>
