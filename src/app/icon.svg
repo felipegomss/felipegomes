@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#1b1b1b"/>
+  <text x="32" y="84" font-family="monospace" font-weight="900" font-size="56" fill="#fbfbfb">L</text>
+  <text x="96" y="84" font-family="monospace" font-weight="900" font-size="56" fill="#fbfbfb" transform="scale(-1,1)" transform-origin="96 64">F</text>
+</svg>
