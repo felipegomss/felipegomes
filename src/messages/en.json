@@ -54,7 +54,7 @@
   "skills": {
     "title": "Technical Skills",
     "projects": "Projects",
-    "agentSkillsDesc": "Skills for coding agents — contributing to the AI-assisted dev ecosystem.",
+    "agentSkillsDesc": "Skills for generative agents — contributing to the AI-assisted dev ecosystem.",
     "wigDesc": "Next.js app with Supabase, Stripe, Sentry, Vitest and Playwright. PWA with service workers.",
     "shadcnIssueDesc": "Identified and reported the need for Tailwind v4 upgrade. Issue resolved by the community.",
     "jacosegDesc": "Institutional site for a PPE distributor. Next.js, Tailwind and Google Maps.",
