@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
 import { IconAward, IconMailbox } from "nucleo-isometric";
 import { contact, CAREER_START, MS_PER_YEAR } from "@/lib/constants";
+import { DownloadCvButton } from "./download-cv-button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SectionHeading } from "./section-heading";
 
@@ -102,14 +103,10 @@ export async function Sidebar({ locale }: { locale: string }) {
               </a>
             </li>
           </ul>
-          <a
-            href={`/${locale}/api/cv`}
-            download
-            className="mt-3 inline-block text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <span aria-hidden="true">↓ </span>
-            {sidebar("download")}
-          </a>
+          <DownloadCvButton
+            href={`/cv/LuisFNGomes_Curriculum_Vitae_${locale}.pdf`}
+            label={sidebar("download")}
+          />
         </section>
 
         <nav aria-label="Social">

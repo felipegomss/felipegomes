@@ -1,4 +1,3 @@
-import { renderToBuffer } from "@react-pdf/renderer";
 import {
   Document,
   Page,
@@ -7,7 +6,7 @@ import {
   StyleSheet,
   Link,
 } from "@react-pdf/renderer";
-import { contact, skillsByCategory, CV_CACHE_MAX_AGE } from "@/lib/constants";
+import { contact, skillsByCategory } from "@/lib/constants";
 import { jobs } from "../../data/portfolio";
 import ptBR from "@/messages/pt-BR.json";
 import en from "@/messages/en.json";
@@ -126,9 +125,15 @@ const s = StyleSheet.create({
   },
 });
 
-const categoryKeys = ["frontend", "backend", "data", "infra", "testing"] as const;
+const categoryKeys = [
+  "frontend",
+  "backend",
+  "data",
+  "infra",
+  "testing",
+] as const;
 
-function CvDocument({ locale }: { locale: string }) {
+export function CvDocument({ locale }: { locale: string }) {
   const msg = messages[locale] || messages["pt-BR"];
   const sidebar = msg.sidebar;
   const exp = msg.experience;
@@ -214,9 +219,7 @@ function CvDocument({ locale }: { locale: string }) {
         <Text style={s.sectionTitle}>{sk.title}</Text>
         {categoryKeys.map((key) => (
           <View key={key} style={s.skillRow}>
-            <Text style={s.skillLabel}>
-              {sk[key]}
-            </Text>
+            <Text style={s.skillLabel}>{sk[key]}</Text>
             <Text style={s.skillValue}>
               {skillsByCategory[key].join("  ·  ")}
             </Text>
@@ -226,27 +229,10 @@ function CvDocument({ locale }: { locale: string }) {
         <View style={s.skillRow}>
           <Text style={s.skillLabel}>{sk.languages}</Text>
           <Text style={s.skillValue}>
-            {sk.portuguese} ({sk.native})  ·  {sk.english} (B2 · EF SET)
+            {sk.portuguese} ({sk.native}) · {sk.english} (B2 · EF SET)
           </Text>
         </View>
-
       </Page>
     </Document>
   );
-}
-
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ locale: string }> },
-) {
-  const { locale } = await params;
-  const buffer = await renderToBuffer(<CvDocument locale={locale} />);
-
-  return new Response(new Uint8Array(buffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="Luis_Felipe_Gomes_CV_${locale}.pdf"`,
-      "Cache-Control": `public, max-age=${CV_CACHE_MAX_AGE}`,
-    },
-  });
 }

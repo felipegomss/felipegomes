@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "tsx scripts/generate-static-cv.tsx",
     "start": "next start",
     "lint": "next lint"
   },
@@ -35,6 +36,7 @@
     "eslint": "^9.23.0",
     "eslint-config-next": "^16.2.1",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

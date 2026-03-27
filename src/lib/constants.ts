@@ -1,6 +1,5 @@
 export const CAREER_START = new Date("2020-09-01");
 export const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000; // accounts for leap years
-export const CV_CACHE_MAX_AGE = 86400;
 
 export const contact = {
   name: "Luis Felipe Nascimento Gomes",

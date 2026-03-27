@@ -58,7 +58,7 @@
     "wigDesc": "Personalized feed with geo + affinity scoring, Redis caching and cron-driven push notifications. Stripe subscriptions, Supabase Auth with RLS, rate limiting via proxy and standalone PWA.",
     "jacosegDesc": "Conversion-focused landing page with responsive web design. Internal dashboard with Prisma + PostgreSQL multi-branch, NextAuth with RBAC, server actions with Zod validation and drag-and-drop tables.",
     "biancaDesc": "Custom landing page with serif typography, Framer Motion animations and a layout designed to convey warmth. Firebase Auth, reCAPTCHA-protected form and email delivery via Nodemailer.",
-    "portfolioDesc": "SSG with incremental revalidation, Server Components with Suspense and resilient fetching (Promise.allSettled + timeout). Server-side PDF CV, open source section auto-fed from GitHub API.",
+    "portfolioDesc": "SSG with incremental revalidation, Server Components with Suspense and resilient fetching (Promise.allSettled + timeout). Build-time PDF CV, open source section auto-fed from GitHub API.",
     "languages": "Languages",
     "portuguese": "Portuguese",
     "english": "English",
