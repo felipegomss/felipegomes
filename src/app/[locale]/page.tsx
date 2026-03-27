@@ -70,6 +70,7 @@ export default async function Home({
                 {sidebar("degree")}
               </a>
               <p className="text-xs text-muted-foreground/60">{sidebar("degreeInfo")}</p>
+              <p className="text-xs text-muted-foreground/60">{sidebar("degreeCr")}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{sidebar("degreeCore")}</p>
             </div>
           </section>
