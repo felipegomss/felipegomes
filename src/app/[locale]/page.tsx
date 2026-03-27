@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { contact } from "@/lib/cv-data";
+import { contact } from "@/lib/constants";
 import { jobs } from "./data/portfolio";
 import { Sidebar } from "./components/sidebar";
 import { ExperienceSection } from "./components/experience-section";

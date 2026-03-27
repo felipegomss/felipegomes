@@ -7,9 +7,8 @@ import {
   StyleSheet,
   Link,
 } from "@react-pdf/renderer";
-import { contact, skills } from "@/lib/cv-data";
+import { contact, skills, CV_CACHE_MAX_AGE } from "@/lib/constants";
 import { jobs } from "../../data/portfolio";
-import { CV_CACHE_MAX_AGE } from "@/lib/constants";
 import ptBR from "@/messages/pt-BR.json";
 import en from "@/messages/en.json";
 

@@ -1,8 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
 import { IconAward, IconMailbox } from "nucleo-isometric";
-import { contact } from "@/lib/cv-data";
-import { CAREER_START, MS_PER_YEAR } from "@/lib/constants";
+import { contact, CAREER_START, MS_PER_YEAR } from "@/lib/constants";
 import { LocaleSwitcher } from "./locale-switcher";
 
 export async function Sidebar({ locale }: { locale: string }) {

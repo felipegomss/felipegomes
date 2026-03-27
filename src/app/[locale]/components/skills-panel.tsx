@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { IconStar, IconQuote, IconFolder, IconAbstract } from "nucleo-isometric";
-import { contact, skills } from "@/lib/cv-data";
+import { contact, skills } from "@/lib/constants";
 import { projects } from "../data/portfolio";
 import { HalftoneImage } from "./halftone-image";
 import { ProjectItem } from "./project-item";
