@@ -8,7 +8,9 @@ import {
   Link,
 } from "@react-pdf/renderer";
 import { contact, skills, cvStrings } from "@/lib/cv-data";
+import { CV_CACHE_MAX_AGE } from "@/lib/constants";
 
+/** Semantic color palette for the PDF CV. */
 const c = {
   black: "#111",
   dark: "#333",
@@ -213,7 +215,7 @@ export async function GET(
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="Luis_Felipe_Gomes_CV_${locale}.pdf"`,
-      "Cache-Control": "public, max-age=86400",
+      "Cache-Control": `public, max-age=${CV_CACHE_MAX_AGE}`,
     },
   });
 }

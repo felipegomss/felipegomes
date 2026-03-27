@@ -8,24 +8,24 @@ export const contact = {
 };
 
 export const skills = [
-  // frontend core (ambas vagas pedem)
+  // frontend core
   "React", "TypeScript", "Next.js", "Angular",
   // state, forms, data
   "Zustand", "React Hook Form", "Zod", "TanStack Query",
-  // UI, design systems (vaga 1: design systems, componentizacao)
+  // UI, design systems
   "Radix UI", "Tailwind CSS", "shadcn/ui", "Design Systems", "Storybook",
-  // testing (ambas pedem Jest/Vitest/Cypress/Playwright)
+  // testing
   "Vitest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber",
   // animation
   "Framer Motion", "GSAP",
-  // PWA (vaga 2: Workbox, service workers)
+  // PWA
   "PWA", "Service Workers",
   // backend & APIs
   "Node.js", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Ruby",
   "REST", "GraphQL", "SignalR", "RabbitMQ", "Apache Kafka",
   // databases
   "PostgreSQL", "Supabase", "Prisma", "MySQL", "MongoDB", "Oracle PL/SQL",
-  // infra, CI/CD, observability (vaga 1: Azure, CI/CD)
+  // infra, CI/CD, observability
   "Azure DevOps", "AWS", "Docker", "GitHub Actions", "CI/CD", "Sentry",
   // integrations
   "Stripe", "Resend",

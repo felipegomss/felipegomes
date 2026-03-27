@@ -8,12 +8,12 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
 
-const geistMonoHeading = Geist_Mono({
+const headingFont = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-heading",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const bodyFont = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
@@ -62,7 +62,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${jetbrainsMono.variable} ${geistMonoHeading.variable}`}
+      className={`${bodyFont.variable} ${headingFont.variable}`}
     >
       <body>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[99999] focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:text-foreground focus:shadow-lg">

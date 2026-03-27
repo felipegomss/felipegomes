@@ -133,7 +133,8 @@
 
 .experience-list li::before {
   content: "—\00a0";
-  aria-hidden: true;
+  /* CSS-generated content on list items is presentational
+     and ignored by screen readers — no aria-hidden needed. */
 }
 
 @media (prefers-reduced-motion: reduce) {

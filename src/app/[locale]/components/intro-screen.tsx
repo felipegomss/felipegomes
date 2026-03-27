@@ -1,13 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
+import { useRef, useState } from "react";
 
 const INITIAL = "CODE";
 const TARGET = "LFNG";
 const CHARS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>{}[]=/\\|~^";
 const SESSION_KEY = "lfng-intro-done";
+
+/** Animation timing in ms. "fast" runs on revisits within the same session. */
+const TIMING = {
+  slow: { hold: 500, unlockStagger: 250, scramble: 1200, lockStagger: 300, fadeDelay: 600, fadeOut: 800 },
+  fast: { hold: 200, unlockStagger: 100, scramble: 400, lockStagger: 120, fadeDelay: 200, fadeOut: 400 },
+} as const;
 
 function randomChar() {
   return CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -17,6 +23,7 @@ function isRevisit() {
   try {
     return sessionStorage.getItem(SESSION_KEY) === "1";
   } catch {
+    // sessionStorage may throw in private/incognito mode; silently degrade.
     return false;
   }
 }
@@ -24,7 +31,9 @@ function isRevisit() {
 function markVisited() {
   try {
     sessionStorage.setItem(SESSION_KEY, "1");
-  } catch {}
+  } catch {
+    // sessionStorage may throw in private/incognito mode; silently degrade.
+  }
 }
 
 export function IntroScreen({ children }: { children: React.ReactNode }) {
@@ -37,7 +46,9 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useMountEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (prefersReducedMotion) {
       markVisited();
       setDisplay(TARGET.split(""));
@@ -45,14 +56,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const fast = isRevisit();
-
-    const HOLD = fast ? 200 : 500;
-    const UNLOCK_STAGGER = fast ? 100 : 250;
-    const SCRAMBLE = fast ? 400 : 1200;
-    const LOCK_STAGGER = fast ? 120 : 300;
-    const FADE_DELAY = fast ? 200 : 600;
-    const FADE_OUT = fast ? 400 : 800;
+    const t = TIMING[isRevisit() ? "fast" : "slow"];
 
     const unlockedRef = [false, false, false, false];
     stageStartRef.current = Date.now();
@@ -63,7 +67,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
 
       // phase 1: hold "CODE" then unlock letter by letter
       if (stageRef.current === "hold") {
-        if (elapsed >= HOLD) {
+        if (elapsed >= t.hold) {
           stageRef.current = "unlock";
           stageStartRef.current = now;
         } else {
@@ -76,7 +80,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
       if (stageRef.current === "unlock") {
         const unlockElapsed = now - stageStartRef.current;
         for (let i = 0; i < INITIAL.length; i++) {
-          if (!unlockedRef[i] && unlockElapsed >= i * UNLOCK_STAGGER) {
+          if (!unlockedRef[i] && unlockElapsed >= i * t.unlockStagger) {
             unlockedRef[i] = true;
           }
         }
@@ -88,13 +92,14 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
 
       // phase 3: pure scramble
       if (stageRef.current === "scramble") {
-        if (now - stageStartRef.current >= SCRAMBLE) {
+        if (now - stageStartRef.current >= t.scramble) {
           stageRef.current = "lock";
           stageStartRef.current = now;
         }
       }
 
-      const lockElapsed = stageRef.current === "lock" ? now - stageStartRef.current : -1;
+      const lockElapsed =
+        stageRef.current === "lock" ? now - stageStartRef.current : -1;
 
       const next: string[] = [];
       let allLocked = true;
@@ -105,7 +110,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
           continue;
         }
 
-        if (lockElapsed >= 0 && lockElapsed >= i * LOCK_STAGGER) {
+        if (lockElapsed >= 0 && lockElapsed >= i * t.lockStagger) {
           lockedRef.current[i] = true;
           next.push(TARGET[i]);
           continue;
@@ -127,8 +132,8 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
       if (allLocked) {
         markVisited();
         timersRef.current.push(
-          setTimeout(() => setPhase("fading"), FADE_DELAY),
-          setTimeout(() => setPhase("done"), FADE_DELAY + FADE_OUT),
+          setTimeout(() => setPhase("fading"), t.fadeDelay),
+          setTimeout(() => setPhase("done"), t.fadeDelay + t.fadeOut),
         );
         return;
       }
@@ -150,12 +155,12 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
     <>
       <div
         aria-hidden="true"
-        className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a] transition-opacity duration-700 ${
+        className={`fixed inset-0 z-9999 flex items-center justify-center bg-[#0a0a0a] transition-opacity duration-700 ${
           phase === "fading" ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
         suppressHydrationWarning
       >
-        <div className="flex gap-[2px]" suppressHydrationWarning>
+        <div className="flex gap-0.5" suppressHydrationWarning>
           {display.map((char, i) => (
             <span
               key={i}
@@ -177,7 +182,10 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
           ))}
         </div>
 
-        <div className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10" lang="pt-BR">
+        <div
+          className="absolute bottom-8 text-xs tracking-[0.3em] text-white/10"
+          lang="pt-BR"
+        >
           LUIS FELIPE NASCIMENTO GOMES
         </div>
       </div>

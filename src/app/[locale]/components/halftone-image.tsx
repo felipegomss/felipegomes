@@ -10,6 +10,11 @@ interface HalftoneImageProps {
   height: number;
 }
 
+/**
+ * 8x8 ordered-dither (Bayer) threshold matrix.
+ * Each value 0–63 maps to a threshold in a recursive halftone pattern.
+ * See: https://en.wikipedia.org/wiki/Ordered_dithering
+ */
 const BAYER_8x8 = [
   [0, 48, 12, 60, 3, 51, 15, 63],
   [32, 16, 44, 28, 35, 19, 47, 31],
@@ -20,6 +25,16 @@ const BAYER_8x8 = [
   [10, 58, 6, 54, 9, 57, 5, 53],
   [42, 26, 38, 22, 41, 25, 37, 21],
 ];
+
+const BAYER_SIZE = 8;
+const BAYER_LEVELS = BAYER_SIZE * BAYER_SIZE;
+
+/** ITU-R BT.601 luma coefficients for perceptual grayscale. */
+const LUMA_R = 0.299;
+const LUMA_G = 0.587;
+const LUMA_B = 0.114;
+
+const GRAYSCALE_FILTER = "grayscale(100%) contrast(1.2) brightness(1.05)";
 
 const BG = { r: 242, g: 241, b: 232 };
 const FG = { r: 30, g: 30, b: 28 };
@@ -54,9 +69,10 @@ export function HalftoneImage({
     const off = document.createElement("canvas");
     off.width = w;
     off.height = h;
-    const octx = off.getContext("2d", { willReadFrequently: true })!;
+    const octx = off.getContext("2d", { willReadFrequently: true });
+    if (!octx) return;
 
-    octx.filter = "grayscale(100%) contrast(1.2) brightness(1.05)";
+    octx.filter = GRAYSCALE_FILTER;
     octx.drawImage(img, 0, 0, w, h);
     octx.filter = "none";
 
@@ -66,8 +82,8 @@ export function HalftoneImage({
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const i = (y * w + x) * 4;
-        const luma = px[i] * 0.299 + px[i + 1] * 0.587 + px[i + 2] * 0.114;
-        const threshold = (BAYER_8x8[y % 8][x % 8] / 64) * 255;
+        const luma = px[i] * LUMA_R + px[i + 1] * LUMA_G + px[i + 2] * LUMA_B;
+        const threshold = (BAYER_8x8[y % BAYER_SIZE][x % BAYER_SIZE] / BAYER_LEVELS) * 255;
         const c = luma < threshold ? FG : BG;
         px[i] = c.r;
         px[i + 1] = c.g;
@@ -80,7 +96,9 @@ export function HalftoneImage({
 
     canvas.width = w;
     canvas.height = h;
-    canvas.getContext("2d")!.drawImage(off, 0, 0);
+    const mainCtx = canvas.getContext("2d");
+    if (!mainCtx) return;
+    mainCtx.drawImage(off, 0, 0);
 
     setReady(true);
   }, [width, height]);
