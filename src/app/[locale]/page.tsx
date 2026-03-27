@@ -283,7 +283,7 @@ export default async function Home({
                 rel="noopener noreferrer"
                 className="group block"
               >
-                <p className="text-sm group-hover:text-foreground">
+                <p className="text-sm underline decoration-muted-foreground/30 underline-offset-2 group-hover:decoration-foreground group-hover:text-foreground">
                   <span className="font-bold">shadcn/ui</span>
                   <span className="ml-1.5 text-xs text-muted-foreground/50">#6427</span>
                 </p>
