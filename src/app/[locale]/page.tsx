@@ -36,7 +36,8 @@ export default async function Home({
               <h1 className="font-heading text-5xl font-black uppercase tracking-tight">
                 LFNG
               </h1>
-              <p className="mt-1 text-sm text-muted-foreground">Luis Felipe N. Gomes</p>
+              <p className="mt-1 text-sm text-muted-foreground">Luis Felipe</p>
+              <p className="text-sm text-muted-foreground">Nascimento Gomes</p>
               <p className="mt-1 text-xs text-muted-foreground/60">
                 Salvador/BA
               </p>
