@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
-import { IconGlobe } from "nucleo-isometric";
+import { IconGlobe, IconAward } from "nucleo-isometric";
 import { HalftoneImage } from "./components/halftone-image";
 import { LocaleSwitcher } from "./components/locale-switcher";
 import { contact, skills } from "@/lib/cv-data";
@@ -61,11 +61,17 @@ export default async function Home({
               {sidebar("education")}
             </h2>
             <div>
-              <p className="text-sm">{sidebar("mba")}</p>
+              <p className="flex items-center gap-1.5 text-sm">
+                <IconAward size={14} className="shrink-0 text-muted-foreground/40" />
+                {sidebar("mba")}
+              </p>
               <p className="text-xs text-muted-foreground/60">{sidebar("mbaInfo")}</p>
             </div>
             <div className="mt-3">
-              <p className="text-sm">{sidebar("degree")}</p>
+              <a href="/diploma.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm underline decoration-muted-foreground/30 underline-offset-2 hover:decoration-foreground hover:text-foreground">
+                <IconAward size={14} className="shrink-0 text-muted-foreground/40" />
+                {sidebar("degree")}
+              </a>
               <p className="text-xs text-muted-foreground/60">{sidebar("degreeInfo")}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{sidebar("degreeCore")}</p>
             </div>
