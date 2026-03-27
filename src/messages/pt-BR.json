@@ -56,7 +56,6 @@
     "projects": "Projetos",
     "agentSkillsDesc": "Skills para agentes generativos — contribuição ao ecossistema de AI-assisted dev.",
     "wigDesc": "App Next.js com Supabase, Stripe, Sentry, Vitest e Playwright. PWA com service workers.",
-    "shadcnIssueDesc": "Identifiquei e reportei a necessidade de upgrade pro Tailwind v4. Issue resolvida pela comunidade.",
     "jacosegDesc": "Site institucional para distribuidora de EPIs. Next.js, Tailwind e Google Maps.",
     "biancaDesc": "Site para psicóloga clínica. Next.js, agendamento e integração com WhatsApp.",
     "portfolioDesc": "Este site. Next.js 16, Tailwind 4, i18n server-side, PDF dinâmico e halftone shader.",
@@ -64,5 +63,8 @@
     "portuguese": "Português",
     "english": "Inglês",
     "native": "Nativo"
+  },
+  "openSource": {
+    "title": "Open Source"
   }
 }

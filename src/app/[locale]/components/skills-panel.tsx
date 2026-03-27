@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { IconStar, IconQuote, IconFolder, IconAbstract } from "nucleo-isometric";
+import { IconStar, IconQuote, IconFolder } from "nucleo-isometric";
 import { contact, skills } from "@/lib/constants";
 import { projects } from "../data/portfolio";
 import { HalftoneImage } from "./halftone-image";
+import { OpenSourceSection } from "./open-source-section";
 import { ProjectItem } from "./project-item";
 import { SectionHeading } from "./section-heading";
 
@@ -81,32 +83,9 @@ export async function SkillsPanel() {
         </ul>
       </div>
 
-      <div className="border-b border-border p-6">
-        <SectionHeading icon={<IconAbstract size={14} aria-hidden="true" />}>
-          Open Source
-        </SectionHeading>
-        <ul className="space-y-3">
-          <li>
-            <a
-              href="https://github.com/shadcn-ui/ui/issues/6427"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block"
-            >
-              <p className={"external-link text-sm group-hover:decoration-foreground group-hover:text-foreground"}>
-                <span className="font-bold">shadcn/ui</span>
-                <span className="ml-1.5 text-xs text-muted-foreground-subtle">
-                  #6427
-                </span>
-              </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {sk("shadcnIssueDesc")}
-              </p>
-              <span className="sr-only">(opens in new tab)</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <Suspense fallback={null}>
+        <OpenSourceSection />
+      </Suspense>
 
       <div className="hidden flex-1 md:flex" />
     </aside>
