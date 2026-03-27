@@ -6,6 +6,19 @@ import { LocaleSwitcher } from "./components/locale-switcher";
 import { contact, skills } from "@/lib/cv-data";
 import { ProjectItem } from "./components/project-item";
 
+const projects = [
+  { name: "agent-skills", descKey: "agentSkillsDesc", repo: "https://github.com/felipegomss/agent-skills", site: "https://skills.sh/felipegomss/agent-skills" },
+  { name: "lfng.dev", descKey: "portfolioDesc", repo: "https://github.com/felipegomss/felipegomes", site: "https://lfng.dev" },
+  { name: "WIG", descKey: "wigDesc", site: "https://wig.app.br" },
+  { name: "JacoSeg", descKey: "jacosegDesc", site: "https://jacoseg.com.br" },
+  { name: "Bianca Psi.", descKey: "biancaDesc", site: "https://www.bianca.psc.br" },
+].sort((a, b) => {
+  const aIcons = (a.repo ? 1 : 0) + (a.site ? 1 : 0);
+  const bIcons = (b.repo ? 1 : 0) + (b.site ? 1 : 0);
+  if (bIcons !== aIcons) return bIcons - aIcons;
+  return a.name.localeCompare(b.name);
+});
+
 const jobs = [
   { key: "automind", company: "Automind", count: 5 },
   { key: "branddi", company: "Branddi", count: 5 },
@@ -200,11 +213,9 @@ export default async function Home({
             <IconFolder size={14} />
           </h2>
           <ul className="space-y-4">
-            <ProjectItem name="agent-skills" description={sk("agentSkillsDesc")} repo="https://github.com/felipegomss/agent-skills" site="https://skills.sh/felipegomss/agent-skills" />
-            <ProjectItem name="lfng.dev" description={sk("portfolioDesc")} repo="https://github.com/felipegomss/felipegomes" site="https://lfng.dev" />
-            <ProjectItem name="WIG" description={sk("wigDesc")} site="https://wig.app.br" />
-            <ProjectItem name="JacoSeg" description={sk("jacosegDesc")} site="https://jacoseg.com.br" />
-            <ProjectItem name="Bianca Psi." description={sk("biancaDesc")} site="https://www.bianca.psc.br" />
+            {projects.map((p) => (
+              <ProjectItem key={p.name} name={p.name} description={sk(p.descKey)} repo={p.repo} site={p.site} />
+            ))}
           </ul>
         </div>
 
