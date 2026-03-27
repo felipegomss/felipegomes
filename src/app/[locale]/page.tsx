@@ -203,9 +203,14 @@ export default async function Home({
               <div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-bold">agent-skills</p>
-                  <a href="https://skills.sh/felipegomss/agent-skills" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
-                    <IconGithub size={14} />
-                  </a>
+                  <div className="flex gap-3">
+                    <a href="https://github.com/felipegomss/agent-skills" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
+                      <IconGithub size={14} />
+                    </a>
+                    <a href="https://skills.sh/felipegomss/agent-skills" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-foreground">
+                      <IconGlobe size={14} />
+                    </a>
+                  </div>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {sk("agentSkillsDesc")}
