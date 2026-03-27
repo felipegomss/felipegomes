@@ -11,8 +11,8 @@ const SESSION_KEY = "lfng-intro-done";
 
 /** Animation timing in ms. "fast" runs on revisits within the same session. */
 const TIMING = {
-  slow: { hold: 500, unlockStagger: 250, scramble: 1200, lockStagger: 300, fadeDelay: 600, fadeOut: 800 },
-  fast: { hold: 200, unlockStagger: 100, scramble: 400, lockStagger: 120, fadeDelay: 200, fadeOut: 400 },
+  slow: { hold: 200, unlockStagger: 100, scramble: 400, lockStagger: 120, fadeDelay: 200, fadeOut: 400 },
+  fast: { hold: 80, unlockStagger: 40, scramble: 160, lockStagger: 50, fadeDelay: 80, fadeOut: 200 },
 } as const;
 
 type Phase = "intro" | "fading" | "done";

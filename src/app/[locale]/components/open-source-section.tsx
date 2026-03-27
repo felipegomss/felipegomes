@@ -131,9 +131,9 @@ function OpenSourceItem({ repo }: OpenSourceItemProps) {
           </span>
         </p>
         {repo.description && (
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {repo.description}
-          </p>
+          <blockquote className="mt-0.5 text-xs italic text-muted-foreground">
+            &ldquo;{repo.description}&rdquo;
+          </blockquote>
         )}
         <span className="sr-only">(opens in new tab)</span>
       </a>
