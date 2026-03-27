@@ -54,7 +54,7 @@
   "skills": {
     "title": "Skills Técnicas",
     "projects": "Projetos",
-    "agentSkillsDesc": "Skills customizadas para Claude Code — contribuição ao ecossistema de AI-assisted dev.",
+    "agentSkillsDesc": "Skills para coding agents — contribuição ao ecossistema de AI-assisted dev.",
     "wigDesc": "App Next.js com Supabase, Stripe, Sentry, Vitest e Playwright. PWA com service workers.",
     "shadcnIssueDesc": "Identifiquei e reportei a necessidade de upgrade pro Tailwind v4. Issue resolvida pela comunidade.",
     "jacosegDesc": "Site institucional para distribuidora de EPIs. Next.js, Tailwind e Google Maps.",
