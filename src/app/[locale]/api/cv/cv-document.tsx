@@ -125,13 +125,7 @@ const s = StyleSheet.create({
   },
 });
 
-const categoryKeys = [
-  "frontend",
-  "backend",
-  "data",
-  "infra",
-  "testing",
-] as const;
+const categoryKeys = Object.keys(skillsByCategory) as (keyof typeof skillsByCategory)[];
 
 export function CvDocument({ locale }: { locale: string }) {
   const msg = messages[locale] || messages["pt-BR"];
@@ -142,7 +136,7 @@ export function CvDocument({ locale }: { locale: string }) {
   return (
     <Document title={`${contact.name} — CV`} author={contact.name}>
       <Page size="A4" style={s.page}>
-        {/* Header */}
+
         <View>
           <Text style={s.name}>{contact.name}</Text>
           <Text style={s.role}>{sidebar.subtitle}</Text>
@@ -167,7 +161,7 @@ export function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
-        {/* Experience */}
+
         <Text style={s.sectionTitle}>{exp.title}</Text>
         {jobs.map((job, i) => {
           const data = exp[job.key as keyof typeof exp] as Record<
@@ -196,7 +190,7 @@ export function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
-        {/* Education */}
+
         <Text style={s.sectionTitle}>{sidebar.education}</Text>
         <View>
           <View style={s.eduRow}>
@@ -215,7 +209,7 @@ export function CvDocument({ locale }: { locale: string }) {
 
         <View style={s.divider} />
 
-        {/* Skills — categorized */}
+
         <Text style={s.sectionTitle}>{sk.title}</Text>
         {categoryKeys.map((key) => (
           <View key={key} style={s.skillRow}>

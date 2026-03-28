@@ -1,9 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { IconAbstract } from "nucleo-isometric";
 import { cache } from "react";
+import { GITHUB_USERNAME } from "@/lib/constants";
+import { githubFetch } from "@/lib/github";
 import { SectionHeading } from "./section-heading";
 
-const GITHUB_USERNAME = "felipegomss";
 const MAX_VISIBLE_IDS = 5;
 const IGNORED_OWNERS = ["ICEI-PUC-Minas-PMV-ADS"];
 
@@ -30,21 +31,6 @@ interface OSSRepo {
 
 interface OpenSourceItemProps {
   repo: OSSRepo;
-}
-
-const FETCH_TIMEOUT = 5000;
-
-async function githubFetch<T>(url: string): Promise<T | null> {
-  try {
-    const res = await fetch(url, {
-      next: { revalidate: 86400 },
-      signal: AbortSignal.timeout(FETCH_TIMEOUT),
-    });
-    if (!res.ok) return null;
-    return res.json() as Promise<T>;
-  } catch {
-    return null;
-  }
 }
 
 const getOSSContributions = cache(async (): Promise<OSSRepo[]> => {

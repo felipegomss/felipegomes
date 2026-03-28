@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { IconStar, IconQuote, IconFolder, IconCube } from "nucleo-isometric";
 import { contact, skills } from "@/lib/constants";
+import { githubFetch } from "@/lib/github";
 import { projects, type Project } from "../data/portfolio";
 import { HalftoneImage } from "./halftone-image";
 import { OpenSourceSection } from "./open-source-section";
@@ -9,17 +10,10 @@ import { ProjectItem } from "./project-item";
 import { SectionHeading } from "./section-heading";
 
 async function getGitHubDirCount(apiPath: string): Promise<number | null> {
-  try {
-    const res = await fetch(
-      `https://api.github.com/${apiPath}`,
-      { next: { revalidate: 86400 }, signal: AbortSignal.timeout(5000) },
-    );
-    if (!res.ok) return null;
-    const data: unknown[] = await res.json();
-    return data.length;
-  } catch {
-    return null;
-  }
+  const data = await githubFetch<unknown[]>(
+    `https://api.github.com/${apiPath}`,
+  );
+  return data?.length ?? null;
 }
 
 function ProjectBadge({ count, label }: { count: number; label: string }) {
