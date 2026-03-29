@@ -76,6 +76,7 @@ export async function SkillsPanel() {
           </li>
           <li className="flex items-baseline justify-between">
             <a
+              data-umami-event="view-efset"
               href="https://cert.efset.org/VLZ6f9"
               target="_blank"
               rel="noopener noreferrer"

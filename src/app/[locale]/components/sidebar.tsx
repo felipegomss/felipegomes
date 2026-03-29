@@ -62,6 +62,7 @@ export async function Sidebar({ locale }: { locale: string }) {
               href="/diploma.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              data-umami-event="view-diploma"
               className={"external-link text-sm"}
             >
               {sidebar("degree")}
@@ -88,6 +89,7 @@ export async function Sidebar({ locale }: { locale: string }) {
           <ul className="space-y-1 text-sm">
             <li>
               <a
+                data-umami-event="contact-email"
                 href={`mailto:${sidebar("email")}`}
                 className={"external-link text-muted-foreground"}
               >
@@ -96,6 +98,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             </li>
             <li>
               <a
+                data-umami-event="contact-phone"
                 href={`tel:+55${contact.phone.replace(/\D/g, "")}`}
                 className={"external-link text-muted-foreground"}
               >
@@ -115,6 +118,7 @@ export async function Sidebar({ locale }: { locale: string }) {
           </h2>
           <div className="flex gap-3">
             <a
+              data-umami-event="social-linkedin"
               href={`https://${contact.linkedin}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -124,6 +128,7 @@ export async function Sidebar({ locale }: { locale: string }) {
               <IconLinkedin size={18} aria-hidden="true" />
             </a>
             <a
+              data-umami-event="social-github"
               href={`https://${contact.github}`}
               target="_blank"
               rel="noopener noreferrer"

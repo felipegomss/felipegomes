@@ -34,6 +34,8 @@ export function DownloadCvButton({ href, label }: DownloadCvButtonProps) {
     if (busyRef.current) return;
     busyRef.current = true;
 
+    window.umami?.track("cv-download", { href });
+
     setLoading(true);
     setFrame(0);
 

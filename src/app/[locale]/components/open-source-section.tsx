@@ -103,6 +103,8 @@ function OpenSourceItem({ repo }: OpenSourceItemProps) {
   return (
     <li>
       <a
+        data-umami-event="oss-repo"
+        data-umami-event-name={repo.name}
         href={repo.url}
         target="_blank"
         rel="noopener noreferrer"

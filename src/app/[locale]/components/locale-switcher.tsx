@@ -17,9 +17,12 @@ export function LocaleSwitcher() {
 
   return (
     <button
-      onClick={() => router.replace(pathname, { locale: next })}
+      onClick={() => {
+        window.umami?.track("locale-switch", { from: locale, to: next });
+        router.replace(pathname, { locale: next });
+      }}
       aria-label={ariaLabel}
-      className="rounded px-1 py-0.5 text-xs font-bold text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="cursor-pointer rounded px-1 py-0.5 text-xs font-bold text-muted-foreground underline decoration-transparent transition-all hover:text-foreground hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     >
       {label}
     </button>

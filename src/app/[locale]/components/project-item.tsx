@@ -19,12 +19,12 @@ export function ProjectItem({ name, description, repo, site, badge }: ProjectIte
         </p>
         <div className="flex gap-3">
           {repo && (
-            <a href={repo} target="_blank" rel="noopener noreferrer" aria-label={`${name} repository`} className="text-muted-foreground/40 hover:text-foreground">
+            <a data-umami-event="project-repo" data-umami-event-name={name} href={repo} target="_blank" rel="noopener noreferrer" aria-label={`${name} repository`} className="text-muted-foreground/40 hover:text-foreground">
               <IconGithub size={14} aria-hidden="true" />
             </a>
           )}
           {site && (
-            <a href={site} target="_blank" rel="noopener noreferrer" aria-label={`${name} website`} className="text-muted-foreground/40 hover:text-foreground">
+            <a data-umami-event="project-site" data-umami-event-name={name} href={site} target="_blank" rel="noopener noreferrer" aria-label={`${name} website`} className="text-muted-foreground/40 hover:text-foreground">
               <IconGlobe size={14} aria-hidden="true" />
             </a>
           )}
