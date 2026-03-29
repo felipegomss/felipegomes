@@ -1,8 +1,9 @@
 import { routing } from "@/i18n/routing";
+import { contact } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
@@ -18,28 +19,68 @@ const bodyFont = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-export const metadata: Metadata = {
-  title: "Luis Felipe N. Gomes — Full Stack Developer",
-  description:
-    "Full Stack · 5+ years · JS/TS, React, Node, Go · Product-minded, ships with CI/CD.",
-  openGraph: {
-    title: "LFNG — Full Stack Developer",
-    description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
-    images: [{ url: "https://lfng.dev/og.png", width: 1200, height: 630 }],
-    type: "website",
-    url: "https://lfng.dev",
-    siteName: "LFNG",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "LFNG — Full Stack Developer",
-    description: "Luis Felipe N. Gomes · Full Stack · React, Node, Go, Angular",
-    images: ["https://lfng.dev/og.png"],
-  },
-};
+const BASE_URL = "https://lfng.dev";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}`,
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, `${BASE_URL}/${l}`]),
+      ),
+    },
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: `${BASE_URL}/og.png`, width: 1200, height: 630 }],
+      type: "website",
+      url: `${BASE_URL}/${locale}`,
+      siteName: "LFNG",
+      locale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [`${BASE_URL}/og.png`],
+    },
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
+}
+
+function PersonJsonLd({ locale }: { locale: string }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: contact.name,
+    url: `${BASE_URL}/${locale}`,
+    jobTitle: "Full Stack Developer",
+    sameAs: [
+      `https://${contact.linkedin}`,
+      `https://${contact.github}`,
+    ],
+    image: `${BASE_URL}/felipe.jpeg`,
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
 }
 
 export default async function RootLayout({
@@ -63,6 +104,14 @@ export default async function RootLayout({
       lang={locale}
       className={`${bodyFont.variable} ${headingFont.variable}`}
     >
+      <head>
+        <PersonJsonLd locale={locale} />
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="96008e50-f747-41e3-8a97-826e10485213"
+        />
+      </head>
       <body>
         <a
           href="#main-content"

@@ -42,8 +42,8 @@ export async function SkillsPanel() {
         <HalftoneImage
           src="/felipe.jpeg"
           alt={contact.name}
-          width={3111}
-          height={3111}
+          width={1200}
+          height={1200}
         />
       </div>
 

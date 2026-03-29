@@ -73,5 +73,11 @@
   },
   "openSource": {
     "title": "Open Source"
+  },
+  "metadata": {
+    "title": "Luis Felipe N. Gomes — Full Stack Developer",
+    "description": "Full Stack Developer · React, Node, TypeScript · Frontend architecture, design systems and product focus.",
+    "ogTitle": "LFNG — Full Stack Developer",
+    "ogDescription": "Luis Felipe N. Gomes · Full Stack · React, Node, TypeScript, Angular"
   }
 }
