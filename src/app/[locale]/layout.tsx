@@ -110,7 +110,11 @@ export default async function RootLayout({
           defer
           src="https://cloud.umami.is/script.js"
           data-website-id="96008e50-f747-41e3-8a97-826e10485213"
-          data-auto-track="true"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.addEventListener("click",function(e){var t=e.target.closest("[data-umami-event]");if(t&&window.umami){var n=t.dataset.umamiEvent,d={};for(var k in t.dataset)k.startsWith("umamiEvent")&&k!=="umamiEvent"&&(d[k.slice(10).toLowerCase()]=t.dataset[k]);umami.track(n,Object.keys(d).length?d:undefined)}})`,
+          }}
         />
       </head>
       <body>
