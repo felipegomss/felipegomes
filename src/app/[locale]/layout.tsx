@@ -110,6 +110,7 @@ export default async function RootLayout({
           defer
           src="https://cloud.umami.is/script.js"
           data-website-id="96008e50-f747-41e3-8a97-826e10485213"
+          data-auto-track="true"
         />
       </head>
       <body>
