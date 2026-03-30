@@ -1,5 +1,6 @@
 import { Eye } from "lucide-react";
 import { UMAMI_WEBSITE_ID } from "@/lib/constants";
+import { AnimatedCount } from "./animated-count";
 
 type UmamiStats = {
   pageviews?: number;
@@ -31,15 +32,10 @@ export async function PageViews({ locale }: { locale: string }) {
 
   if (views == null) return null;
 
-  const formatted = new Intl.NumberFormat(locale, {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(views);
-
   return (
     <span className="flex items-center gap-1 text-xs text-muted-foreground-subtle">
       <Eye size={12} aria-hidden="true" />
-      {formatted}
+      <AnimatedCount value={views} locale={locale} />
     </span>
   );
 }
