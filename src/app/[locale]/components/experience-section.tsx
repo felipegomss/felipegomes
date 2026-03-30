@@ -9,16 +9,16 @@ export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
   return (
     <main
       id="main-content"
-      className="border-b border-border md:border-b-0 md:border-r"
+      className="border-b border-border md:contents"
     >
-      <div className="border-b border-border p-6">
+      <div data-grid-col="left" className="border-b border-border p-6">
         <SectionHeading className="mb-0" icon={<IconArchive size={14} aria-hidden="true" />}>
           {exp("title")}
         </SectionHeading>
       </div>
 
       {jobs.map((job) => (
-        <article key={job.key} className="border-b border-border p-6">
+        <article key={job.key} data-grid-col="left" className="border-b border-border p-6">
           <div className="mb-4">
             <h3 className="font-heading text-lg font-bold">{job.company}</h3>
             <p className="text-sm text-muted-foreground">

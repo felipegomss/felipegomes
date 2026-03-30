@@ -38,6 +38,7 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    --border-subtle: color-mix(in oklch, var(--border) 40%, transparent);
 }
 
 .dark {
@@ -127,6 +128,13 @@
     }
   body {
     @apply bg-background text-foreground;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      var(--border-subtle) 8px,
+      var(--border-subtle) 9px
+    );
     }
   html {
     @apply font-mono;
@@ -168,6 +176,27 @@
   content: "—\00a0";
   /* CSS-generated content on list items is presentational
      and ignored by screen readers — no aria-hidden needed. */
+}
+
+@media (min-width: 768px) {
+  [data-grid-col="left"] {
+    grid-column: 1;
+  }
+  [data-grid-col="right"] {
+    grid-column: 2;
+  }
+
+  .content-grid {
+    position: relative;
+  }
+
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(var(--border-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 @media (prefers-reduced-motion: reduce) {

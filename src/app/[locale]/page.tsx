@@ -6,6 +6,7 @@ import { MobileFab } from "./components/mobile-fab";
 import { Sidebar } from "./components/sidebar";
 import { ExperienceSection } from "./components/experience-section";
 import { SkillsPanel } from "./components/skills-panel";
+import { ContentGrid } from "./components/content-grid";
 import { HalftoneImage } from "./components/halftone-image";
 
 export default async function Home({
@@ -17,7 +18,7 @@ export default async function Home({
   setRequestLocale(locale);
 
   return (
-    <div className="mx-auto max-w-7xl border-x border-border md:grid md:grid-cols-[260px_1fr_1fr] md:grid-rows-[auto_1fr] md:min-h-screen">
+    <div className="mx-auto max-w-7xl border-x border-border bg-background md:grid md:grid-cols-[260px_1fr_1fr] md:grid-rows-[auto_1fr] md:min-h-screen">
       <Sidebar locale={locale} />
 
       <div className="border-b border-border md:hidden">
@@ -30,8 +31,10 @@ export default async function Home({
       </div>
 
       <Header locale={locale} />
-      <ExperienceSection jobs={jobs} />
-      <SkillsPanel />
+      <ContentGrid>
+        <ExperienceSection jobs={jobs} />
+        <SkillsPanel />
+      </ContentGrid>
       <MobileFab />
     </div>
   );

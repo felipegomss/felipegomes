@@ -37,8 +37,8 @@ export async function SkillsPanel() {
   );
 
   return (
-    <aside aria-label="Skills and projects" className="flex flex-col">
-      <div className="hidden border-b border-border md:block">
+    <aside aria-label="Skills and projects" className="flex flex-col md:contents">
+      <div data-grid-col="right" className="hidden border-b border-border md:block bg-grid-pattern">
         <HalftoneImage
           src="/felipe.jpeg"
           alt={contact.name}
@@ -47,7 +47,7 @@ export async function SkillsPanel() {
         />
       </div>
 
-      <div className="border-b border-border p-6">
+      <div data-grid-col="right" className="border-b border-border p-6">
         <SectionHeading icon={<IconStar size={14} aria-hidden="true" />}>
           {sk("title")}
         </SectionHeading>
@@ -63,7 +63,7 @@ export async function SkillsPanel() {
         </div>
       </div>
 
-      <div className="border-b border-border p-6">
+      <div data-grid-col="right" className="border-b border-border p-6">
         <SectionHeading icon={<IconQuote size={14} aria-hidden="true" />}>
           {sk("languages")}
         </SectionHeading>
@@ -92,7 +92,7 @@ export async function SkillsPanel() {
         </ul>
       </div>
 
-      <div className="border-b border-border p-6">
+      <div data-grid-col="right" className="border-b border-border p-6">
         <SectionHeading icon={<IconFolder size={14} aria-hidden="true" />}>
           {sk("projects")}
         </SectionHeading>
@@ -121,7 +121,7 @@ export async function SkillsPanel() {
         <OpenSourceSection />
       </Suspense>
 
-      <div className="hidden flex-1 md:flex" />
+      <div data-grid-col="right" className="hidden flex-1 md:block" />
     </aside>
   );
 }

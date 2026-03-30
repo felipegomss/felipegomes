@@ -138,6 +138,7 @@ export async function OpenSourceSection() {
   return (
     <section
       aria-label="Open Source Contributions"
+      data-grid-col="right"
       className="border-b border-border p-6"
     >
       <SectionHeading icon={<IconAbstract size={14} aria-hidden="true" />}>
