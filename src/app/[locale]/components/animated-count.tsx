@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useMemo, useState, useRef } from "react";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 
 const DURATION = 1200;
@@ -15,11 +15,10 @@ export function AnimatedCount({ value, locale }: AnimatedCountProps) {
   const [current, setCurrent] = useState(0);
   const rafRef = useRef(0);
 
-  const format = (n: number) =>
-    new Intl.NumberFormat(locale, {
-      notation: "compact",
-      maximumFractionDigits: 1,
-    }).format(n);
+  const formatter = useMemo(
+    () => new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }),
+    [locale],
+  );
 
   useMountEffect(() => {
     const start = performance.now();
@@ -50,7 +49,7 @@ export function AnimatedCount({ value, locale }: AnimatedCountProps) {
 
   return (
     <span style={{ fontVariantNumeric: "tabular-nums" }}>
-      {format(current)}
+      {formatter.format(current)}
     </span>
   );
 }
