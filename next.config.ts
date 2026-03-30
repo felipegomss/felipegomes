@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
       "cmdk",
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/u/:path*",
+        destination: "https://cloud.umami.is/:path*",
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

@@ -146,7 +146,7 @@ export default async function RootLayout({
         <PersonJsonLd locale={locale} />
         <Script
           defer
-          src="https://cloud.umami.is/script.js"
+          src="/u/script.js"
           data-website-id={UMAMI_WEBSITE_ID}
           strategy="afterInteractive"
         />
