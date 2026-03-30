@@ -3,7 +3,7 @@ import { IconGithub, IconLinkedin } from "nucleo-social-media";
 import { IconAward, IconMailbox } from "nucleo-isometric";
 import { contact, CAREER_START, MS_PER_YEAR, CV_FILENAME } from "@/lib/constants";
 import { DownloadCvButton } from "./download-cv-button";
-import { LocaleSwitcher } from "./locale-switcher";
+import { MusicWidget } from "./music-widget";
 import { SectionHeading } from "./section-heading";
 
 export async function Sidebar({ locale }: { locale: string }) {
@@ -15,7 +15,7 @@ export async function Sidebar({ locale }: { locale: string }) {
   return (
     <aside
       aria-label="Sidebar"
-      className="flex flex-col justify-between border-b border-border p-6 md:sticky md:top-0 md:h-screen md:border-b-0 md:border-r"
+      className="flex flex-col justify-between border-b border-border p-6 md:sticky md:top-0 md:row-span-full md:h-screen md:border-b-0 md:border-r"
     >
       <div className="space-y-8">
         <div className="flex items-start justify-between">
@@ -29,7 +29,6 @@ export async function Sidebar({ locale }: { locale: string }) {
               Salvador/BA
             </p>
           </div>
-          <LocaleSwitcher />
         </div>
 
         <div>
@@ -99,7 +98,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             <li>
               <a
                 data-umami-event="contact-phone"
-                href={`tel:+55${contact.phone.replace(/\D/g, "")}`}
+                href={`tel:+${contact.phoneDigits}`}
                 className={"external-link text-muted-foreground"}
               >
                 {contact.phone}
@@ -139,6 +138,10 @@ export async function Sidebar({ locale }: { locale: string }) {
             </a>
           </div>
         </nav>
+
+        <div className="-mx-6 -mb-6">
+          <MusicWidget />
+        </div>
       </div>
     </aside>
   );

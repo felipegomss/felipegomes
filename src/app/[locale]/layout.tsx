@@ -1,10 +1,12 @@
 import { routing } from "@/i18n/routing";
-import { contact } from "@/lib/constants";
+import { contact, UMAMI_WEBSITE_ID } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
+import { Providers } from "./components/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { Geist_Mono, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
 import "./globals.css";
@@ -68,11 +70,46 @@ function PersonJsonLd({ locale }: { locale: string }) {
     name: contact.name,
     url: `${BASE_URL}/${locale}`,
     jobTitle: "Full Stack Developer",
+    description:
+      "Full Stack Developer with 5+ years of experience. Specializing in React, TypeScript, Node.js and Next.js. Focused on frontend architecture, design systems and product delivery.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Salvador",
+      addressRegion: "BA",
+      addressCountry: "BR",
+    },
     sameAs: [
       `https://${contact.linkedin}`,
       `https://${contact.github}`,
     ],
     image: `${BASE_URL}/felipe.jpeg`,
+    knowsAbout: [
+      "React", "TypeScript", "Next.js", "Node.js", "Angular",
+      ".NET", "Go", "PostgreSQL", "AWS", "Docker", "CI/CD",
+      "Design Systems", "Frontend Architecture",
+    ],
+    alumniOf: [
+      {
+        "@type": "EducationalOrganization",
+        name: "USP/Esalq",
+        department: "MBA in Software Engineering",
+      },
+      {
+        "@type": "EducationalOrganization",
+        name: "Faculdade Estácio",
+        department: "Systems Analysis and Development",
+      },
+    ],
+    worksFor: {
+      "@type": "Organization",
+      name: "Automind",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Salvador",
+        addressRegion: "BA",
+        addressCountry: "BR",
+      },
+    },
   };
 
   return (
@@ -103,15 +140,19 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${bodyFont.variable} ${headingFont.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <PersonJsonLd locale={locale} />
-        <script
+        <Script
           defer
           src="https://cloud.umami.is/script.js"
-          data-website-id="96008e50-f747-41e3-8a97-826e10485213"
+          data-website-id={UMAMI_WEBSITE_ID}
+          strategy="afterInteractive"
         />
-        <script
+        <Script
+          id="umami-events"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `document.addEventListener("click",function(e){var t=e.target.closest("[data-umami-event]");if(t&&window.umami){var n=t.dataset.umamiEvent,d={};for(var k in t.dataset)k.startsWith("umamiEvent")&&k!=="umamiEvent"&&(d[k.slice(10).toLowerCase()]=t.dataset[k]);umami.track(n,Object.keys(d).length?d:undefined)}})`,
           }}
@@ -124,9 +165,11 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        <NextIntlClientProvider messages={messages}>
-          <IntroScreen>{children}</IntroScreen>
-        </NextIntlClientProvider>
+        <Providers>
+          <NextIntlClientProvider messages={messages}>
+            <IntroScreen>{children}</IntroScreen>
+          </NextIntlClientProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       "nucleo-arcade",
       "nucleo-isometric",
       "nucleo-social-media",
+      "lucide-react",
+      "cmdk",
     ],
   },
 };

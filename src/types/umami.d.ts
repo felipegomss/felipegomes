@@ -3,3 +3,7 @@ interface Window {
     track: (event: string, data?: Record<string, string>) => void;
   };
 }
+
+interface Document {
+  startViewTransition?: (callback: () => void) => void;
+}

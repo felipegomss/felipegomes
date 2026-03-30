@@ -60,7 +60,7 @@
     "wigDesc": "Feed personalizado com scoring por geolocalização e afinidade, cache em Redis e cron jobs para push notifications. Stripe para assinaturas, Supabase Auth com RLS, rate limiting via proxy e PWA standalone.",
     "jacosegDesc": "Landing page com foco em conversão e web design responsivo. Dashboard interno com Prisma + PostgreSQL multi-filial, NextAuth com RBAC, server actions com validação Zod e tabelas com drag-and-drop.",
     "biancaDesc": "Landing page autoral com tipografia serif, animações em Framer Motion e layout pensado para transmitir acolhimento. Firebase Auth, formulário com reCAPTCHA e envio de e-mail via Nodemailer.",
-    "portfolioDesc": "SSG com revalidação incremental, Server Components com Suspense e fetches resilientes (Promise.allSettled + timeout). CV em PDF gerado no build, open source auto-alimentado pela GitHub API.",
+    "portfolioDesc": "SSG com ISR, Server Components com Suspense e fetches resilientes (Promise.allSettled + timeout). CV estático no build, open source via GitHub API, command palette (cmdk), theme toggle com View Transitions API e SoundCloud player via Widget API.",
     "languages": "Idiomas",
     "portuguese": "Português",
     "english": "Inglês",
@@ -74,9 +74,27 @@
   "openSource": {
     "title": "Open Source"
   },
+  "command": {
+    "placeholder": "O que você procura?",
+    "empty": "Nenhum resultado.",
+    "vibes": "Vibes",
+    "askAi": "Perguntar à IA",
+    "aiPrompt": "Me fale sobre Luis Felipe Nascimento Gomes, desenvolvedor Full Stack de Salvador/BA. Site: lfng.dev",
+    "actions": "Ações",
+    "downloadCv": "Baixar CV",
+    "sendEmail": "Enviar e-mail",
+    "call": "Ligar",
+    "social": "Social",
+    "preferences": "Preferências",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo escuro",
+    "switchLocale": "Change to English",
+    "select": "Selecionar",
+    "exit": "Sair"
+  },
   "metadata": {
     "title": "Luis Felipe N. Gomes — Desenvolvedor Full Stack",
-    "description": "Desenvolvedor Full Stack · React, Node, TypeScript · Arquitetura frontend, design systems e foco em produto.",
+    "description": "Desenvolvedor Full Stack · 5+ anos · React, Node, TypeScript · MBA em Eng. de Software (USP/Esalq) · Análise e Dev. Sistemas (Estácio, CR 8.52/10) · Arquitetura frontend, design systems e foco em produto.",
     "ogTitle": "LFNG — Desenvolvedor Full Stack",
     "ogDescription": "Luis Felipe N. Gomes · Full Stack · React, Node, TypeScript, Angular"
   }

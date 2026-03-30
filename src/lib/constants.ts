@@ -2,10 +2,15 @@ export const CAREER_START = new Date("2020-09-01");
 export const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000; // accounts for leap years
 export const GITHUB_USERNAME = "felipegomss";
 export const CV_FILENAME = "LuisFNGomes_Curriculum_Vitae";
+export const UMAMI_WEBSITE_ID = "96008e50-f747-41e3-8a97-826e10485213";
+export const PLAYLIST_URL = "https://music.apple.com/br/playlist/slow-flow/pl.u-EdAVkl3TDPlmo51";
+
+const PHONE = "+55 (71) 9 9265-5188";
 
 export const contact = {
   name: "Luis Felipe Nascimento Gomes",
-  phone: "+55 (71) 9 9265-5188",
+  phone: PHONE,
+  phoneDigits: PHONE.replace(/\D/g, ""),
   linkedin: "linkedin.com/in/felipegomss",
   github: `github.com/${GITHUB_USERNAME}`,
 };
