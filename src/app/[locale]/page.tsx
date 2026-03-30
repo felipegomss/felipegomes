@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { contact } from "@/lib/constants";
 import { jobs } from "./data/portfolio";
 import { Header } from "./components/header";
+import { MobileFab } from "./components/mobile-fab";
 import { Sidebar } from "./components/sidebar";
 import { ExperienceSection } from "./components/experience-section";
 import { SkillsPanel } from "./components/skills-panel";
@@ -31,6 +32,7 @@ export default async function Home({
       <Header locale={locale} />
       <ExperienceSection jobs={jobs} />
       <SkillsPanel />
+      <MobileFab />
     </div>
   );
 }

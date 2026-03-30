@@ -25,6 +25,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
+  CommandShortcut,
 } from "@/components/ui/command";
 import { Kbd } from "@/components/ui/kbd";
 import { contact, CV_FILENAME, PLAYLIST_URL } from "@/lib/constants";
@@ -169,12 +170,12 @@ export function CommandMenu() {
             <CommandItem onSelect={() => run(toggleTheme)}>
               {resolvedTheme === "dark" ? <Sun /> : <Moon />}
               {resolvedTheme === "dark" ? t("lightMode") : t("darkMode")}
-              <span className="ml-auto flex-1 text-right"><Kbd>T</Kbd></span>
+              <CommandShortcut>T</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => run(() => router.replace("/", { locale: nextLocale }))}>
               <Globe />
               {t("switchLocale")}
-              <span className="ml-auto flex-1 text-right"><Kbd>L</Kbd></span>
+              <CommandShortcut>L</CommandShortcut>
             </CommandItem>
           </CommandGroup>
         </CommandList>
