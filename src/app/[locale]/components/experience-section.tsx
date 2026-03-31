@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { IconArchive } from "nucleo-isometric";
 import type { Job } from "../data/portfolio";
+import { GridCell } from "./grid-cell";
 import { SectionHeading } from "./section-heading";
 
 export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
@@ -11,14 +12,14 @@ export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
       id="main-content"
       className="border-b border-border md:contents"
     >
-      <div data-grid-col="left" className="border-b border-border p-6">
+      <GridCell col="left" className="p-6">
         <SectionHeading className="mb-0" icon={<IconArchive size={14} aria-hidden="true" />}>
           {exp("title")}
         </SectionHeading>
-      </div>
+      </GridCell>
 
       {jobs.map((job) => (
-        <article key={job.key} data-grid-col="left" className="border-b border-border p-6">
+        <GridCell key={job.key} col="left" as="article" className="p-6">
           <div className="mb-4">
             <h3 className="font-heading text-lg font-bold">{job.company}</h3>
             <p className="text-sm text-muted-foreground">
@@ -40,7 +41,7 @@ export async function ExperienceSection({ jobs }: { jobs: Job[] }) {
               </li>
             ))}
           </ul>
-        </article>
+        </GridCell>
       ))}
     </main>
   );

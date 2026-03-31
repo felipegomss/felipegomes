@@ -4,6 +4,7 @@ import { IconStar, IconQuote, IconFolder, IconCube } from "nucleo-isometric";
 import { contact, skills } from "@/lib/constants";
 import { githubFetch } from "@/lib/github";
 import { projects, type Project } from "../data/portfolio";
+import { GridCell } from "./grid-cell";
 import { HalftoneImage } from "./halftone-image";
 import { OpenSourceSection } from "./open-source-section";
 import { ProjectItem } from "./project-item";
@@ -38,16 +39,16 @@ export async function SkillsPanel() {
 
   return (
     <aside aria-label="Skills and projects" className="flex flex-col md:contents">
-      <div data-grid-col="right" className="hidden border-b border-border md:block bg-grid-pattern">
+      <GridCell col="right" className="hidden md:block bg-grid-pattern">
         <HalftoneImage
           src="/felipe.jpeg"
           alt={contact.name}
           width={1200}
           height={1200}
         />
-      </div>
+      </GridCell>
 
-      <div data-grid-col="right" className="border-b border-border p-6">
+      <GridCell col="right" className="p-6">
         <SectionHeading icon={<IconStar size={14} aria-hidden="true" />}>
           {sk("title")}
         </SectionHeading>
@@ -61,9 +62,9 @@ export async function SkillsPanel() {
             </span>
           ))}
         </div>
-      </div>
+      </GridCell>
 
-      <div data-grid-col="right" className="border-b border-border p-6">
+      <GridCell col="right" className="p-6">
         <SectionHeading icon={<IconQuote size={14} aria-hidden="true" />}>
           {sk("languages")}
         </SectionHeading>
@@ -90,9 +91,9 @@ export async function SkillsPanel() {
             </span>
           </li>
         </ul>
-      </div>
+      </GridCell>
 
-      <div data-grid-col="right" className="border-b border-border p-6">
+      <GridCell col="right" className="p-6">
         <SectionHeading icon={<IconFolder size={14} aria-hidden="true" />}>
           {sk("projects")}
         </SectionHeading>
@@ -115,13 +116,13 @@ export async function SkillsPanel() {
             );
           })}
         </ul>
-      </div>
+      </GridCell>
 
       <Suspense fallback={null}>
         <OpenSourceSection />
       </Suspense>
 
-      <div data-grid-col="right" className="hidden flex-1 md:block" />
+      <GridCell col="right" className="hidden flex-1 md:block border-b-0" />
     </aside>
   );
 }

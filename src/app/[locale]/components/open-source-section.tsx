@@ -3,6 +3,7 @@ import { IconAbstract } from "nucleo-isometric";
 import { cache } from "react";
 import { GITHUB_USERNAME } from "@/lib/constants";
 import { githubFetch } from "@/lib/github";
+import { GridCell } from "./grid-cell";
 import { SectionHeading } from "./section-heading";
 
 const MAX_VISIBLE_IDS = 5;
@@ -136,11 +137,7 @@ export async function OpenSourceSection() {
   if (repos.length === 0) return null;
 
   return (
-    <section
-      aria-label="Open Source Contributions"
-      data-grid-col="right"
-      className="border-b border-border p-6"
-    >
+    <GridCell col="right" as="section" ariaLabel="Open Source Contributions" className="p-6">
       <SectionHeading icon={<IconAbstract size={14} aria-hidden="true" />}>
         {t("title")}
       </SectionHeading>
@@ -149,6 +146,6 @@ export async function OpenSourceSection() {
           <OpenSourceItem key={repo.name} repo={repo} />
         ))}
       </ul>
-    </section>
+    </GridCell>
   );
 }
