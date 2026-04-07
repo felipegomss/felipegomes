@@ -35,7 +35,7 @@
       "location": "Remote",
       "h1": "Architected an end-to-end brand protection platform that serves 300+ global brands across three fronts — brand bidding, fraudulent sites and domains, and pirated products on marketplaces — with a NestJS/REST core integrated with Pipefy via GraphQL.",
       "h2": "Cut report dashboard response times from 7 minutes to milliseconds with server-side downsampling, streamed responses and lazy-loaded time series.",
-      "h3": "Built Go workers on RabbitMQ that process crawled data in real time across the brand bidding and pirated product fronts, feeding the detection pipeline that analyzes around 6M sponsored ads per month to identify unfair competition and pirate listings on marketplaces.",
+      "h3": "Implemented real-time processing of around 6M sponsored ads per month with Go workers on RabbitMQ that consume crawled data across the brand bidding and pirated product fronts, feeding the detection pipeline for unfair competition and pirate listings on marketplaces.",
       "h4": "Built the observability stack from scratch (Papertrail, health checks, downtime alerts) and cut failure-to-fix time to near-zero, with the team notified at the moment of each incident.",
       "h5": "Led code reviews, defined the team's unit testing strategy and automated AWS deploys via GitHub Actions to standardize the project's CI/CD flow."
     },
