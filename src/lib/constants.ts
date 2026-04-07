@@ -4,6 +4,7 @@ export const GITHUB_USERNAME = "felipegomss";
 export const CV_FILENAME = "LuisFNGomes_Curriculum_Vitae";
 export const UMAMI_WEBSITE_ID = "96008e50-f747-41e3-8a97-826e10485213";
 export const PLAYLIST_URL = "https://music.apple.com/br/playlist/slow-flow/pl.u-EdAVkl3TDPlmo51";
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lfng.dev";
 
 const PHONE = "+55 (71) 9 9265-5188";
 

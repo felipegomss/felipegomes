@@ -1,5 +1,5 @@
 import { routing } from "@/i18n/routing";
-import { contact, UMAMI_WEBSITE_ID } from "@/lib/constants";
+import { BASE_URL, contact, UMAMI_WEBSITE_ID } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Providers } from "./components/providers";
@@ -20,8 +20,6 @@ const bodyFont = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
-
-const BASE_URL = "https://www.lfng.dev";
 
 export async function generateMetadata({
   params,
