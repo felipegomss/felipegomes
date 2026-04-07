@@ -11,7 +11,7 @@
     "degreeCr": "CR: 8,52/10",
     "degreeCore": "Core: Java, Python, JS, SQL, Android e Cloud Computing.",
     "email": "ola@lfng.dev",
-    "location": "Salvador/BA — Brasil (GMT−3)",
+    "location": "Salvador/BA — Brasil (GMT-3)",
     "contact": "Contato",
     "download": "Baixar CV"
   },
@@ -21,36 +21,36 @@
       "role": "Analista de Software",
       "period": "06.2024 — atual",
       "location": "Salvador/BA",
-      "h1": "Conduzo o frontend da modernização do AUTOLOAD, migrando um sistema legado para Next.js 14, React 18 e TypeScript, e contribuo no backend .NET 8 com SignalR e PostgreSQL multi-tenant.",
-      "h2": "Criei e mantenho a @automind/react-components — design system com Radix UI, Storybook e Chromatic, consumido pelos frontends do ecossistema AUTOLOAD e por outros projetos da empresa.",
-      "h3": "Desenvolvi o frontend do AUTOMED (Angular), sistema de gestão de medições compatível com a norma ABNT NBR ISO 10012.",
-      "h4": "Implementei Vitest + Playwright no pipeline do Azure DevOps — smoke tests em PR e regressão completa em release.",
-      "h5": "Escrevo specs e documentação de requisitos com stakeholders. Conduzo code reviews e mentoro devs juniores."
+      "h1": "Conduzo o frontend da nova geração do AUTOLOAD — reconstruído do zero como produto SaaS modularizado em Next.js 14, React 18 e TypeScript sobre backend .NET 8 com SignalR e PostgreSQL multi-tenant —, substituindo o antigo sistema on-premise (.NET + Vue) e reduzindo em cerca de 70% o tempo de instalação para novos clientes.",
+      "h2": "Reduzi o tempo de build do pipeline de frontend de 12 para 4 minutos (~67%) ao corrigir uma configuração incorreta entre Node e Tailwind CSS, desbloqueando ciclos de deploy mais rápidos para todo o time.",
+      "h3": "Criei e mantenho a @automind/react-components — design system com Radix UI, Storybook e Chromatic — padronizando a UI de 2 produtos e eliminando reescritas de componentes entre os times de frontend da empresa.",
+      "h4": "Implementei Vitest e Playwright no pipeline do Azure DevOps cobrindo os fluxos críticos com testes unitários e E2E, bloqueando regressões antes de release via smoke tests em PR e regressão completa em CI.",
+      "h5": "Conduzo code reviews diários e mentoro cerca de 5 devs juniores, além de escrever specs e documentação de requisitos diretamente com stakeholders de produto."
     },
     "branddi": {
       "role": "Desenvolvedor FullStack",
       "period": "04.2023 — 06.2024",
       "location": "Remoto",
-      "h1": "Arquitetei uma solução End-to-End de gestão de infrações — core em REST (NestJS) com integrações ao Pipefy via GraphQL.",
-      "h2": "Integrei Golang com filas RabbitMQ para processar dados em massa via Web Crawlers e microsserviços.",
-      "h3": "Montei a stack de observabilidade: logs centralizados (Papertrail), alertas de Healthcheck e monitoramento de Downtime.",
-      "h4": "Gerenciei deploys em AWS e automatizei pipelines de CI/CD com GitHub Actions.",
-      "h5": "Liderei aprovação de PRs e defini a estratégia de testes unitários do time."
+      "h1": "Arquitetei uma plataforma end-to-end de gestão de infrações hoje atendendo mais de 300 marcas globais, com core em NestJS/REST integrado ao Pipefy via GraphQL, processando mais de 6 milhões de anúncios patrocinados e cerca de 2.500 casos de concorrência desleal por mês.",
+      "h2": "Reduzi o tempo de resposta dos dashboards de relatórios de cerca de 7 minutos para poucos milissegundos aplicando downsampling server-side, streaming de respostas e lazy loading de séries temporais.",
+      "h3": "Desenvolvi workers em Go consumindo filas RabbitMQ para processar dados crawleados em tempo real de 3 marketplaces e motores de busca, alimentando o pipeline de detecção que protege mais de R$250 milhões em CPC anual de campanhas institucionais.",
+      "h4": "Montei a stack de observabilidade do zero (logs centralizados no Papertrail, health checks e alertas de downtime), reduzindo o tempo entre falha e correção para praticamente instantâneo ao notificar o time no momento do incidente.",
+      "h5": "Liderei code reviews, defini a estratégia de testes unitários do time e automatizei deploys AWS via GitHub Actions, padronizando o fluxo de CI/CD para entregas contínuas."
     },
     "eisa": {
       "role": "Analista de Software — QA",
       "period": "05.2021 — 04.2023",
       "location": "Remoto",
-      "h1": "Automatizei testes E2E com Selenium WebDriver, Cucumber e Ruby para sistemas da VIVO — 90M+ usuários.",
-      "h2": "Validei fluxos assíncronos em Apache Kafka e executei scripts PL/SQL (Oracle) em ambiente Linux.",
-      "h3": "Liderei a migração de repositórios legados (TortoiseSVN → GitLab)."
+      "h1": "Automatizei a suíte E2E de sistemas da VIVO com 90 milhões de assinantes usando Selenium WebDriver, Cucumber e Ruby, cobrindo fluxos críticos de provisionamento e garantindo regressão completa antes de cada release.",
+      "h2": "Validei fluxos assíncronos em Apache Kafka e executei scripts complexos em PL/SQL (Oracle) sobre Linux, isolando bugs em pipelines de dados que impactavam faturamento.",
+      "h3": "Liderei a migração do monorepo legado do TortoiseSVN para GitLab, modernizando o fluxo de versionamento para cerca de 20 engenheiros e desbloqueando pipelines de CI/CD modernos."
     },
     "parallel": {
       "role": "Desenvolvedor FullStack",
       "period": "09.2020 — 04.2021",
       "location": "Salvador/BA",
-      "h1": "Desenvolvi funcionalidades em React (frontend) e Node.js (backend) que melhoraram a conversão de vendas da plataforma.",
-      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL."
+      "h1": "Desenvolvi features fullstack em React (frontend) e Node.js (backend) para uma plataforma de vendas, contribuindo para melhorias contínuas de conversão do produto.",
+      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL para workflows internos do time de produto."
     }
   },
   "skills": {

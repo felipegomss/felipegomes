@@ -11,7 +11,7 @@
     "degreeCr": "GPA: 8.52/10",
     "degreeCore": "Core: Java, Python, JS, SQL, Android & Cloud Computing.",
     "email": "hi@lfng.dev",
-    "location": "Salvador/BA — Brazil (GMT−3)",
+    "location": "Salvador/BA — Brazil (GMT-3)",
     "contact": "Contact",
     "download": "Download CV"
   },
@@ -21,36 +21,36 @@
       "role": "Software Analyst",
       "period": "06.2024 — present",
       "location": "Salvador/BA",
-      "h1": "Drive the frontend of AUTOLOAD's modernization, migrating a legacy system to Next.js 14, React 18 and TypeScript, and contribute to the .NET 8 backend with SignalR and multi-tenant PostgreSQL.",
-      "h2": "Created and maintain @automind/react-components — design system with Radix UI, Storybook and Chromatic, consumed by the frontends across the AUTOLOAD ecosystem and by other company projects.",
-      "h3": "Built the frontend for AUTOMED (Angular), a measurement management system compliant with ABNT NBR ISO 10012.",
-      "h4": "Implemented Vitest + Playwright in the Azure DevOps pipeline — smoke tests on PR and full regression on release.",
-      "h5": "Write specs and requirements docs with stakeholders. Run code reviews and mentor junior devs."
+      "h1": "Drive the frontend of the next generation of AUTOLOAD — rebuilt from the ground up as a modular SaaS product in Next.js 14, React 18 and TypeScript on a .NET 8 backend with SignalR and multi-tenant PostgreSQL — replacing the previous on-premise system (.NET + Vue) and cutting new-client install time by ~70%.",
+      "h2": "Reduced the frontend build pipeline from 12 to 4 minutes (~67%) by fixing a Node + Tailwind CSS misconfiguration, unblocking faster deploy cycles for the entire team.",
+      "h3": "Created and maintain @automind/react-components — a design system built on Radix UI, Storybook and Chromatic — standardizing the UI across 2 products and eliminating component rewrites between frontend teams.",
+      "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline covering critical flows with unit and E2E tests, blocking regressions before release via smoke tests on PR and full regression in CI.",
+      "h5": "Run daily code reviews and mentor ~5 junior developers, and write specs and requirements documentation directly with product stakeholders."
     },
     "branddi": {
       "role": "FullStack Developer",
       "period": "04.2023 — 06.2024",
       "location": "Remote",
-      "h1": "Architected an End-to-End infringement management solution — REST core (NestJS) with Pipefy integrations via GraphQL.",
-      "h2": "Integrated Golang with RabbitMQ queues to process massive data through Web Crawlers and microservices.",
-      "h3": "Set up the observability stack: centralized logging (Papertrail), Healthcheck alerts and Downtime monitoring.",
-      "h4": "Managed AWS deployments and automated CI/CD pipelines with GitHub Actions.",
-      "h5": "Led PR approvals and defined the team's unit testing strategy."
+      "h1": "Architected an end-to-end infringement management platform now serving 300+ global brands, with a NestJS/REST core integrated with Pipefy via GraphQL, processing 6M+ sponsored ads and ~2,500 unfair competition cases per month.",
+      "h2": "Reduced report dashboard response times from ~7 minutes to low milliseconds by applying server-side downsampling, streamed responses and lazy-loaded time series.",
+      "h3": "Built Go workers consuming RabbitMQ queues to process crawled data in real time from 3 marketplaces and search engines, feeding the detection pipeline that protects R$250M+ in annual institutional CPC.",
+      "h4": "Built the observability stack from scratch (centralized logs in Papertrail, health checks and downtime alerts), reducing failure-to-fix time to near-instant by notifying the team at the moment of incident.",
+      "h5": "Led code reviews, defined the team's unit testing strategy and automated AWS deploys via GitHub Actions, standardizing the CI/CD flow for continuous delivery."
     },
     "eisa": {
       "role": "Software Analyst — QA",
       "period": "05.2021 — 04.2023",
       "location": "Remote",
-      "h1": "Automated E2E tests with Selenium WebDriver, Cucumber and Ruby for VIVO systems — 90M+ users.",
-      "h2": "Validated async flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux.",
-      "h3": "Led the migration from legacy repos (TortoiseSVN → GitLab)."
+      "h1": "Automated the E2E test suite for VIVO systems with 90M+ subscribers using Selenium WebDriver, Cucumber and Ruby, covering critical provisioning flows and guaranteeing full regression before each release.",
+      "h2": "Validated asynchronous flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux, isolating bugs in data pipelines that impacted billing.",
+      "h3": "Led the migration of the legacy monorepo from TortoiseSVN to GitLab, modernizing the version-control workflow for ~20 engineers and unblocking modern CI/CD pipelines."
     },
     "parallel": {
       "role": "FullStack Developer",
       "period": "09.2020 — 04.2021",
       "location": "Salvador/BA",
-      "h1": "Built React (frontend) and Node.js (backend) features that improved the platform's sales conversion.",
-      "h2": "Created auxiliary Python APIs and managed data persistence in MySQL."
+      "h1": "Built full-stack features in React (frontend) and Node.js (backend) for a sales platform, contributing to continuous product conversion improvements.",
+      "h2": "Created auxiliary Python APIs and managed MySQL data persistence for internal product team workflows."
     }
   },
   "skills": {
