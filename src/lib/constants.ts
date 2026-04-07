@@ -17,13 +17,14 @@ export const contact = {
 };
 
 export const skills = [
-  "React", "TypeScript", "Next.js", "Angular",
+  "React", "TypeScript", "Next.js", "Angular", "React Router",
   "Zustand", "React Hook Form", "Zod", "TanStack Query",
-  "Radix UI", "Tailwind CSS", "shadcn/ui", "Design Systems", "Storybook",
-  "Vitest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber",
+  "Radix UI", "Tailwind CSS", "SASS/SCSS", "shadcn/ui", "Design Systems", "Storybook",
+  "Webpack",
+  "Vitest", "Jest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber",
   "Framer Motion", "GSAP",
   "PWA", "Service Workers",
-  "Node.js", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Ruby",
+  "Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Ruby",
   "REST", "GraphQL", "SignalR", "RabbitMQ", "Apache Kafka",
   "PostgreSQL", "Supabase", "Prisma", "MySQL", "MongoDB", "Oracle PL/SQL",
   "Azure DevOps", "AWS", "Docker", "GitHub Actions", "CI/CD", "Sentry",
@@ -32,9 +33,9 @@ export const skills = [
 ];
 
 export const skillsByCategory = {
-  frontend: ["React", "TypeScript", "Next.js", "Angular", "Tailwind CSS", "Radix UI", "shadcn/ui", "Storybook"],
-  backend: ["Node.js", "NestJS", ".NET", "Go (Golang)", "Python", "REST", "GraphQL", "RabbitMQ", "Apache Kafka"],
+  frontend: ["React", "TypeScript", "Next.js", "Angular", "React Router", "Tailwind CSS", "SASS/SCSS", "Radix UI", "shadcn/ui", "Storybook", "Webpack"],
+  backend: ["Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "REST", "GraphQL", "RabbitMQ", "Apache Kafka"],
   data: ["PostgreSQL", "Supabase", "MySQL", "MongoDB", "Oracle PL/SQL", "Prisma"],
   infra: ["AWS", "Azure DevOps", "Docker", "GitHub Actions", "CI/CD", "Sentry", "Linux"],
-  testing: ["Vitest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber"],
+  testing: ["Vitest", "Jest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber"],
 };
