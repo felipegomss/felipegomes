@@ -143,8 +143,8 @@ export function CvDocument({ locale }: { locale: string }) {
           return (
             <View key={i} style={s.jobBlock} wrap={false}>
               <Text style={s.jobHeader}>
-                {data.role} — {job.company}
-                {data.location ? ` — ${data.location}` : ""} — {data.period}
+                {data.role} · {job.company}
+                {data.location ? ` · ${data.location}` : ""} · {data.period}
               </Text>
               {Array.from({ length: job.count }, (_, j) => (
                 <Text key={j} style={s.bullet}>
@@ -157,10 +157,10 @@ export function CvDocument({ locale }: { locale: string }) {
 
         <Text style={s.sectionTitle}>{sidebar.education}</Text>
         <Text style={s.eduLine}>
-          <Text style={s.skillLabel}>{sidebar.mba}</Text> — {sidebar.mbaInstitution} — {sidebar.mbaStatus}
+          <Text style={s.skillLabel}>{sidebar.mba}</Text> · {sidebar.mbaInstitution} · {sidebar.mbaStatus}
         </Text>
         <Text style={s.eduLine}>
-          <Text style={s.skillLabel}>{sidebar.degree}</Text> — {sidebar.degreeInstitution} — {sidebar.degreeStatus} — {sidebar.degreeCr}
+          <Text style={s.skillLabel}>{sidebar.degree}</Text> · {sidebar.degreeInstitution} · {sidebar.degreeStatus} · {sidebar.degreeCr}
         </Text>
 
         <Text style={s.sectionTitle}>{sk.title}</Text>

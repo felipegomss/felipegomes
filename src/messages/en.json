@@ -13,7 +13,7 @@
     "degreeCr": "GPA: 8.52/10",
     "degreeCore": "Core: Java, Python, JS, SQL, Android & Cloud Computing.",
     "email": "hi@lfng.dev",
-    "location": "Salvador/BA — Brazil (GMT-3)",
+    "location": "Salvador/BA, Brazil (GMT-3)",
     "contact": "Contact",
     "download": "Download CV"
   },
@@ -40,7 +40,7 @@
       "h5": "Led code reviews, defined the team's unit testing strategy and automated AWS deploys via GitHub Actions to standardize the project's CI/CD flow."
     },
     "eisa": {
-      "role": "Software Analyst — QA",
+      "role": "Software Analyst (QA)",
       "period": "05.2021 — 04.2023",
       "location": "Remote",
       "h1": "Automated the E2E test suite for VIVO systems (90M+ subscribers) in Selenium WebDriver, Cucumber and Ruby, with coverage of critical provisioning flows and full regression before each release.",

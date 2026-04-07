@@ -13,7 +13,7 @@
     "degreeCr": "CR: 8,52/10",
     "degreeCore": "Core: Java, Python, JS, SQL, Android e Cloud Computing.",
     "email": "ola@lfng.dev",
-    "location": "Salvador/BA — Brasil (GMT-3)",
+    "location": "Salvador/BA, Brasil (GMT-3)",
     "contact": "Contato",
     "download": "Baixar CV"
   },
@@ -40,7 +40,7 @@
       "h5": "Liderei code reviews, defini a estratégia de testes unitários do time e automatizei deploys AWS via GitHub Actions para padronizar o fluxo de CI/CD do projeto."
     },
     "eisa": {
-      "role": "Analista de Software — QA",
+      "role": "Analista de Software (QA)",
       "period": "05.2021 — 04.2023",
       "location": "Remoto",
       "h1": "Automatizei a suíte E2E de sistemas da VIVO (90 milhões de assinantes) em Selenium WebDriver, Cucumber e Ruby, com cobertura dos fluxos críticos de provisionamento e regressão completa antes de cada release.",
