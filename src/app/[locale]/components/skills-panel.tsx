@@ -41,7 +41,7 @@ export async function SkillsPanel() {
     <aside aria-label="Skills and projects" className="flex flex-col md:contents">
       <GridCell col="right" className="hidden md:block bg-grid-pattern">
         <HalftoneImage
-          src="/felipe.jpeg"
+          src="/felipe.webp"
           alt={contact.name}
           width={1200}
           height={1200}

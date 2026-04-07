@@ -23,7 +23,7 @@ export default async function Home({
 
       <div className="border-b border-border md:hidden">
         <HalftoneImage
-          src="/felipe.jpeg"
+          src="/felipe.webp"
           alt={contact.name}
           width={1200}
           height={1200}

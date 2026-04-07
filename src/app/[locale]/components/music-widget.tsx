@@ -1,9 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Pause, Play, ExternalLink, Volume1, Volume2, VolumeOff } from "lucide-react";
+import { Pause, Play, Loader, ExternalLink, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { PLAYLIST_URL } from "@/lib/constants";
-import { useMountEffect } from "@/hooks/use-mount-effect";
 
 const SOUNDCLOUD_TRACK = "https://soundcloud.com/sonotws/04-o-que-e-meu-ningue-m-me";
 const TRACK_TITLE = "Slow Flow";
@@ -13,12 +12,17 @@ const VOLUME_LEVELS = [0, 25, 50] as const;
 export function MusicWidget() {
   const [playing, setPlaying] = useState(false);
   const [volumeIndex, setVolumeIndex] = useState(2);
+  const [loaded, setLoaded] = useState(false);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const widgetRef = useRef<SoundCloudWidget | null>(null);
+  const pendingPlayRef = useRef(false);
 
-  useMountEffect(() => {
+  function loadWidget() {
+    if (loaded) return;
+    setLoaded(true);
+
     const timeout = setTimeout(() => setFailed(true), 5000);
 
     const script = document.createElement("script");
@@ -38,22 +42,28 @@ export function MusicWidget() {
       widget.bind(window.SC.Widget.Events.READY, () => {
         clearTimeout(timeout);
         setReady(true);
+        if (pendingPlayRef.current) {
+          pendingPlayRef.current = false;
+          widget.play();
+          setPlaying(true);
+        }
       });
       widget.bind(window.SC.Widget.Events.FINISH, () => setPlaying(false));
     };
     document.head.appendChild(script);
-    return () => {
-      clearTimeout(timeout);
-      script.remove();
-    };
-  });
+  }
 
   function toggle() {
-    if (failed || !ready) {
+    if (failed) {
       window.open(PLAYLIST_URL, "_blank");
       return;
     }
-    if (!widgetRef.current) return;
+    if (!loaded) {
+      pendingPlayRef.current = true;
+      loadWidget();
+      return;
+    }
+    if (!ready || !widgetRef.current) return;
     if (playing) {
       widgetRef.current.pause();
     } else {
@@ -74,26 +84,34 @@ export function MusicWidget() {
 
   return (
     <div className="flex items-center gap-3 border-t border-border p-4">
-      <iframe
-        ref={iframeRef}
-        className="hidden"
-        allow="autoplay"
-        src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(SOUNDCLOUD_TRACK)}&auto_play=false&show_artwork=false`}
-      />
+      {loaded && (
+        <iframe
+          ref={iframeRef}
+          className="hidden"
+          allow="autoplay"
+          src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(SOUNDCLOUD_TRACK)}&auto_play=false&show_artwork=false`}
+        />
+      )}
 
       <button
         type="button"
         aria-label={playing ? "Pause" : "Play"}
         onClick={toggle}
-        className={`group/play relative size-10 shrink-0 cursor-pointer overflow-hidden rounded ${!ready && !failed ? "opacity-30" : ""}`}
+        className="group/play relative size-10 shrink-0 cursor-pointer overflow-hidden rounded"
       >
         <img
-          src="/slow-flow-cover.png"
+          src="/slow-flow-cover.webp"
           alt="Slow Flow playlist cover"
           className="size-full object-cover"
         />
-        <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover/play:opacity-100">
-          {playing ? (
+        <span
+          className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity ${
+            loaded && !ready && !failed ? "opacity-100" : "opacity-0 group-hover/play:opacity-100"
+          }`}
+        >
+          {loaded && !ready && !failed ? (
+            <Loader size={14} className="animate-spin text-white" aria-hidden="true" />
+          ) : playing ? (
             <Pause size={14} fill="white" className="text-white" aria-hidden="true" />
           ) : (
             <Play size={14} fill="white" className="ml-0.5 text-white" aria-hidden="true" />

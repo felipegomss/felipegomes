@@ -10,6 +10,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {children}
       <div
         aria-hidden="true"
         className={`fixed inset-0 z-9999 flex items-center justify-center bg-neutral-950 transition-opacity duration-700 ${
@@ -43,15 +44,6 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
         >
           {contact.name.toUpperCase()}
         </div>
-      </div>
-      <div
-        className={
-          phase === "fading"
-            ? "opacity-100 transition-opacity duration-700"
-            : "opacity-0"
-        }
-      >
-        {children}
       </div>
     </>
   );
