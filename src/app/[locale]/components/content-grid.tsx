@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useCallback, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useCallback, useState, type ReactNode } from "react";
 
 const GRID_UNIT = 72;
 const SNAP_THRESHOLD = 1;
@@ -97,6 +97,7 @@ function removeMarkers(wrapper: HTMLElement) {
 export function ContentGrid({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const rafId = useRef(0);
+  const [measured, setMeasured] = useState(false);
 
   const sync = useCallback(() => {
     const wrapper = ref.current;
@@ -169,6 +170,7 @@ export function ContentGrid({ children }: { children: ReactNode }) {
 
   useLayoutEffect(() => {
     sync();
+    setMeasured(true);
 
     const ro = new ResizeObserver(() => {
       cancelAnimationFrame(rafId.current);
@@ -187,7 +189,10 @@ export function ContentGrid({ children }: { children: ReactNode }) {
     <div
       ref={ref}
       className="content-grid md:col-span-2 md:grid md:grid-cols-2 md:[grid-auto-flow:dense]"
-      style={{ gridAutoRows: "auto" }}
+      style={{
+        gridAutoRows: "auto",
+        visibility: measured ? undefined : "hidden",
+      }}
     >
       {children}
     </div>
