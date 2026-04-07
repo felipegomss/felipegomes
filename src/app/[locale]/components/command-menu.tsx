@@ -34,6 +34,7 @@ import { playKeybindSound } from "@/hooks/use-keybind-sound";
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
+  const [isApplePlatform, setIsApplePlatform] = useState<boolean | null>(null);
   const t = useTranslations("command");
   const locale = useLocale();
   const router = useRouter();
@@ -42,23 +43,27 @@ export function CommandMenu() {
   toggleThemeRef.current = toggleTheme;
 
   useMountEffect(() => {
+    const platform = navigator.platform || navigator.userAgent;
+    const applePlatform = /mac|iphone|ipad|ipod/i.test(platform);
+    setIsApplePlatform(applePlatform);
     function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      const key = e.key.toLowerCase();
+      const preferenceModifierPressed = applePlatform ? e.ctrlKey && e.metaKey : e.ctrlKey && e.altKey;
+
+      if ((e.metaKey || e.ctrlKey) && key === "k") {
         e.preventDefault();
         playKeybindSound();
         setOpen((o) => !o);
         return;
       }
-
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-
-      if (e.key === "t") {
+      if (preferenceModifierPressed && key === "t") {
+        e.preventDefault();
         playKeybindSound();
         toggleThemeRef.current();
+        return;
       }
-      if (e.key === "l") {
+      if (preferenceModifierPressed && key === "l") {
+        e.preventDefault();
         playKeybindSound();
         const next = document.documentElement.lang === "pt-BR" ? "en" : "pt-BR";
         router.replace("/", { locale: next });
@@ -77,6 +82,10 @@ export function CommandMenu() {
   );
 
   const nextLocale = locale === "pt-BR" ? "en" : "pt-BR";
+  const themeShortcutLabel =
+    isApplePlatform === null ? "⌃⌘T / Ctrl+Alt+T" : isApplePlatform ? "⌃⌘T" : "Ctrl+Alt+T";
+  const localeShortcutLabel =
+    isApplePlatform === null ? "⌃⌘L / Ctrl+Alt+L" : isApplePlatform ? "⌃⌘L" : "Ctrl+Alt+L";
 
   return (
     <>
@@ -170,12 +179,12 @@ export function CommandMenu() {
             <CommandItem onSelect={() => run(toggleTheme)}>
               {resolvedTheme === "dark" ? <Sun /> : <Moon />}
               {resolvedTheme === "dark" ? t("lightMode") : t("darkMode")}
-              <CommandShortcut>T</CommandShortcut>
+              <CommandShortcut>{themeShortcutLabel}</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => run(() => router.replace("/", { locale: nextLocale }))}>
               <Globe />
               {t("switchLocale")}
-              <CommandShortcut>L</CommandShortcut>
+              <CommandShortcut>{localeShortcutLabel}</CommandShortcut>
             </CommandItem>
           </CommandGroup>
         </CommandList>
