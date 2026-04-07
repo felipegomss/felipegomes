@@ -53,7 +53,10 @@ export async function Sidebar({ locale }: { locale: string }) {
           <div>
             <p className="text-sm">{sidebar("mba")}</p>
             <p className="text-xs text-muted-foreground-subtle">
-              {sidebar("mbaInfo")}
+              {sidebar("mbaInstitution")}
+            </p>
+            <p className="text-xs text-muted-foreground-subtle">
+              {sidebar("mbaStatus")}
             </p>
           </div>
           <div className="mt-3">
@@ -68,7 +71,10 @@ export async function Sidebar({ locale }: { locale: string }) {
               <span className="sr-only"> (opens in new tab)</span>
             </a>
             <p className="text-xs text-muted-foreground-subtle">
-              {sidebar("degreeInfo")}
+              {sidebar("degreeInstitution")}
+            </p>
+            <p className="text-xs text-muted-foreground-subtle">
+              {sidebar("degreeStatus")}
             </p>
             <p className="text-xs text-muted-foreground-subtle">
               {sidebar("degreeCr")}

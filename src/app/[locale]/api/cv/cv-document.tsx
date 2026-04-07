@@ -157,10 +157,10 @@ export function CvDocument({ locale }: { locale: string }) {
 
         <Text style={s.sectionTitle}>{sidebar.education}</Text>
         <Text style={s.eduLine}>
-          <Text style={s.skillLabel}>{sidebar.mba}</Text> — {sidebar.mbaInfo}
+          <Text style={s.skillLabel}>{sidebar.mba}</Text> — {sidebar.mbaInstitution} — {sidebar.mbaStatus}
         </Text>
         <Text style={s.eduLine}>
-          <Text style={s.skillLabel}>{sidebar.degree}</Text> — {sidebar.degreeInfo} — {sidebar.degreeCr}
+          <Text style={s.skillLabel}>{sidebar.degree}</Text> — {sidebar.degreeInstitution} — {sidebar.degreeStatus} — {sidebar.degreeCr}
         </Text>
 
         <Text style={s.sectionTitle}>{sk.title}</Text>
