@@ -16,7 +16,7 @@ export function HeaderWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <header
-      className={`col-span-2 sticky top-0 z-50 hidden items-center justify-between border-b border-border bg-background/80 px-6 py-3 backdrop-blur-sm transition-shadow md:flex ${
+      className={`col-span-2 sticky top-0 z-50 hidden items-center justify-between border-b border-white/25 bg-background/10 px-6 py-3 backdrop-blur-sm backdrop-saturate-150 transition-shadow dark:border-white/10 dark:bg-background/5 md:flex ${
         scrolled ? "shadow-sm" : ""
       }`}
     >
