@@ -26,7 +26,7 @@ function measureHeights(
   return heights;
 }
 
-function snapSpans(left: number[], right: number[]): void {
+function snapSpans(left: number[], right: number[]): { leftCum: number[]; rightCum: number[] } {
   const leftCum: number[] = [];
   const rightCum: number[] = [];
 
@@ -62,6 +62,8 @@ function snapSpans(left: number[], right: number[]): void {
       }
     }
   }
+
+  return { leftCum, rightCum };
 }
 
 function createMarker(
@@ -125,6 +127,8 @@ export function ContentGrid({ children }: { children: ReactNode }) {
     const rightEls: HTMLElement[] = [];
     const leftSpans: number[] = [];
     const rightSpans: number[] = [];
+    const leftHeights: number[] = [];
+    const rightHeights: number[] = [];
 
     for (let i = 0; i < allEls.length; i++) {
       const el = allEls[i];
@@ -132,13 +136,15 @@ export function ContentGrid({ children }: { children: ReactNode }) {
       if (el.dataset.gridCol === "left") {
         leftEls.push(el);
         leftSpans.push(span);
+        leftHeights.push(heights[i]);
       } else {
         rightEls.push(el);
         rightSpans.push(span);
+        rightHeights.push(heights[i]);
       }
     }
 
-    snapSpans(leftSpans, rightSpans);
+    const { leftCum, rightCum } = snapSpans(leftSpans, rightSpans);
 
     for (let i = 0; i < leftEls.length; i++) {
       leftEls[i].style.gridRowEnd = `span ${leftSpans[i]}`;
@@ -154,17 +160,14 @@ export function ContentGrid({ children }: { children: ReactNode }) {
     vLine.style.cssText = `position:absolute;top:0;bottom:0;left:${colX}px;width:1px;background:var(--color-border);pointer-events:none;z-index:1;`;
     wrapper.appendChild(vLine);
 
-    const wrapperTop = wrapper.getBoundingClientRect().top;
-
-    for (const el of leftEls) {
-      const y = Math.round(el.getBoundingClientRect().bottom - wrapperTop);
+    for (const c of leftCum) {
+      const y = c * GRID_UNIT;
       createMarker(wrapper, colX, y, true);
       createMarker(wrapper, 0, y, false);
     }
-    for (const el of rightEls) {
-      if (!el.offsetHeight) continue;
-      const y = Math.round(el.getBoundingClientRect().bottom - wrapperTop);
-      createMarker(wrapper, colX, y, false);
+    for (let i = 0; i < rightCum.length; i++) {
+      if (!rightHeights[i]) continue;
+      createMarker(wrapper, colX, rightCum[i] * GRID_UNIT, false);
     }
   }, []);
 
