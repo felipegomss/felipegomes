@@ -21,8 +21,8 @@
       "role": "Software Analyst",
       "period": "06.2024 — present",
       "location": "Salvador/BA",
-      "h1": "Drive the frontend of AUTOLOAD's modernization (legacy → Next.js 14 + React 18 + TypeScript) and contribute to the .NET 8 backend with SignalR and multi-tenant PostgreSQL.",
-      "h2": "Created and publish @automind/react-components — design system with Radix UI, Storybook and Chromatic, consumed by the frontend and KIOSK app.",
+      "h1": "Drive the frontend of AUTOLOAD's modernization, migrating a legacy system to Next.js 14, React 18 and TypeScript, and contribute to the .NET 8 backend with SignalR and multi-tenant PostgreSQL.",
+      "h2": "Created and maintain @automind/react-components — design system with Radix UI, Storybook and Chromatic, consumed by the frontends across the AUTOLOAD ecosystem and by other company projects.",
       "h3": "Built the frontend for AUTOMED (Angular), a measurement management system compliant with ABNT NBR ISO 10012.",
       "h4": "Implemented Vitest + Playwright in the Azure DevOps pipeline — smoke tests on PR and full regression on release.",
       "h5": "Write specs and requirements docs with stakeholders. Run code reviews and mentor junior devs."
