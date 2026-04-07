@@ -21,36 +21,36 @@
       "role": "Software Analyst",
       "period": "06.2024 — present",
       "location": "Salvador/BA",
-      "h1": "Drive the frontend of the next generation of AUTOLOAD — rebuilt from the ground up as a modular SaaS product in Next.js 14, React 18 and TypeScript on a .NET 8 backend with SignalR and multi-tenant PostgreSQL — replacing the previous on-premise system (.NET + Vue) and cutting new-client install time by ~70%.",
-      "h2": "Reduced the frontend build pipeline from 12 to 4 minutes (~67%) by fixing a Node + Tailwind CSS misconfiguration, unblocking faster deploy cycles for the entire team.",
-      "h3": "Created and maintain @automind/react-components — a design system built on Radix UI, Storybook and Chromatic — standardizing the UI across 2 products and eliminating component rewrites between frontend teams.",
-      "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline covering critical flows with unit and E2E tests, blocking regressions before release via smoke tests on PR and full regression in CI.",
-      "h5": "Run daily code reviews and mentor ~5 junior developers, and write specs and requirements documentation directly with product stakeholders."
+      "h1": "Drive the frontend of the next generation of AUTOLOAD, a modular SaaS product built from the ground up in Next.js 14, React 18 and TypeScript on a .NET 8 backend (SignalR, multi-tenant PostgreSQL), replacing the legacy on-premise .NET + Vue system and cutting new-client install time by 70%.",
+      "h2": "Cut the frontend build pipeline from 12 to 4 minutes by fixing a Node + Tailwind CSS misconfiguration, speeding up the team's deploy cycle by 3x.",
+      "h3": "Created and maintain @automind/react-components, a design system built on Radix UI, Storybook and Chromatic that standardizes the UI across 2 products and eliminated component rewrites between frontend teams.",
+      "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline with full coverage of critical flows (unit + E2E), preventing regressions before release via smoke tests on PR and full regression in CI.",
+      "h5": "Run daily code reviews, mentor around 5 junior developers and write specs and requirements documentation alongside product stakeholders."
     },
     "branddi": {
       "role": "FullStack Developer",
       "period": "04.2023 — 06.2024",
       "location": "Remote",
-      "h1": "Architected an end-to-end infringement management platform now serving 300+ global brands, with a NestJS/REST core integrated with Pipefy via GraphQL, processing 6M+ sponsored ads and ~2,500 unfair competition cases per month.",
-      "h2": "Reduced report dashboard response times from ~7 minutes to low milliseconds by applying server-side downsampling, streamed responses and lazy-loaded time series.",
-      "h3": "Built Go workers consuming RabbitMQ queues to process crawled data in real time from 3 marketplaces and search engines, feeding the detection pipeline that protects R$250M+ in annual institutional CPC.",
-      "h4": "Built the observability stack from scratch (centralized logs in Papertrail, health checks and downtime alerts), reducing failure-to-fix time to near-instant by notifying the team at the moment of incident.",
-      "h5": "Led code reviews, defined the team's unit testing strategy and automated AWS deploys via GitHub Actions, standardizing the CI/CD flow for continuous delivery."
+      "h1": "Architected an end-to-end infringement management platform that serves 300+ global brands and processes 6M sponsored ads and 2,500 unfair competition cases per month, with a NestJS/REST core integrated with Pipefy via GraphQL.",
+      "h2": "Cut report dashboard response times from 7 minutes to milliseconds with server-side downsampling, streamed responses and lazy-loaded time series.",
+      "h3": "Built Go workers on RabbitMQ that process crawled data from 3 marketplaces and search engines in real time and feed the detection pipeline that protects over R$250M in annual institutional CPC.",
+      "h4": "Built the observability stack from scratch (Papertrail, health checks, downtime alerts) and cut failure-to-fix time to near-zero, with the team notified at the moment of each incident.",
+      "h5": "Led code reviews, defined the team's unit testing strategy and automated AWS deploys via GitHub Actions to standardize the project's CI/CD flow."
     },
     "eisa": {
       "role": "Software Analyst — QA",
       "period": "05.2021 — 04.2023",
       "location": "Remote",
-      "h1": "Automated the E2E test suite for VIVO systems with 90M+ subscribers using Selenium WebDriver, Cucumber and Ruby, covering critical provisioning flows and guaranteeing full regression before each release.",
-      "h2": "Validated asynchronous flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux, isolating bugs in data pipelines that impacted billing.",
-      "h3": "Led the migration of the legacy monorepo from TortoiseSVN to GitLab, modernizing the version-control workflow for ~20 engineers and unblocking modern CI/CD pipelines."
+      "h1": "Automated the E2E test suite for VIVO systems (90M+ subscribers) in Selenium WebDriver, Cucumber and Ruby, with coverage of critical provisioning flows and full regression before each release.",
+      "h2": "Validated asynchronous flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux to isolate bugs in data pipelines that affected billing.",
+      "h3": "Led the migration of the legacy monorepo from TortoiseSVN to GitLab, moving around 20 engineers onto a modern version-control workflow and enabling CI/CD pipelines."
     },
     "parallel": {
       "role": "FullStack Developer",
       "period": "09.2020 — 04.2021",
       "location": "Salvador/BA",
-      "h1": "Built full-stack features in React (frontend) and Node.js (backend) for a sales platform, contributing to continuous product conversion improvements.",
-      "h2": "Created auxiliary Python APIs and managed MySQL data persistence for internal product team workflows."
+      "h1": "Built full-stack features in React and Node.js for a sales platform, focused on UX and funnel conversion improvements.",
+      "h2": "Created auxiliary Python APIs and managed MySQL data persistence for internal product workflows."
     }
   },
   "skills": {

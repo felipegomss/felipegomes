@@ -117,6 +117,12 @@ export function CvDocument({ locale }: { locale: string }) {
           </View>
           <View style={s.headerCol}>
             <Text>
+              <Text style={s.headerLabel}>Website: </Text>
+              <Link src="https://lfng.dev" style={s.link}>
+                lfng.dev
+              </Link>
+            </Text>
+            <Text>
               <Text style={s.headerLabel}>LinkedIn: </Text>
               <Link src={`https://${contact.linkedin}`} style={s.link}>
                 {contact.linkedin}
