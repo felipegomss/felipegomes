@@ -21,7 +21,7 @@ const bodyFont = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-const BASE_URL = "https://lfng.dev";
+const BASE_URL = "https://www.lfng.dev";
 
 export async function generateMetadata({
   params,
