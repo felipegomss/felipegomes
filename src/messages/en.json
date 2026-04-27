@@ -83,7 +83,9 @@
     "readingTime": "{minutes} min read",
     "backToBlog": "← Blog",
     "tableOfContents": "On this page",
-    "empty": "No posts yet."
+    "empty": "No posts yet.",
+    "recentPosts": "Recent posts",
+    "viewAll": "View all →"
   },
   "command": {
     "navigate": "Navigate",

@@ -83,7 +83,9 @@
     "readingTime": "{minutes} min de leitura",
     "backToBlog": "← Blog",
     "tableOfContents": "Nesta página",
-    "empty": "Nenhum post ainda."
+    "empty": "Nenhum post ainda.",
+    "recentPosts": "Últimas publicações",
+    "viewAll": "Ver todas →"
   },
   "command": {
     "navigate": "Navegar",

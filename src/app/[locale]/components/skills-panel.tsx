@@ -8,6 +8,7 @@ import { GridCell } from "./grid-cell";
 import { HalftoneImage } from "./halftone-image";
 import { OpenSourceSection } from "./open-source-section";
 import { ProjectItem } from "./project-item";
+import { RecentPostsSection } from "./recent-posts-section";
 import { SectionHeading } from "./section-heading";
 
 async function getGitHubDirCount(apiPath: string): Promise<number | null> {
@@ -121,6 +122,8 @@ export async function SkillsPanel() {
       <Suspense fallback={null}>
         <OpenSourceSection />
       </Suspense>
+
+      <RecentPostsSection />
 
       <GridCell col="right" className="hidden flex-1 md:block border-b-0" />
     </aside>
