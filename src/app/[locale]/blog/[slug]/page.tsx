@@ -129,14 +129,21 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="mb-8">
+      <nav className="mb-8 flex items-center gap-2 text-2xs text-muted-foreground-subtle">
+        <Link
+          href={`/${locale}`}
+          className="transition-colors hover:text-foreground"
+        >
+          lfng.dev
+        </Link>
+        <span aria-hidden="true">/</span>
         <Link
           href={`/${locale}/blog`}
-          className="text-2xs text-muted-foreground transition-colors hover:text-foreground"
+          className="transition-colors hover:text-foreground"
         >
-          {t("backToBlog")}
+          blog
         </Link>
-      </div>
+      </nav>
 
       <div className="lg:grid lg:grid-cols-[1fr_220px] lg:gap-16">
         <div className="min-w-0">

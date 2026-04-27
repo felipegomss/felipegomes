@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { routing } from "@/i18n/routing";
 import { BASE_URL } from "@/lib/constants";
 import { getAllPosts } from "@/lib/blog";
@@ -57,6 +58,15 @@ export default async function BlogPage({
       id="main-content"
       className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:py-24"
     >
+      <div className="mb-8">
+        <Link
+          href={`/${locale}`}
+          className="text-2xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          ← lfng.dev
+        </Link>
+      </div>
+
       <header className="mb-12">
         <h1 className="font-heading text-3xl font-black tracking-tight">
           {t("title")}
