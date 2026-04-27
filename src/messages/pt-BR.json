@@ -76,7 +76,18 @@
   "openSource": {
     "title": "Open Source"
   },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Notas de desenvolvimento, processo e engenharia.",
+    "metaDescription": "Artigos sobre desenvolvimento de software, arquitetura frontend e experiências de engenharia.",
+    "readingTime": "{minutes} min de leitura",
+    "backToBlog": "← Blog",
+    "tableOfContents": "Nesta página",
+    "empty": "Nenhum post ainda."
+  },
   "command": {
+    "navigate": "Navegar",
+    "blogLink": "Blog",
     "placeholder": "O que você procura?",
     "empty": "Nenhum resultado.",
     "vibes": "Vibes",
