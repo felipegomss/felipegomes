@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useThemeTransition } from "@/hooks/use-theme-transition";
 import {
+  BookOpen,
   CornerDownLeft,
   Download,
   Globe,
@@ -105,6 +106,15 @@ export function CommandMenu() {
         <CommandInput placeholder={t("placeholder")} />
         <CommandList>
           <CommandEmpty>{t("empty")}</CommandEmpty>
+
+          <CommandGroup heading={t("navigate")}>
+            <CommandItem onSelect={() => run(() => router.push("/blog"))}>
+              <BookOpen />
+              {t("blogLink")}
+            </CommandItem>
+          </CommandGroup>
+
+          <CommandSeparator />
 
           <CommandGroup heading={t("askAi")}>
             <CommandItem onSelect={() => run(() => window.open(`https://chatgpt.com/?q=${encodeURIComponent(t("aiPrompt"))}`, "_blank"))}>
