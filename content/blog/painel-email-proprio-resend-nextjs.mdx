@@ -1,0 +1,110 @@
+---
+title: "Eu queria mandar email do meu domínio. Acabei construindo meu próprio cliente."
+description: "Como a frustração de não conseguir enviar de ola@lfng.dev virou um painel de email com templates, currículo em anexo automático e proteção server-side — tudo dentro do próprio portfólio."
+date: "2026-04-30"
+tags: ["resend", "react-email", "nextjs", "email", "developer-experience"]
+---
+
+Eu tenho um domínio. Tenho `ola@lfng.dev` e `hi@lfng.dev` configurados no Cloudflare Email Routing, que redirecionam tudo para o meu Gmail. Recebo bem. O problema é que nunca consegui responder de lá.
+
+Toda vez que ia mandar email pra um recrutador ou cliente, mandava do `luisfng123@gmail.com`. Não é o fim do mundo. Mas quando você tem um domínio, um portfólio, uma marca pessoal que você levou tempo construindo — mandar email de um Gmail com números no final quebra o clima.
+
+## O que o Cloudflare faz (e o que não faz)
+
+O Cloudflare Email Routing é ótimo, mas é só inbound. Ele recebe email no seu domínio e redireciona pra onde você quiser. Não tem SMTP de saída. Não existe como mandar email de `ola@lfng.dev` só com Cloudflare.
+
+Pra enviar, você precisa de um relay SMTP externo. Opções gratuitas comuns: Brevo, Resend, ForwardEmail. A ideia é verificar o domínio nesse serviço (SPF, DKIM, DMARC no DNS), pegar as credenciais SMTP, e configurar no Gmail em "Adicionar outro endereço de e-mail".
+
+## Tentei o Brevo. Não foi.
+
+Segui o passo a passo: criei conta, adicionei o domínio, configurei o Gmail com `smtp-relay.brevo.com` na porta 587 com TLS. Erro. Troquei pra porta 465 com SSL. Erro. A mensagem era genérica o suficiente pra não ajudar em nada.
+
+Provavelmente faltava alguma etapa de verificação do domínio ou sender no painel deles. Pode ser que funcione pra você — é uma opção válida. Mas depois de uns 20 minutos não indo, decidi tentar o Resend.
+
+## Resend funcionou. E aí veio a ideia.
+
+O Resend tem SMTP, mas o que me interessou mesmo foi a API. É uma das melhores experiências de DX que usei: você instala o SDK, coloca a chave, e manda email em literalmente cinco linhas. A integração com React Email faz o template do email virar um componente React — sem tabelas, sem inline styles malucos, só JSX que o SDK renderiza na hora de enviar.
+
+Aí bateu a pergunta: se eu vou verificar o domínio de qualquer jeito, e o Resend tem API boa, por que configurar o Gmail como relay? Por que não fazer meu próprio painel dentro do portfólio?
+
+## O que o painel faz
+
+É uma página em `/email`, protegida, que só eu acesso. Tem dois painéis:
+
+**Esquerda: o compositor.** Campo "Para" com tag input — você digita um email, aperta Enter, vira chip. Suporta múltiplos destinatários. Campo de assunto. Textarea pro corpo. Abaixo da textarea, a assinatura renderizada em preview (não editável). Toggle pra anexar o currículo ou não.
+
+**Direita: os templates.** Quatro opções — Candidatura, Follow-up, Networking, Apresentação. Hover em cada um mostra uma prévia do que o template gera. Clicar abre um modal com os campos específicos daquele template: nome do recrutador, empresa, vaga. Preenche, clica em "Aplicar", e o corpo já aparece preenchido.
+
+O toggle de idioma fica no topo. Quando você troca de PT-BR pra EN — ou vice-versa — tudo muda junto: templates, assinatura, labels dos campos, e se você já aplicou um template, o corpo é regenerado automaticamente no novo idioma sem você precisar reabrir o modal.
+
+O currículo já está gerado estaticamente em `public/cv/` — um pra cada idioma — então quando você marca o checkbox e clica em enviar, a API lê o PDF certo e anexa. Na assinatura do email aparece "Segue currículo em anexo." antes do fechamento.
+
+## React Email pra o template
+
+O email que o destinatário recebe é um componente React renderizado pelo Resend:
+
+```tsx
+export function OutreachEmail({ body, locale, attachCv }: Props) {
+  const paragraphs = body.split("\n\n").filter(Boolean);
+  const closing = { "pt-BR": "Atenciosamente,", en: "Best regards," }[locale];
+
+  return (
+    <Html lang={locale === "pt-BR" ? "pt" : "en"}>
+      <Body style={{ fontFamily: "Arial, sans-serif", color: "#0a0a0a" }}>
+        <Container style={{ maxWidth: "600px", margin: "0 auto", padding: "32px 24px" }}>
+          {paragraphs.map((p, i) => (
+            <Text key={i} style={{ fontSize: "15px", lineHeight: "1.65" }}>
+              {p}
+            </Text>
+          ))}
+          {attachCv && <Text>{cvNote[locale]}</Text>}
+          <Hr />
+          <Text>{closing}</Text>
+          <Text>Luis Felipe Gomes</Text>
+          <Text>
+            <Link href="https://lfng.dev">lfng.dev</Link>
+            {" · "}
+            <Link href="https://linkedin.com/in/felipegomss">LinkedIn</Link>
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  );
+}
+```
+
+O corpo do email vem com parágrafos separados por linha dupla — o componente divide e renderiza cada um como `<Text>` separado. Simples, mas resolve.
+
+## Segurança
+
+A página não pode ser pública. A primeira versão usava `sessionStorage` pra guardar a senha client-side — o que é basicamente não ter segurança nenhuma, porque qualquer pessoa abre o DevTools e seta o valor.
+
+A versão final usa o proxy do Next.js 16 (o que era `middleware.ts` nas versões anteriores, agora é `proxy.ts`). O proxy roda no servidor antes de qualquer renderização:
+
+```ts
+export function proxy(request: NextRequest) {
+  const isEmailRoute = /^\/(pt-BR|en)\/email(\/|$)/.test(pathname);
+  const isLoginPage = /^\/(pt-BR|en)\/email\/login(\/|$)/.test(pathname);
+
+  if (isEmailRoute && !isLoginPage) {
+    const session = request.cookies.get("email_session");
+    if (!session || session.value !== process.env.EMAIL_PASSWORD) {
+      return NextResponse.redirect(new URL(`/${locale}/email/login`, request.url));
+    }
+  }
+
+  return intlMiddleware(request);
+}
+```
+
+O cookie é HttpOnly — JavaScript da página não consegue lê-lo. A API de envio também valida o cookie no servidor antes de processar qualquer coisa. Duas camadas.
+
+O login é uma página separada em `/email/login` que faz POST pra `/api/email/session`. Se a senha bater com a variável de ambiente, define o cookie com validade de 7 dias e redireciona pro painel.
+
+## O que eu aprendi
+
+A solução acabou sendo melhor do que o que eu queria originalmente. Configurar o Gmail como relay seria transparente pra mim — mandava como sempre, só o remetente mudava. Mas esse painel é mais útil: tenho templates prontos que não preciso redigitar, o currículo vai junto automaticamente, e o idioma do email muda com um clique.
+
+Às vezes a friction inicial de uma ferramenta que não funciona te empurra pra uma solução que você não teria construído de outra forma.
+
+E agora quando mando email pro recrutador do Google, vai de `ola@lfng.dev`.
