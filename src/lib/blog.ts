@@ -47,27 +47,36 @@ export function formatDate(dateStr: string, locale: string): string {
   }).format(new Date(`${dateStr}T12:00:00`));
 }
 
-export async function getAllPosts(): Promise<Post[]> {
+function resolvePostFile(slug: string, locale: string): string {
+  const localeFile = path.join(POSTS_DIR, `${slug}.${locale}.mdx`);
+  const defaultFile = path.join(POSTS_DIR, `${slug}.mdx`);
+  return fs.existsSync(localeFile) ? localeFile : defaultFile;
+}
+
+function parsePostFile(filePath: string, slug: string): Post {
+  const raw = fs.readFileSync(filePath, "utf8");
+  const { data, content } = matter(raw);
+  const fm = data as PostFrontmatter;
+  const rt = readingTime(content);
+  return {
+    ...fm,
+    slug,
+    readingTimeMinutes: Math.ceil(rt.minutes),
+    headings: extractHeadings(content),
+  };
+}
+
+export async function getAllPosts(locale = "pt-BR"): Promise<Post[]> {
   if (!fs.existsSync(POSTS_DIR)) return [];
 
-  const files = fs
+  const baseSlugs = fs
     .readdirSync(POSTS_DIR)
-    .filter((f) => f.endsWith(".mdx"));
+    .filter((f) => f.endsWith(".mdx") && !f.match(/\.\w{2,5}\.mdx$/))
+    .map((f) => f.replace(/\.mdx$/, ""));
 
-  const posts = files.map((filename) => {
-    const slug = filename.replace(/\.mdx$/, "");
-    const fullPath = path.join(POSTS_DIR, filename);
-    const raw = fs.readFileSync(fullPath, "utf8");
-    const { data, content } = matter(raw);
-    const fm = data as PostFrontmatter;
-    const rt = readingTime(content);
-
-    return {
-      ...fm,
-      slug,
-      readingTimeMinutes: Math.ceil(rt.minutes),
-      headings: extractHeadings(content),
-    } satisfies Post;
+  const posts = baseSlugs.map((slug) => {
+    const filePath = resolvePostFile(slug, locale);
+    return parsePostFile(filePath, slug);
   });
 
   return posts.sort(
@@ -77,11 +86,13 @@ export async function getAllPosts(): Promise<Post[]> {
 
 export async function getPostBySlug(
   slug: string,
+  locale = "pt-BR",
 ): Promise<{ post: Post; source: string } | null> {
-  const fullPath = path.join(POSTS_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(fullPath)) return null;
+  const defaultFile = path.join(POSTS_DIR, `${slug}.mdx`);
+  if (!fs.existsSync(defaultFile)) return null;
 
-  const raw = fs.readFileSync(fullPath, "utf8");
+  const filePath = resolvePostFile(slug, locale);
+  const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
   const fm = data as PostFrontmatter;
   const rt = readingTime(content);

@@ -1,0 +1,374 @@
+---
+title: "How I turned my corporate laptop into a remote server and went back to coding on my Mac"
+description: "A setup using WSL2, Tailscale, and SSH to access the company's Windows environment directly from a personal MacBook — with the laptop closed in a corner of the house."
+date: "2026-04-27"
+tags: ["wsl2", "tailscale", "ssh", "developer-experience", "productivity"]
+---
+
+The company gave me a Windows machine. I have a personal MacBook and have been using a Unix environment for years: terminal, zsh, brew, keyboard shortcuts burned into muscle memory. Every time I sat down at the Windows machine to work, I felt friction over small things. Backslash in paths, PowerShell that isn't bash, different shortcuts, a font that isn't mine.
+
+I tried to adapt. Configured Windows Terminal, used WSL day to day, installed everything I could to make it feel familiar. It still felt off. My productivity dropped just from being on a machine that isn't mine.
+
+Then I thought: what if Windows became just a server? The repos live on it, Claude Code runs on it, `npm run dev` runs on it, and I control everything from the Mac over SSH. The laptop sits closed in a corner of the house, plugged into the wall, and I never physically touch it again.
+
+It worked. I've been using this setup for a week and it feels like I'm coding locally on the Mac. Here's how I built it.
+
+## The architecture
+
+Three pieces:
+
+- **WSL2 (Ubuntu) on Windows**, where the repos live, where Node runs, where Claude Code runs
+- **Tailscale**, a mesh VPN that connects Mac and Windows on a private network and works on any Wi-Fi
+- **SSH with port forwarding**, so I can open `localhost:3000` on my Mac and hit the Next.js server running in WSL
+
+I chose Tailscale because I wanted to work from a coffee shop or my parents' house without reconfiguring anything. Tailscale is mesh: each machine gets its own hostname that works from anywhere in the world. No port forwarding on the router, no dynamic IP, no DDNS.
+
+One detail: I installed Tailscale **inside WSL**, not on the Windows host. That way the Mac connects directly to Ubuntu, without going through the Windows bridge.
+
+## Prerequisites
+
+- A Windows laptop with admin privileges (without this, none of the tutorial will work)
+- A Mac with Homebrew installed
+- A Tailscale account (free plan works, up to 100 devices)
+- 30 minutes
+
+## Step 1. Install and configure WSL2
+
+On Windows, open **PowerShell as Administrator** and run:
+
+```powershell
+wsl --install
+```
+
+This command enables the WSL feature, enables the Virtual Machine Platform, and installs Ubuntu as the default distro. Restart when it asks.
+
+After the reboot, sometimes Ubuntu opens a window by itself asking you to create a username and password. In my case it didn't. I had to manually check what was installed:
+
+```powershell
+wsl -l -v
+```
+
+If it lists Ubuntu with VERSION 2, just run `wsl` in PowerShell to enter and configure the username/password for the first time. If nothing is listed, install manually:
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+When Ubuntu asks for a username, pick something short, lowercase, no spaces. The password you set here is the `sudo` password. It's not the same as your Windows password — they're separate accounts.
+
+Verify everything's working:
+
+```bash
+uname -a
+# should show Linux ... WSL2
+
+cat /etc/os-release
+# should show Ubuntu 24.04 or similar
+```
+
+## Step 2. Install Node.js and Claude Code
+
+Now I'm inside the Ubuntu terminal. First thing: get out of `/mnt/c/...` if you landed there. That path is the Windows filesystem mounted inside Linux, and Node performance on it is terrible. Webpack/Turbopack watchers suffer. Always work in `~`:
+
+```bash
+cd ~
+pwd
+# should show /home/your-username
+```
+
+Update packages and install utilities:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl git build-essential
+```
+
+Install nvm (Node Version Manager):
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+```
+
+Install Node LTS and Claude Code:
+
+```bash
+nvm install --lts
+nvm use --lts
+npm install -g @anthropic-ai/claude-code
+```
+
+Verify:
+
+```bash
+node --version    # v22.x or similar
+claude --version  # something like 0.x.x
+```
+
+## Step 3. Install Tailscale in WSL
+
+Create an account at [tailscale.com](https://tailscale.com) if you don't have one. Note which account you used (Google, GitHub, Microsoft, whatever), because you'll use the same one on the Mac.
+
+In WSL:
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+```
+
+The important detail is that WSL doesn't have a full TUN device, so Tailscale needs to run in userspace networking mode. We'll configure this as a systemd service so it starts automatically on boot. First, enable systemd in WSL:
+
+```bash
+sudo nano /etc/wsl.conf
+```
+
+Paste inside:
+
+```
+[boot]
+systemd=true
+```
+
+Save (`Ctrl+O` Enter `Ctrl+X`). In Windows PowerShell:
+
+```powershell
+wsl --shutdown
+```
+
+Wait about 10 seconds, open Ubuntu again. Check:
+
+```bash
+systemctl is-system-running
+```
+
+Should respond `running` or `degraded`. Either one works.
+
+Enable tailscaled as a service:
+
+```bash
+sudo systemctl enable --now tailscaled
+```
+
+Edit the service to force userspace networking:
+
+```bash
+sudo systemctl edit tailscaled
+```
+
+In the editor that opens, paste between the indicated lines:
+
+```
+[Service]
+ExecStart=
+ExecStart=/usr/sbin/tailscaled --tun=userspace-networking --state=/var/lib/tailscale/tailscaled.state
+```
+
+Save. Then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart tailscaled
+sudo tailscale up --ssh --hostname=wsl-work
+```
+
+The `--ssh` flag enables Tailscale SSH, which handles authentication via Tailscale itself — no need to configure SSH keys manually. You can replace `wsl-work` with whatever name you prefer, lowercase and no spaces.
+
+A URL like `https://login.tailscale.com/a/abc123` will appear. Open it in a browser, authorize the machine. When the terminal returns to the prompt, you're connected.
+
+Check:
+
+```bash
+tailscale status
+```
+
+Should list `wsl-work` with an IP of `100.x.x.x`.
+
+## Step 4. Install Tailscale on Mac
+
+```bash
+brew install --cask tailscale
+```
+
+Open the app (Spotlight: Cmd+Space, "Tailscale"). An icon will appear in the menu bar. Click it, "Log in...". Log in with the **same account** you used in WSL.
+
+Test:
+
+```bash
+tailscale status
+ping wsl-work
+```
+
+If ping responds with low latency (5 to 50ms on a home network), the two devices are talking.
+
+## Step 5. Configure SSH with port forwarding
+
+This step is what makes the setup comfortable day to day. Instead of typing long commands every time, you configure once and then it's just `ssh wsl`.
+
+On Mac:
+
+```bash
+mkdir -p ~/.ssh
+nano ~/.ssh/config
+```
+
+Paste:
+
+```
+Host wsl
+  HostName wsl-work
+  User your-linux-username
+  ForwardAgent yes
+  LocalForward 3000 localhost:3000
+  LocalForward 3001 localhost:3001
+  LocalForward 5432 localhost:5432
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+  LogLevel QUIET
+  ExitOnForwardFailure no
+```
+
+Save. Adjust permissions (SSH is strict about this):
+
+```bash
+chmod 600 ~/.ssh/config
+```
+
+Each `LocalForward X localhost:X` creates a tunnel: anything hitting port X on the Mac gets forwarded to port X in WSL. The ports I chose:
+
+- **3000**, Next.js default port
+- **3001**, for running two projects simultaneously
+- **5432**, Postgres if you spin it up locally
+
+`LogLevel QUIET` silences "channel open failed" warnings that appear when something on the Mac tries to access a port that nobody is listening on in WSL. It's noise that doesn't mean anything is broken.
+
+Connect:
+
+```bash
+ssh wsl
+```
+
+You'll land in the Ubuntu terminal, no password required (thanks to Tailscale SSH), with the ports already forwarded. From here, anything running in WSL on `localhost:3000` will be accessible at `localhost:3000` on the Mac. Google OAuth works, cookies work, HMR works, because from the browser's perspective it's genuinely localhost.
+
+## Step 6. Autostart on Windows boot
+
+Without this step, WSL only starts when someone manually opens a terminal. If the machine reboots (Windows update, power outage), you lose access until you physically touch it. Let's fix that.
+
+On Windows, press `Win + R` and type:
+
+```
+shell:startup
+```
+
+A folder will open. Inside it, right-click, New, Shortcut. In "Location of item", paste:
+
+```
+C:\Windows\System32\wsl.exe -d Ubuntu
+```
+
+Next. Name: `WSL Autostart`. Finish.
+
+After creating it, right-click the shortcut, Properties, in the "Shortcut" tab find the "Run" field. Change from "Normal window" to **"Minimized"**. OK.
+
+Done. Every time Windows logs in, WSL comes up with it, tailscaled as a service comes up with it, and the machine rejoins the Tailnet by itself.
+
+To close the loop, enable automatic Windows login. `Win + R`, `netplwiz`, uncheck "Users must enter a user name and password". Apply and enter the password twice for caching. **Warning:** only do this if the machine is in a physically secure location. Anyone with physical access will log straight in.
+
+## Step 7. Power settings
+
+This is the step most people forget. Configuring everything to run and then discovering Windows suspends itself when you close the lid = broken setup.
+
+Press `Win + R`, `control`, Hardware and Sound, Power Options, "Choose what closing the lid does".
+
+In the **"Plugged in"** column, change "When I close the lid" to **"Do nothing"**. Save.
+
+Go back to Power Options, "Change plan settings" for the active plan, "Change advanced power settings". Configure, always in the **plugged in** column:
+
+- Hard disk, Turn off hard disk after: **Never**
+- Sleep, Sleep after: **Never**
+- Sleep, Allow hybrid sleep: **Off**
+- Sleep, Hibernate after: **Never**
+- USB settings, USB selective suspend setting: **Disabled**
+- PCI Express, Link State Power Management: **Off**
+
+Apply. OK.
+
+### The detail that will bite you: Modern Standby
+
+Modern corporate laptops have "Modern Standby" (S0), a mode where the system **pretends to be on but suspends components even without closing the lid**. If it's active, some of the previous settings are ignored.
+
+PowerShell admin:
+
+```powershell
+powercfg /a
+```
+
+Look at what shows as available. If you see "Standby (S0 Low Power Idle)" but not "Standby (S3)", you have Modern Standby. To disable it:
+
+```powershell
+reg add HKLM\System\CurrentControlSet\Control\Power /v PlatformAoAcOverride /t REG_DWORD /d 0 /f
+```
+
+Restart. Run `powercfg /a` again. S3 should now be available.
+
+Also disable hibernation (we don't want it):
+
+```powershell
+powercfg /h off
+```
+
+### Corporate policy
+
+Since it's a company machine, IT may have a GPO policy forcing suspension. To check:
+
+```powershell
+gpresult /h $env:USERPROFILE\Desktop\gpo_report.html
+```
+
+Open the HTML, search for "Power Management" or "Sleep". If you find an applied policy, some settings will be ignored. You'll need to talk to IT.
+
+## The decisive test
+
+Restart Windows. Log in. Don't open anything. Wait 1 to 2 minutes.
+
+On Mac:
+
+```bash
+tailscale status
+```
+
+`wsl-work` should appear online. Without you having touched anything.
+
+```bash
+ssh wsl
+```
+
+Landed in Ubuntu. Setup validated.
+
+Now the physical test: close the laptop lid. Wait 5 minutes. Come back to the Mac, run `ssh wsl` again. If you got in, the setup is ready to be forgotten in a corner of the house.
+
+## Day-to-day practicalities
+
+Keep repos always in `~/`, never in `/mnt/c/`. The performance difference is absurd.
+
+On heat: a closed laptop runs hotter because the screen acts as a secondary heatsink. Put it on a hard surface, nothing soft underneath. A vertical stand helps a lot (I spent about R$80 on a generic one). If the CPU consistently goes above 80°C, rethink the position.
+
+Ethernet cable, if possible. Wi-Fi works, but the adapter can enter power-saving mode even with the energy settings configured. A cable is more stable for 24/7.
+
+If you have frequent power outages, a UPS is worth it. A 600VA one will hold the laptop for several minutes and prevent reboots. But with autostart configured, even if it restarts, it comes back on its own.
+
+And set Windows Update's active hours to cover the whole day (Settings, Windows Update, Advanced options), to avoid automatic restarts without warning.
+
+## What changed in my workflow
+
+I turn on the Mac in the morning. Tailscale comes up automatically. I open a terminal:
+
+```bash
+ssh wsl
+cd ~/projects/my-app
+npm run dev
+```
+
+In another tab, `ssh wsl` again, and `claude` running as a code agent on the project. Mac browser at `localhost:3000`, Next.js serving from WSL, Google OAuth working as if it were local.
+
+The Windows laptop is closed, on a shelf, plugged in. I haven't touched it in four days.
+
+It's not zero-config. There are pitfalls: Modern Standby, GPO, performance on `/mnt/c/`, port forwarding vs direct IP. But once configured, it disappears. And that's what I wanted from the start: for the corporate machine to simply vanish from sight.

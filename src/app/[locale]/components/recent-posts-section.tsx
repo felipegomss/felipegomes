@@ -6,10 +6,10 @@ import { GridCell } from "./grid-cell";
 import { SectionHeading } from "./section-heading";
 
 export async function RecentPostsSection() {
-  const [locale, t, allPosts] = await Promise.all([
-    getLocale(),
+  const locale = await getLocale();
+  const [t, allPosts] = await Promise.all([
     getTranslations("blog"),
-    getAllPosts(),
+    getAllPosts(locale),
   ]);
 
   if (allPosts.length === 0) return null;

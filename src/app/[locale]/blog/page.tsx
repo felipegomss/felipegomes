@@ -51,7 +51,7 @@ export default async function BlogPage({
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "blog" });
-  const posts = await getAllPosts();
+  const posts = await getAllPosts(locale);
 
   return (
     <main
