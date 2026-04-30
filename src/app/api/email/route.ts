@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { cookies } from "next/headers";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { OutreachEmail } from "@/emails/outreach";
@@ -9,12 +10,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
-    const { to, subject, body, locale, attachCv, password } =
-      await request.json();
+    const cookieStore = await cookies();
+    const session = cookieStore.get("email_session");
 
-    if (!password || password !== process.env.EMAIL_PASSWORD) {
+    if (!session || session.value !== process.env.EMAIL_PASSWORD) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const { to, subject, body, locale, attachCv } = await request.json();
 
     if (!to?.length || !subject || !body) {
       return NextResponse.json(

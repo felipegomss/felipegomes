@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +12,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Send, Paperclip, Lock } from "lucide-react";
+import { Send, Paperclip } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -191,8 +192,8 @@ const TEMPLATES: Template[] = [
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function EmailPage() {
-  const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const { locale: urlLocale } = useParams<{ locale: string }>();
 
   const [recipients, setRecipients] = useState<string[]>([]);
   const [recipientInput, setRecipientInput] = useState("");
@@ -208,10 +209,6 @@ export default function EmailPage() {
   const [appliedTemplateId, setAppliedTemplateId] = useState<string | null>(null);
   const [templateFields, setTemplateFields] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    if (sessionStorage.getItem("email_pw")) setAuthed(true);
-  }, []);
-
   // Re-generate body when locale changes if a template was applied
   useEffect(() => {
     if (!appliedTemplateId || Object.keys(templateFields).length === 0) return;
@@ -219,16 +216,9 @@ export default function EmailPage() {
     if (template) setBody(template.generate(templateFields, locale));
   }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function handleAuth(e: React.FormEvent) {
-    e.preventDefault();
-    sessionStorage.setItem("email_pw", password);
-    setAuthed(true);
-  }
-
-  function handleLogout() {
-    sessionStorage.removeItem("email_pw");
-    setAuthed(false);
-    setPassword("");
+  async function handleLogout() {
+    await fetch("/api/email/session", { method: "DELETE" });
+    router.replace(`/${urlLocale}/email/login`);
   }
 
   function handleLocaleChange(next: Locale) {
@@ -288,7 +278,6 @@ export default function EmailPage() {
           body,
           locale,
           attachCv,
-          password: sessionStorage.getItem("email_pw"),
         }),
       });
 
@@ -315,34 +304,6 @@ export default function EmailPage() {
       setSendError("Erro de conexão.");
       setStatus("error");
     }
-  }
-
-  // ── Auth gate ──────────────────────────────────────────────────────────────
-
-  if (!authed) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <form
-          onSubmit={handleAuth}
-          className="w-full max-w-xs space-y-3 border border-border p-6"
-        >
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest">
-            <Lock className="size-3" />
-            Email
-          </div>
-          <Input
-            type="password"
-            placeholder="senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoFocus
-          />
-          <Button type="submit" className="w-full" size="sm">
-            Entrar
-          </Button>
-        </form>
-      </div>
-    );
   }
 
   const sig = SIGNATURES[locale];
