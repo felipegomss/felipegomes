@@ -57,6 +57,9 @@ export async function generateMetadata({
       description: t("ogDescription"),
       images: [`${BASE_URL}/og.png`],
     },
+    other: {
+      "theme-color": "#0a0a0a",
+    },
   };
 }
 

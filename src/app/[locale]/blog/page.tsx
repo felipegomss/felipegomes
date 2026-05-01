@@ -33,11 +33,14 @@ export async function generateMetadata({
       description: t("metaDescription"),
       type: "website",
       url,
+      images: [{ url: `${BASE_URL}/og.png`, width: 1200, height: 630 }],
+      siteName: "LFNG",
     },
     twitter: {
       card: "summary_large_image",
       title: `${t("title")} — LFNG`,
       description: t("metaDescription"),
+      images: [`${BASE_URL}/og.png`],
     },
   };
 }

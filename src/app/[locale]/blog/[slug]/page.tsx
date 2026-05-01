@@ -56,6 +56,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.description,
+      images: [`${BASE_URL}/${locale}/blog/${slug}/opengraph-image`],
     },
   };
 }
