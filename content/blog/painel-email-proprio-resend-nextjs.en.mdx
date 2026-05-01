@@ -1,13 +1,13 @@
 ---
 title: "I wanted to send email from my domain. I ended up building my own client."
-description: "How the frustration of not being able to send from ola@lfng.dev turned into an email panel with templates, automatic resume attachment, and server-side protection — all inside the portfolio itself."
+description: "How the frustration of not being able to send from ola@lfng.dev turned into an email panel with templates, internationalized signature, and server-side protection, all inside the portfolio itself."
 date: "2026-04-30"
 tags: ["resend", "react-email", "nextjs", "email", "developer-experience"]
 ---
 
 I have a domain. I have `ola@lfng.dev` and `hi@lfng.dev` configured in Cloudflare Email Routing, forwarding everything to my Gmail. Receiving works fine. The problem is I could never send from there.
 
-Every time I emailed a recruiter or client, it went out as `luisfng123@gmail.com`. Not the end of the world. But when you have a domain, a portfolio, a personal brand you spent time building — sending email from a Gmail with numbers in it breaks the vibe.
+Every time I sent a professional email to a client, to someone in the community, to close a freelance project, it went out as `luisfng123@gmail.com`. Not the end of the world. But when you have a domain, a portfolio, a personal brand you spent time building. Sending email from a Gmail with numbers in it breaks the vibe.
 
 ## What Cloudflare does (and doesn't)
 
@@ -19,11 +19,11 @@ To send, you need an external SMTP relay. Common free options: Brevo, Resend, Fo
 
 Followed the steps: created an account, added the domain, configured Gmail with `smtp-relay.brevo.com` on port 587 with TLS. Error. Switched to port 465 with SSL. Error. The message was generic enough to be useless.
 
-It was probably a missing domain or sender verification step in their dashboard. It might work for you — it's a valid option. But after 20 minutes of getting nowhere, I decided to try Resend.
+It was probably a missing domain or sender verification step in their dashboard. It might work for you, it's a valid option. But after 20 minutes of getting nowhere, I decided to try Resend.
 
 ## Resend worked. And then the idea hit.
 
-Resend has SMTP, but what really caught my attention was the API. It's one of the best DX experiences I've used: install the SDK, add the key, and you're sending email in literally five lines. The integration with React Email turns the email template into a React component — no tables, no crazy inline styles, just JSX that the SDK renders when sending.
+Resend has SMTP, but what really caught my attention was the API. It's one of the best DX experiences I've used: install the SDK, add the key, and you're sending email in literally five lines. The integration with React Email turns the email template into a React component: no tables, no crazy inline styles, just JSX that the SDK renders when sending.
 
 Then the question hit me: if I'm going to verify the domain anyway, and Resend has a good API, why configure Gmail as a relay? Why not build my own panel inside the portfolio?
 
@@ -31,13 +31,13 @@ Then the question hit me: if I'm going to verify the domain anyway, and Resend h
 
 It's a page at `/email`, protected, that only I can access. Two columns:
 
-**Left: the composer.** "To" field with a tag input — type an email, press Enter, it becomes a chip. Supports multiple recipients. Subject field. Body textarea. Below the textarea, the signature rendered as a preview (read-only). Toggle to attach the resume or not.
+**Left: the composer.** "To" field with a tag input: type an email, press Enter, it becomes a chip. Supports multiple recipients. Subject field. Body textarea. Below the textarea, the signature rendered as a preview (read-only). Toggle to attach the resume or not.
 
-**Right: the templates.** Four options — Job Application, Follow-up, Networking, Introduction. Hovering each one shows a preview of what the template generates. Clicking opens a modal with fields specific to that template: recruiter name, company, role. Fill it in, click "Apply", and the body is already populated.
+**Right: the templates.** Four options: Networking, Follow-up, Introduction, Job Application. Hovering each one shows a preview of what the template generates. Clicking opens a modal with fields specific to that template: person's name, company, context. Fill it in, click "Apply", and the body is already populated.
 
-The language toggle is at the top. When you switch from PT-BR to EN — or back — everything changes together: templates, signature, field labels, and if you've already applied a template, the body is regenerated automatically in the new language without having to reopen the modal.
+The language toggle is at the top. When you switch from PT-BR to EN (or back), everything changes together: templates, signature, field labels, and if you've already applied a template, the body is regenerated automatically in the new language without having to reopen the modal.
 
-The resume is already statically generated in `public/cv/` — one per language — so when you check the checkbox and click send, the API reads the right PDF and attaches it. In the email signature, "Please find my resume attached." appears before the closing.
+The resume is already statically generated in `public/cv/`, one per language, so when you check the checkbox and click send, the API reads the right PDF and attaches it. Useful when the context calls for it, without having to open Drive, search for the file, download and re-export it.
 
 ## React Email for the template
 
@@ -73,11 +73,11 @@ export function OutreachEmail({ body, locale, attachCv }: Props) {
 }
 ```
 
-The email body comes with paragraphs separated by double newlines — the component splits and renders each one as a separate `<Text>`. Simple, but it works.
+The email body comes with paragraphs separated by double newlines: the component splits and renders each one as a separate `<Text>`. Simple, but it works.
 
 ## Security
 
-The page can't be public. The first version used `sessionStorage` to store the password client-side — which is basically no security at all, because anyone opens DevTools and sets the value.
+The page can't be public. The first version used `sessionStorage` to store the password client-side, which is basically no security at all, because anyone opens DevTools and sets the value.
 
 The final version uses Next.js 16's proxy (what was `middleware.ts` in previous versions, now `proxy.ts`). The proxy runs on the server before any rendering:
 
@@ -97,14 +97,14 @@ export function proxy(request: NextRequest) {
 }
 ```
 
-The cookie is HttpOnly — page JavaScript can't read it. The send API also validates the cookie server-side before processing anything. Two layers.
+The cookie is HttpOnly, so page JavaScript can't read it. The send API also validates the cookie server-side before processing anything. Two layers.
 
 The login is a separate page at `/email/login` that POSTs to `/api/email/session`. If the password matches the environment variable, it sets a 7-day cookie and redirects to the panel.
 
 ## What I learned
 
-The solution ended up being better than what I originally wanted. Configuring Gmail as a relay would have been invisible to me — I'd send as always, just with a different sender. But this panel is more useful: I have ready-made templates I don't have to retype, the resume goes along automatically, and the email language switches with one click.
+The solution ended up being better than what I originally wanted. Configuring Gmail as a relay would have been invisible to me: I'd send as always, just with a different sender. But this panel is more useful: I have ready-made templates I don't have to retype, the email language switches with one click, and when I need to attach a resume it goes along automatically without hunting for the file.
 
 Sometimes the initial friction of a tool that doesn't work pushes you toward a solution you wouldn't have built otherwise.
 
-And now when I email a Google recruiter, it goes from `ola@lfng.dev`.
+And now every professional email I send goes from `ola@lfng.dev`.

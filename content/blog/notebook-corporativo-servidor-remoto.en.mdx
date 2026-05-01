@@ -1,6 +1,6 @@
 ---
 title: "How I turned my corporate laptop into a remote server and went back to coding on my Mac"
-description: "A setup using WSL2, Tailscale, and SSH to access the company's Windows environment directly from a personal MacBook — with the laptop closed in a corner of the house."
+description: "A setup using WSL2, Tailscale, and SSH to access the company's Windows environment directly from a personal MacBook, with the laptop closed in a corner of the house."
 date: "2026-04-27"
 tags: ["wsl2", "tailscale", "ssh", "developer-experience", "productivity"]
 ---
@@ -54,7 +54,7 @@ If it lists Ubuntu with VERSION 2, just run `wsl` in PowerShell to enter and con
 wsl --install -d Ubuntu
 ```
 
-When Ubuntu asks for a username, pick something short, lowercase, no spaces. The password you set here is the `sudo` password. It's not the same as your Windows password — they're separate accounts.
+When Ubuntu asks for a username, pick something short, lowercase, no spaces. The password you set here is the `sudo` password. It's not the same as your Windows password; they're separate accounts.
 
 Verify everything's working:
 
@@ -170,7 +170,7 @@ sudo systemctl restart tailscaled
 sudo tailscale up --ssh --hostname=wsl-work
 ```
 
-The `--ssh` flag enables Tailscale SSH, which handles authentication via Tailscale itself — no need to configure SSH keys manually. You can replace `wsl-work` with whatever name you prefer, lowercase and no spaces.
+The `--ssh` flag enables Tailscale SSH, which handles authentication via Tailscale itself, no need to configure SSH keys manually. You can replace `wsl-work` with whatever name you prefer, lowercase and no spaces.
 
 A URL like `https://login.tailscale.com/a/abc123` will appear. Open it in a browser, authorize the machine. When the terminal returns to the prompt, you're connected.
 
