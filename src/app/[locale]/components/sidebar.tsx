@@ -5,9 +5,13 @@ import { contact, CAREER_START, MS_PER_YEAR, CV_FILENAME } from "@/lib/constants
 import { DownloadCvButton } from "./download-cv-button";
 import { MusicWidget } from "./music-widget";
 import { SectionHeading } from "./section-heading";
+import { ContactCompose } from "./contact-compose";
 
 export async function Sidebar({ locale }: { locale: string }) {
-  const sidebar = await getTranslations("sidebar");
+  const [sidebar, compose] = await Promise.all([
+    getTranslations("sidebar"),
+    getTranslations("compose"),
+  ]);
   const yearsOfExperience = Math.floor(
     (Date.now() - CAREER_START.getTime()) / MS_PER_YEAR,
   );
@@ -93,13 +97,27 @@ export async function Sidebar({ locale }: { locale: string }) {
           </SectionHeading>
           <ul className="space-y-1 text-sm">
             <li>
-              <a
-                data-umami-event="contact-email"
-                href={`mailto:${sidebar("email")}`}
-                className={"external-link text-muted-foreground"}
-              >
-                {sidebar("email")}
-              </a>
+              <ContactCompose
+                toEmail={sidebar("email")}
+                locale={locale}
+                labels={{
+                  title: compose("title"),
+                  to: compose("to"),
+                  from: compose("from"),
+                  subject: compose("subject"),
+                  message: compose("message"),
+                  placeholderFrom: compose("placeholderFrom"),
+                  placeholderSubject: compose("placeholderSubject"),
+                  placeholderMessage: compose("placeholderMessage"),
+                  send: compose("send"),
+                  sending: compose("sending"),
+                  sent: compose("sent"),
+                  sentDescription: compose("sentDescription"),
+                  error: compose("error"),
+                  shortcut: compose("shortcut"),
+                  close: compose("close"),
+                }}
+              />
             </li>
             <li>
               <a

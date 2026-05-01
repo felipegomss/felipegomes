@@ -87,6 +87,23 @@
     "recentPosts": "Últimas publicações",
     "viewAll": "Ver todas →"
   },
+  "compose": {
+    "title": "Nova mensagem",
+    "to": "Para",
+    "from": "De",
+    "subject": "Assunto",
+    "message": "Mensagem",
+    "placeholderFrom": "seu@email.com",
+    "placeholderSubject": "Assunto do email",
+    "placeholderMessage": "Escreva sua mensagem...",
+    "send": "Enviar",
+    "sending": "Enviando...",
+    "sent": "Mensagem enviada",
+    "sentDescription": "Responderei em breve.",
+    "error": "Algo deu errado. Tente de novo.",
+    "shortcut": "⌘↵ para enviar",
+    "close": "Fechar"
+  },
   "command": {
     "navigate": "Navegar",
     "blogLink": "Blog",

@@ -87,6 +87,23 @@
     "recentPosts": "Recent posts",
     "viewAll": "View all →"
   },
+  "compose": {
+    "title": "New message",
+    "to": "To",
+    "from": "From",
+    "subject": "Subject",
+    "message": "Message",
+    "placeholderFrom": "your@email.com",
+    "placeholderSubject": "Email subject",
+    "placeholderMessage": "Write your message...",
+    "send": "Send",
+    "sending": "Sending...",
+    "sent": "Message sent",
+    "sentDescription": "I'll get back to you soon.",
+    "error": "Something went wrong. Try again.",
+    "shortcut": "⌘↵ to send",
+    "close": "Close"
+  },
   "command": {
     "navigate": "Navigate",
     "blogLink": "Blog",
