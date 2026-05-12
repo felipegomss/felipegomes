@@ -1,50 +1,50 @@
-# LinkedIn — Variações de post (tools)
+# LinkedIn — Variações de post
 
-Link: https://lfng.dev/tools
+Link do artigo: https://lfng.dev/blog/notebook-corporativo-servidor-remoto
 
 ---
 
 ## Variação 1 — Storytelling curto
 
-Toda vez que precisava formatar um JSON, eu abria jsonformatter.org. Pra decodificar um JWT, jwt.io. Cron expression? crontab.guru. CPF de teste? Algum gerador aleatório de qualidade duvidosa.
+A empresa me deu um Windows. Eu tenho um Mac pessoal e uso ambiente Unix há anos. Toda vez que eu sentava no Windows pra trabalhar, travava numa coisa boba. Barra invertida, PowerShell, atalho diferente.
 
-Não era falta de ferramenta. Era ter que sair do editor, abrir uma aba nova, lembrar do site e — pra coisas como JWT — saber que o payload tava sendo enviado pro servidor de alguém.
+Aí parei de tentar me adaptar e fiz o contrário: transformei o notebook corporativo num servidor remoto. WSL2 no Windows, Tailscale pra VPN mesh, SSH com port forwarding. O notebook fica fechado numa estante, plugado na tomada, e eu programo do Mac normalmente.
 
-Construí uma página de ferramentas no meu próprio site. 22 utilitários em 6 categorias: formatadores (JSON, Markdown com KaTeX e syntax highlight), encoders/decoders (JWT, Base64, URL, image → base64), geradores (UUID v4/v7, hash SHA, senha, QR code), mock data (pessoa, endereço, empresa — todos com CPF/CNPJ válido pelo dígito verificador), conversores (timestamp, cor com OKLCH, case, slug, JSON↔YAML) e diff/inspeção (regex tester, cron parser, text diff).
+O Next.js roda no WSL. O browser acessa localhost:3000. OAuth funciona como se fosse local. O notebook não toco há dias.
 
-Tudo roda no navegador. Sidebar tipo docs com busca por categoria e keyword pra navegar.
+Escrevi o passo a passo completo, incluindo as armadilhas (Modern Standby, GPO corporativa, performance do /mnt/c/) e como contornar cada uma:
 
-→ https://lfng.dev/tools
+https://lfng.dev/blog/notebook-corporativo-servidor-remoto
 
 ---
 
 ## Variação 2 — Lista de takeaways
 
-Cansei de abrir jsonformatter.org, jwt.io, crontab.guru e 4devs toda vez que precisava de algo simples. Construí minha própria coleção de ferramentas client-side no portfólio.
+WSL2 + Tailscale + SSH = notebook corporativo fechado num canto da casa, eu programando normalmente do Mac.
 
-O que tem:
+Montei esse setup e documentei tudo. O que tem no artigo:
 
-→ JSON formatter/validator e Markdown preview com KaTeX + syntax highlighting
-→ JWT decoder, Base64 (texto e arquivo), URL encode/decode, image → data URI
-→ UUID v4 e v7, SHA-1/256/512, gerador de senha, QR code
-→ Pessoa, endereço e empresa fake com **CPF e CNPJ válidos** (dígito verificador correto, não é random)
-→ Timestamp converter, conversor de cor com OKLCH, case converter, slugify, JSON↔YAML
-→ Regex tester com highlight inline, cron parser (descrição em PT-BR + próximas execuções), diff de texto
+→ Como instalar WSL2 e configurar Ubuntu do zero
+→ Por que instalar o Tailscale dentro do WSL (não no Windows host)
+→ SSH config com port forwarding pra acessar localhost:3000 no Mac
+→ Autostart no boot do Windows pra nunca perder acesso remotamente
+→ Configurações de energia pra não quebrar com Modern Standby
+→ Como checar política de GPO corporativa que pode ignorar tudo
 
-22 ferramentas em 6 categorias, com sidebar tipo docs e busca por keyword. Cada uma tem rota própria pra compartilhar link direto.
+Depois de configurado, o notebook desaparece. É isso que eu queria desde o começo.
 
-→ https://lfng.dev/tools
+https://lfng.dev/blog/notebook-corporativo-servidor-remoto
 
 ---
 
 ## Variação 3 — Pergunta-isca
 
-Quantas abas você abre por dia pra coisas que poderiam estar num lugar só? jsonformatter, jwt.io, crontab.guru, gerador de CPF...
+Você já pensou em transformar seu notebook corporativo em servidor remoto?
 
-Construí uma página de ferramentas no meu site pra parar de depender desses sites de terceiros. 22 utilitários client-side: formatadores, encoders, geradores (com CPF e CNPJ válidos pelo dígito verificador), conversores (incluindo OKLCH e timestamp via Intl.RelativeTimeFormat), regex tester com highlight, cron parser em PT-BR, diff, QR code e markdown com KaTeX.
+A empresa me deu um Windows. Eu tenho um Mac pessoal e uso ambiente Unix há anos. A solução que encontrei foi parar de tentar adaptar o Windows e fazer ele virar só infraestrutura: os repos ficam nele, o Node roda nele, eu controlo tudo via SSH do Mac.
 
-Organizei em 6 categorias com sidebar tipo docs (estilo shadcn) e busca por keyword. Cada ferramenta tem rota própria, link compartilhável. Faker fica lazy-loaded só quando você abre uma das rotas de mock data, pra não inflar o bundle das outras.
+A peça que torna isso possível em qualquer Wi-Fi, sem abrir porta no roteador, é o Tailscale. Mesh VPN, hostname fixo, funciona de casa, do café ou da casa dos seus pais. Com SSH e port forwarding, o localhost:3000 do WSL aparece como localhost:3000 no Mac. OAuth funciona, cookies funcionam, HMR funciona.
 
-A peça que faltava no portfólio era isso: usar o próprio site pra resolver os problemas pequenos do dia a dia.
+Documentei cada passo, incluindo as armadilhas que a maioria esquece: Modern Standby, inicialização automática do WSL e política de GPO corporativa.
 
-👉 https://lfng.dev/tools
+👉 https://lfng.dev/blog/notebook-corporativo-servidor-remoto
