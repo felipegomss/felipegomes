@@ -21,6 +21,13 @@ export function Header({ locale }: { locale: string }) {
           blog
         </Link>
         <span className="h-3 w-px bg-border" aria-hidden="true" />
+        <Link
+          href={`/${locale}/tools`}
+          className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          tools
+        </Link>
+        <span className="h-3 w-px bg-border" aria-hidden="true" />
         <ThemeToggle />
         <span className="h-3 w-px bg-border" aria-hidden="true" />
         <LocaleSwitcher />

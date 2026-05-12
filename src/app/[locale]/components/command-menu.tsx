@@ -15,6 +15,7 @@ import {
   Phone,
   Search,
   Sun,
+  Wrench,
 } from "lucide-react";
 import { IconOpenAI, IconAnthropic, IconGemini } from "./ai-icons";
 import { IconGithub, IconLinkedin, IconWhatsapp, IconXTwitter } from "nucleo-social-media";
@@ -111,6 +112,10 @@ export function CommandMenu() {
             <CommandItem onSelect={() => run(() => router.push("/blog"))}>
               <BookOpen />
               {t("blogLink")}
+            </CommandItem>
+            <CommandItem onSelect={() => run(() => router.push("/tools"))}>
+              <Wrench />
+              {t("toolsLink")}
             </CommandItem>
           </CommandGroup>
 
