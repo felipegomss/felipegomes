@@ -299,7 +299,6 @@ export default function JobsPage() {
         </Tabs>
         <Button
           variant={starredOnly ? "default" : "outline"}
-          size="sm"
           onClick={() => setStarredOnly((v) => !v)}
           aria-pressed={starredOnly}
         >
@@ -311,10 +310,10 @@ export default function JobsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar por título ou conteúdo"
-            className="h-9 max-w-sm"
+            className="max-w-sm"
           />
           <Select value={sourceFilter} onValueChange={setSourceFilter}>
-            <SelectTrigger className="h-9 w-44">
+            <SelectTrigger className="w-44">
               <SelectValue placeholder="Fonte" />
             </SelectTrigger>
             <SelectContent>
