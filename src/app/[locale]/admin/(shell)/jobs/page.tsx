@@ -90,8 +90,6 @@ const STATUS_LABELS: Record<JobStatus, string> = {
 };
 
 const SOURCE_LABELS: Record<JobSource, string> = {
-  "linkedin-jobs": "LinkedIn Jobs",
-  "linkedin-posts": "LinkedIn Posts",
   "github-frontendbr": "frontendbr",
   "github-backendbr": "backend-br",
   "github-react-brasil": "react-brasil",

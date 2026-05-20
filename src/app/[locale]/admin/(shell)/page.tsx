@@ -15,8 +15,6 @@ import { getEmailStats } from "@/lib/email/stats";
 import type { JobSource } from "@/lib/db/schema";
 
 const SOURCE_LABELS: Record<JobSource, string> = {
-  "linkedin-jobs": "LinkedIn Jobs",
-  "linkedin-posts": "LinkedIn Posts",
   "github-frontendbr": "frontendbr",
   "github-backendbr": "backend-br",
   "github-react-brasil": "react-brasil",

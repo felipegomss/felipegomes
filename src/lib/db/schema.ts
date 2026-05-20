@@ -43,8 +43,6 @@ export const JOB_TYPES = ["post", "job"] as const;
 export type JobType = (typeof JOB_TYPES)[number];
 
 export const JOB_SOURCES = [
-  "linkedin-jobs",
-  "linkedin-posts",
   "github-frontendbr",
   "github-backendbr",
   "github-react-brasil",
