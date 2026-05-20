@@ -30,4 +30,5 @@ jobs:
           LI_AT_COOKIE: ${{ secrets.LI_AT_COOKIE }}
           INGEST_URL: ${{ secrets.INGEST_URL }}
           INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
+          PUPPETEER_DEFAULT_NAVIGATION_TIMEOUT: "90000"
         run: npm run scrape:linkedin
