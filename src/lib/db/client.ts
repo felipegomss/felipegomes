@@ -2,7 +2,10 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-const connectionString = process.env.DATABASE_URL;
+// Accept either `DATABASE_URL` (vanilla) or the `vagas_` prefixed variant
+// auto-injected by Vercel's Neon integration when the store is named "vagas".
+const connectionString =
+  process.env.DATABASE_URL ?? process.env.vagas_DATABASE_URL;
 
 if (!connectionString) {
   throw new Error("DATABASE_URL não definida.");

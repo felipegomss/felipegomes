@@ -3,7 +3,11 @@ import type { Config } from "drizzle-kit";
 
 config({ path: ".env.local" });
 
-const url = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
+const url =
+  process.env.DATABASE_URL_UNPOOLED ??
+  process.env.DATABASE_URL ??
+  process.env.vagas_DATABASE_URL_UNPOOLED ??
+  process.env.vagas_DATABASE_URL;
 
 if (!url) {
   throw new Error(
