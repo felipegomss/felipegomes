@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const COOKIE = "email_session";
+const COOKIE = "admin_session";
 const COOKIE_OPTS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -12,7 +12,7 @@ const COOKIE_OPTS = {
 export async function POST(request: Request) {
   const { password } = await request.json();
 
-  if (!password || password !== process.env.EMAIL_PASSWORD) {
+  if (!password || password !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

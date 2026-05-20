@@ -11,9 +11,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();
-    const session = cookieStore.get("email_session");
+    const session = cookieStore.get("admin_session");
 
-    if (!session || session.value !== process.env.EMAIL_PASSWORD) {
+    if (!session || session.value !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -39,8 +39,10 @@ export async function POST(request: Request) {
       attachments.push({ filename: `${CV_FILENAME}_${cvLocale}.pdf`, content });
     }
 
+    const fromAddress = locale === "en" ? "hi@lfng.dev" : "ola@lfng.dev";
+
     const { data, error } = await resend.emails.send({
-      from: `${contact.name} <ola@lfng.dev>`,
+      from: `${contact.name} <${fromAddress}>`,
       to,
       subject,
       react: OutreachEmail({ body, locale, attachCv }),

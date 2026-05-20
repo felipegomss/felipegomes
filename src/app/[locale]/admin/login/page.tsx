@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
 
-export default function EmailLoginPage() {
+export default function AdminLoginPage() {
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
   const [password, setPassword] = useState("");
@@ -31,7 +31,7 @@ export default function EmailLoginPage() {
       return;
     }
 
-    router.replace(`/${locale}/email`);
+    router.replace(`/${locale}/admin`);
   }
 
   return (
@@ -42,7 +42,7 @@ export default function EmailLoginPage() {
       >
         <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest">
           <Lock className="size-3" />
-          Email
+          Admin
         </div>
         <Input
           type="password"

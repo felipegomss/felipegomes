@@ -1,11 +1,14 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useDecryptAnimation } from "@/hooks/use-decrypt-animation";
 import { contact } from "@/lib/constants";
 
 export function IntroScreen({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const { phase, display, isLocked, isHolding } = useDecryptAnimation();
 
+  if (pathname.includes("/admin")) return children;
   if (phase === "done") return children;
 
   return (

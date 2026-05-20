@@ -9,6 +9,7 @@ import { Geist_Mono, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
+import { AdminHotkey } from "./components/admin-hotkey";
 import "./globals.css";
 
 const headingFont = Geist_Mono({
@@ -172,6 +173,7 @@ export default async function RootLayout({
         </a>
         <Providers>
           <NextIntlClientProvider messages={messages}>
+            <AdminHotkey />
             <IntroScreen>{children}</IntroScreen>
           </NextIntlClientProvider>
         </Providers>

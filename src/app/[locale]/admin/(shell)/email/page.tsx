@@ -191,7 +191,7 @@ const TEMPLATES: Template[] = [
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function EmailPage() {
+export default function ComposeEmailPage() {
   const router = useRouter();
   const { locale: urlLocale } = useParams<{ locale: string }>();
 
@@ -204,26 +204,15 @@ export default function EmailPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [sendError, setSendError] = useState("");
 
-  // Template modal state
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null);
   const [appliedTemplateId, setAppliedTemplateId] = useState<string | null>(null);
   const [templateFields, setTemplateFields] = useState<Record<string, string>>({});
 
-  // Re-generate body when locale changes if a template was applied
   useEffect(() => {
     if (!appliedTemplateId || Object.keys(templateFields).length === 0) return;
     const template = TEMPLATES.find((t) => t.id === appliedTemplateId);
     if (template) setBody(template.generate(templateFields, locale));
   }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  async function handleLogout() {
-    await fetch("/api/email/session", { method: "DELETE" });
-    router.replace(`/${urlLocale}/email/login`);
-  }
-
-  function handleLocaleChange(next: Locale) {
-    setLocale(next);
-  }
 
   function addRecipient(value: string) {
     const email = value.trim().replace(/,$/, "");
@@ -282,7 +271,7 @@ export default function EmailPage() {
       });
 
       if (res.status === 401) {
-        handleLogout();
+        router.replace(`/${urlLocale}/admin/login`);
         return;
       }
 
@@ -308,46 +297,35 @@ export default function EmailPage() {
 
   const sig = SIGNATURES[locale];
 
-  // ── Composer ───────────────────────────────────────────────────────────────
-
   return (
     <>
-      <div className="flex min-h-screen flex-col bg-background">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-3">
-          <span className="text-xs font-medium uppercase tracking-widest">
-            Email
-          </span>
-          <div className="flex items-center gap-4">
-            {/* Locale toggle */}
-            <div className="flex items-center gap-1">
-              {(["pt-BR", "en"] as Locale[]).map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => handleLocaleChange(l)}
-                  className={`border px-2 py-0.5 text-xs transition-colors ${
-                    locale === l
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border text-muted-foreground hover:border-foreground/50"
-                  }`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Sair
-            </button>
+      <div className="flex flex-1 flex-col gap-3 min-h-0">
+        {/* Title + locale toggle */}
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">
+            Compor email
+          </h1>
+          <div className="flex items-center gap-1">
+            {(["pt-BR", "en"] as Locale[]).map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setLocale(l)}
+                className={`border px-2 py-0.5 text-xs transition-colors ${
+                  locale === l
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground/50"
+                }`}
+              >
+                {l}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Main: two columns */}
-        <div className="flex flex-1 divide-x divide-border">
-          {/* Left: Composer */}
+        {/* Composer card */}
+        <div className="flex flex-1 min-h-0 divide-x divide-border rounded-lg border border-border bg-card overflow-hidden">
+          {/* Left: form */}
           <div className="flex flex-1 flex-col">
             <form onSubmit={handleSend} className="flex flex-1 flex-col">
               {/* To + Subject */}
@@ -402,7 +380,6 @@ export default function EmailPage() {
                 </div>
               </div>
 
-              {/* Body */}
               <Textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
@@ -412,11 +389,9 @@ export default function EmailPage() {
                     : "Write the email or pick a template →"
                 }
                 required
-                className="flex-1 resize-none rounded-none border-0 border-b border-border focus-visible:ring-0"
-                style={{ minHeight: 240 }}
+                className="flex-1 min-h-0 resize-none rounded-none border-0 border-b border-border focus-visible:ring-0"
               />
 
-              {/* Signature preview */}
               <div className="border-b border-border px-3 py-3">
                 {attachCv && (
                   <p className="mb-1 text-xs text-muted-foreground/40 italic">
@@ -430,7 +405,6 @@ export default function EmailPage() {
                 ))}
               </div>
 
-              {/* Toolbar */}
               <div className="flex items-center justify-between px-3 py-2">
                 <label className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground">
                   <input
@@ -468,11 +442,11 @@ export default function EmailPage() {
             </form>
           </div>
 
-          {/* Right: Templates */}
+          {/* Right: templates */}
           <div className="w-56 shrink-0 flex-col hidden md:flex">
             <div className="border-b border-border px-3 py-2">
               <span className="text-xs text-muted-foreground uppercase tracking-widest">
-                {locale === "pt-BR" ? "Templates" : "Templates"}
+                Templates
               </span>
             </div>
             <div className="flex flex-col divide-y divide-border">
@@ -495,7 +469,6 @@ export default function EmailPage() {
                     </span>
                   </button>
 
-                  {/* Hover preview */}
                   <div className="pointer-events-none absolute right-full top-0 z-10 mr-2 w-52 border border-border bg-background p-3 opacity-0 shadow-md transition-opacity group-hover:opacity-100">
                     <p className="mb-1 text-xs font-medium">{template.label[locale]}</p>
                     <p className="text-xs leading-relaxed text-muted-foreground">

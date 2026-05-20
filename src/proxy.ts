@@ -8,14 +8,14 @@ const intlMiddleware = createMiddleware(routing);
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isEmailRoute = /^\/(pt-BR|en)\/email(\/|$)/.test(pathname);
-  const isLoginPage = /^\/(pt-BR|en)\/email\/login(\/|$)/.test(pathname);
+  const isAdminRoute = /^\/(pt-BR|en)\/admin(\/|$)/.test(pathname);
+  const isLoginPage = /^\/(pt-BR|en)\/admin\/login(\/|$)/.test(pathname);
 
-  if (isEmailRoute && !isLoginPage) {
-    const session = request.cookies.get("email_session");
-    if (!session || session.value !== process.env.EMAIL_PASSWORD) {
+  if (isAdminRoute && !isLoginPage) {
+    const session = request.cookies.get("admin_session");
+    if (!session || session.value !== process.env.ADMIN_PASSWORD) {
       const locale = pathname.split("/")[1] ?? "pt-BR";
-      return NextResponse.redirect(new URL(`/${locale}/email/login`, request.url));
+      return NextResponse.redirect(new URL(`/${locale}/admin/login`, request.url));
     }
   }
 
