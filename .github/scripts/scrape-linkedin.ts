@@ -10,8 +10,8 @@
 import {
   LinkedinScraper,
   events,
-  query,
-  // biome-ignore lint: optional named exports vary by version
+  timeFilter,
+  onSiteOrRemoteFilter,
 } from "linkedin-jobs-scraper";
 
 type ScrapedJob = {
@@ -90,19 +90,19 @@ async function main() {
 
   for (const q of QUERIES) {
     console.log(`[query] "${q.query}" em ${q.locations.join(", ")}`);
-    await scraper.run(
-      [
-        query({
-          query: q.query,
-          options: {
-            locations: q.locations,
-            limit: PER_QUERY_LIMIT,
-            applyLink: true,
-            descriptionFn: () => document.body.innerText,
+    await scraper.run([
+      {
+        query: q.query,
+        options: {
+          locations: q.locations,
+          limit: PER_QUERY_LIMIT,
+          filters: {
+            time: timeFilter.MONTH,
+            onSiteOrRemote: [onSiteOrRemoteFilter.REMOTE],
           },
-        }),
-      ] as never,
-    );
+        },
+      },
+    ]);
   }
 
   await scraper.close();
