@@ -26,17 +26,16 @@ export async function PATCH(
   const updates: {
     status?: JobStatus;
     starred?: boolean;
-    contactedAt?: Date | null;
   } = {};
+  let stampContactedAt = false;
 
   if (typeof body.status === "string") {
     if (!(JOB_STATUSES as readonly string[]).includes(body.status)) {
       return NextResponse.json({ error: "Status inválido." }, { status: 400 });
     }
     updates.status = body.status as JobStatus;
-    // Stamp contacted_at the first time it goes to 'contacted'.
     if (body.status === "contacted") {
-      updates.contactedAt = new Date();
+      stampContactedAt = true;
     }
   }
 
@@ -48,12 +47,13 @@ export async function PATCH(
     return NextResponse.json({ error: "Nada a atualizar." }, { status: 400 });
   }
 
-  // If contactedAt is being set, only stamp when it was previously null
-  // (preserves first-contact time across status toggles).
-  const setClause = updates.contactedAt
+  // Preserve the first-contact timestamp across status toggles by
+  // only stamping when previously null. Use NOW() so the driver
+  // doesn't have to bind a JS Date inside a sql template.
+  const setClause = stampContactedAt
     ? {
         ...updates,
-        contactedAt: sql`COALESCE(${jobPosts.contactedAt}, ${updates.contactedAt})`,
+        contactedAt: sql`COALESCE(${jobPosts.contactedAt}, NOW())`,
       }
     : updates;
 
