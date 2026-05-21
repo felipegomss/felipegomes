@@ -48,7 +48,6 @@ export const JOB_SOURCES = [
   "github-react-brasil",
   "remoteok",
   "hn-hiring",
-  "wwr",
   "vagas-com-br",
   "coodesh",
 ] as const;

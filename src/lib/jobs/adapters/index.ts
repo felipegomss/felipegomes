@@ -8,7 +8,6 @@ import {
 import { hnHiringAdapter } from "./hn";
 import { remoteOkAdapter } from "./remoteok";
 import { vagasComBrAdapter } from "./vagas-com-br";
-import { wwrAdapter } from "./weworkremotely";
 
 /** Adapters that run on Vercel (free public APIs / sitemaps / RSS, no auth needed). */
 export const VERCEL_ADAPTERS: Adapter[] = [
@@ -17,7 +16,6 @@ export const VERCEL_ADAPTERS: Adapter[] = [
   githubReactBrasilAdapter,
   remoteOkAdapter,
   hnHiringAdapter,
-  wwrAdapter,
   vagasComBrAdapter,
   coodeshAdapter,
 ];
@@ -28,7 +26,6 @@ export {
   githubReactBrasilAdapter,
   remoteOkAdapter,
   hnHiringAdapter,
-  wwrAdapter,
   vagasComBrAdapter,
   coodeshAdapter,
 };
