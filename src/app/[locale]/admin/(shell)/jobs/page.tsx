@@ -95,6 +95,9 @@ const SOURCE_LABELS: Record<JobSource, string> = {
   "github-react-brasil": "react-brasil",
   remoteok: "RemoteOK",
   "hn-hiring": "HN Hiring",
+  wwr: "WeWorkRemotely",
+  "vagas-com-br": "vagas.com.br",
+  coodesh: "Coodesh",
 };
 
 const STATUS_COLORS: Record<JobStatus, string> = {
