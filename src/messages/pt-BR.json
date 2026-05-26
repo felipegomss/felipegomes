@@ -27,7 +27,8 @@
       "h2": "Reduzi o tempo de build do pipeline de frontend de 12 para 4 minutos ao corrigir uma configuração incorreta entre Node e Tailwind CSS, acelerando o ciclo de deploy do time em 3x.",
       "h3": "Criei e mantenho a @automind/react-components, design system em Radix UI, Storybook e Chromatic que padroniza a UI de 2 produtos e eliminou reescritas de componentes entre os times de frontend.",
       "h4": "Implementei Vitest e Playwright no pipeline do Azure DevOps com cobertura completa dos fluxos críticos (unitários + E2E), barrando regressões antes do release via smoke tests em PR e regressão completa em CI.",
-      "h5": "Conduzo code reviews diários, mentoro cerca de 5 devs juniores e escrevo specs e documentação de requisitos junto com stakeholders de produto."
+      "h5": "Conduzo code reviews diários, mentoro cerca de 5 devs juniores e lidero a adoção de Claude Code na engenharia da Automind a pedido da liderança técnica — entregas ~3x mais rápidas, com o agente integrado a refactor do design system, specs e testes.",
+      "h6": "Mentorei o desenvolvedor que construiu o pipeline de RAG do AUTOLOAD ponta a ponta — embeddings com Llama via HuggingFace, vector store em ChromaDB e geração de resposta com GPT API sobre backend Python — primeira feature de IA do produto."
     },
     "branddi": {
       "role": "Desenvolvedor FullStack",

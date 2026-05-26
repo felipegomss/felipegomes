@@ -27,7 +27,8 @@
       "h2": "Cut the frontend build pipeline from 12 to 4 minutes by fixing a Node + Tailwind CSS misconfiguration, speeding up the team's deploy cycle by 3x.",
       "h3": "Created and maintain @automind/react-components, a design system built on Radix UI, Storybook and Chromatic that standardizes the UI across 2 products and eliminated component rewrites between frontend teams.",
       "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline with full coverage of critical flows (unit + E2E), preventing regressions before release via smoke tests on PR and full regression in CI.",
-      "h5": "Run daily code reviews, mentor around 5 junior developers and write specs and requirements documentation alongside product stakeholders."
+      "h5": "Run daily code reviews, mentor ~5 junior developers and lead Claude Code adoption across Automind engineering at the request of tech leadership — ~3x faster delivery, with the agent embedded in design system refactors, specs and tests.",
+      "h6": "Mentored the developer who built AUTOLOAD's end-to-end RAG pipeline — Llama embeddings via HuggingFace, ChromaDB vector store and GPT-powered response generation on a Python backend — the product's first AI feature."
     },
     "branddi": {
       "role": "FullStack Developer",

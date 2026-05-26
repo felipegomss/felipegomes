@@ -28,7 +28,7 @@ export const projects: Project[] = [
 });
 
 export const jobs: Job[] = [
-  { key: "automind", company: "Automind", count: 5 },
+  { key: "automind", company: "Automind", count: 6 },
   { key: "branddi", company: "Branddi", count: 5 },
   { key: "eisa", company: "EISA", count: 3 },
   { key: "parallel", company: "Parallel Consulting & Training", count: 2 },
