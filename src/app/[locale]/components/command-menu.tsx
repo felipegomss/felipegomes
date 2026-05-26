@@ -30,7 +30,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Kbd } from "@/components/ui/kbd";
-import { contact, CV_FILENAME, PLAYLIST_URL } from "@/lib/constants";
+import { contact, cvFilename, PLAYLIST_URL } from "@/lib/constants";
 import { useMountEffect } from "@/hooks/use-mount-effect";
 import { playKeybindSound } from "@/hooks/use-keybind-sound";
 
@@ -154,7 +154,7 @@ export function CommandMenu() {
           <CommandGroup heading={t("actions")}>
             <CommandItem onSelect={() => run(() => {
               const a = document.createElement("a");
-              a.href = `/cv/${CV_FILENAME}_${locale}.pdf`;
+              a.href = `/cv/${cvFilename(locale)}`;
               a.download = "";
               a.click();
             })}>

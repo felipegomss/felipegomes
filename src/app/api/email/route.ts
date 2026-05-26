@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { OutreachEmail } from "@/emails/outreach";
-import { contact, CV_FILENAME } from "@/lib/constants";
+import { contact, cvFilename } from "@/lib/constants";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -30,13 +30,10 @@ export async function POST(request: Request) {
 
     if (attachCv) {
       const cvLocale = locale === "pt-BR" ? "pt-BR" : "en";
-      const cvPath = join(
-        process.cwd(),
-        "public/cv",
-        `${CV_FILENAME}_${cvLocale}.pdf`,
-      );
+      const fileName = cvFilename(cvLocale);
+      const cvPath = join(process.cwd(), "public/cv", fileName);
       const content = readFileSync(cvPath);
-      attachments.push({ filename: `${CV_FILENAME}_${cvLocale}.pdf`, content });
+      attachments.push({ filename: fileName, content });
     }
 
     const fromAddress = locale === "en" ? "hi@lfng.dev" : "ola@lfng.dev";

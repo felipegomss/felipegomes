@@ -2,6 +2,8 @@ export const CAREER_START = new Date("2020-09-01");
 export const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000; // accounts for leap years
 export const GITHUB_USERNAME = "felipegomss";
 export const CV_FILENAME = "LuisFelipeGomes_CV";
+export const cvFilename = (locale: string) =>
+  locale === "pt-BR" ? `${CV_FILENAME}.pdf` : `${CV_FILENAME}_${locale}.pdf`;
 export const UMAMI_WEBSITE_ID = "96008e50-f747-41e3-8a97-826e10485213";
 export const PLAYLIST_URL = "https://music.apple.com/br/playlist/slow-flow/pl.u-EdAVkl3TDPlmo51";
 export const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lfng.dev").trim();

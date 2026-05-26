@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { IconGithub, IconLinkedin } from "nucleo-social-media";
 import { IconAward, IconMailbox } from "nucleo-isometric";
-import { contact, CAREER_START, MS_PER_YEAR, CV_FILENAME } from "@/lib/constants";
+import { contact, CAREER_START, MS_PER_YEAR, cvFilename } from "@/lib/constants";
 import { DownloadCvButton } from "./download-cv-button";
 import { MusicWidget } from "./music-widget";
 import { SectionHeading } from "./section-heading";
@@ -130,7 +130,7 @@ export async function Sidebar({ locale }: { locale: string }) {
             </li>
           </ul>
           <DownloadCvButton
-            href={`/cv/${CV_FILENAME}_${locale}.pdf`}
+            href={`/cv/${cvFilename(locale)}`}
             label={sidebar("download")}
           />
         </section>

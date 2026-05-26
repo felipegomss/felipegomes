@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { CvDocument } from "../src/app/[locale]/api/cv/cv-document";
 import { routing } from "../src/i18n/routing";
-import { CV_FILENAME } from "../src/lib/constants";
+import { cvFilename } from "../src/lib/constants";
 
 const outDir = join(process.cwd(), "public/cv");
 
@@ -13,7 +13,7 @@ async function main() {
   await Promise.all(
     routing.locales.map(async (locale) => {
       const buffer = await renderToBuffer(<CvDocument locale={locale} />);
-      const fileName = `${CV_FILENAME}_${locale}.pdf`;
+      const fileName = cvFilename(locale);
       writeFileSync(join(outDir, fileName), new Uint8Array(buffer));
       console.log(`[static-cv] ✓ ${fileName}`);
     }),
