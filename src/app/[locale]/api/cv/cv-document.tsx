@@ -93,9 +93,9 @@ export function CvDocument({ locale }: { locale: string }) {
   const sk = msg.skills;
 
   return (
-    <Document title={`${contact.name} · CV`} author={contact.name}>
+    <Document title={`${contact.shortName} · CV`} author={contact.name}>
       <Page size="A4" style={s.page}>
-        <Text style={s.name}>{contact.name}</Text>
+        <Text style={s.name}>{contact.shortName}</Text>
         <Text style={s.subtitle}>{sidebar.subtitle}</Text>
 
         <View style={s.header}>

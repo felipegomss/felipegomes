@@ -10,6 +10,7 @@ const PHONE = "+55 (71) 9 9265-5188";
 
 export const contact = {
   name: "Luis Felipe Nascimento Gomes",
+  shortName: "Luis Felipe N. Gomes",
   phone: PHONE,
   phoneDigits: PHONE.replace(/\D/g, ""),
   linkedin: "linkedin.com/in/felipegomss",
