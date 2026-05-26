@@ -21,20 +21,20 @@
     "title": "Professional Experience",
     "automind": {
       "role": "Software Analyst",
-      "period": "06.2024 — present",
+      "period": "06.2024 - present",
       "location": "Salvador/BA",
       "h1": "Drive the frontend of the next generation of AUTOLOAD, a modular SaaS product built from the ground up in Next.js 14, React 18 and TypeScript on a .NET 8 backend (SignalR, multi-tenant PostgreSQL), replacing the legacy on-premise .NET + Vue system and cutting new-client install time by 70%.",
       "h2": "Cut the frontend build pipeline from 12 to 4 minutes by fixing a Node + Tailwind CSS misconfiguration, speeding up the team's deploy cycle by 3x.",
       "h3": "Created and maintain @automind/react-components, a design system built on Radix UI, Storybook and Chromatic that standardizes the UI across 2 products and eliminated component rewrites between frontend teams.",
       "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline with full coverage of critical flows (unit + E2E), preventing regressions before release via smoke tests on PR and full regression in CI.",
-      "h5": "Run daily code reviews, mentor ~5 junior developers and lead Claude Code adoption across Automind engineering at the request of tech leadership — ~3x faster delivery, with the agent embedded in design system refactors, specs and tests.",
-      "h6": "Mentored the developer who built AUTOLOAD's end-to-end RAG pipeline — Llama embeddings via HuggingFace, ChromaDB vector store and GPT-powered response generation on a Python backend — the product's first AI feature."
+      "h5": "Run daily code reviews, mentor ~5 junior developers and lead Claude Code adoption across Automind engineering at the request of tech leadership, embedding the agent into design system refactors, specs and tests for ~3x faster delivery.",
+      "h6": "Mentored the developer who built AUTOLOAD's end-to-end RAG pipeline, the product's first AI feature: Llama embeddings via HuggingFace, ChromaDB vector store and GPT-powered response generation on a Python backend."
     },
     "branddi": {
       "role": "FullStack Developer",
-      "period": "04.2023 — 06.2024",
+      "period": "04.2023 - 06.2024",
       "location": "Remote",
-      "h1": "Architected an end-to-end brand protection platform that serves 300+ global brands across three fronts — brand bidding, fraudulent sites and domains, and pirated products on marketplaces — with a NestJS/REST core integrated with Pipefy via GraphQL.",
+      "h1": "Architected an end-to-end brand protection platform that serves 300+ global brands across three fronts (brand bidding, fraudulent sites and domains, and pirated products on marketplaces), with a NestJS/REST core integrated with Pipefy via GraphQL.",
       "h2": "Cut report dashboard response times from 7 minutes to milliseconds with server-side downsampling, streamed responses and lazy-loaded time series.",
       "h3": "Implemented real-time processing of around 6M sponsored ads per month with Go workers on RabbitMQ that consume crawled data across the brand bidding and pirated product fronts, feeding the detection pipeline for unfair competition and pirate listings on marketplaces.",
       "h4": "Built the observability stack from scratch (Papertrail, health checks, downtime alerts) and cut failure-to-fix time to near-zero, with the team notified at the moment of each incident.",
@@ -42,7 +42,7 @@
     },
     "eisa": {
       "role": "Software Analyst (QA)",
-      "period": "05.2021 — 04.2023",
+      "period": "05.2021 - 04.2023",
       "location": "Remote",
       "h1": "Automated the E2E test suite for VIVO systems (90M+ subscribers) in Selenium WebDriver, Cucumber and Ruby, with coverage of critical provisioning flows and full regression before each release.",
       "h2": "Validated asynchronous flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux to isolate bugs in data pipelines that affected billing.",
@@ -50,7 +50,7 @@
     },
     "parallel": {
       "role": "FullStack Developer",
-      "period": "09.2020 — 04.2021",
+      "period": "09.2020 - 04.2021",
       "location": "Salvador/BA",
       "h1": "Built full-stack features in React and Node.js for a sales platform, focused on UX and funnel conversion improvements.",
       "h2": "Created auxiliary Python APIs and managed MySQL data persistence for internal product workflows."
@@ -59,7 +59,7 @@
   "skills": {
     "title": "Technical Skills",
     "projects": "Projects",
-    "agentSkillsDesc": "Modular skills for generative agents — each skill is self-contained with docs, rules and references.",
+    "agentSkillsDesc": "Modular skills for generative agents, each one self-contained with docs, rules and references.",
     "wigDesc": "Personalized feed with geo + affinity scoring, Redis caching and cron-driven push notifications. Stripe subscriptions, Supabase Auth with RLS, rate limiting via proxy and standalone PWA.",
     "jacosegDesc": "Conversion-focused landing page with responsive web design. Internal dashboard with Prisma + PostgreSQL multi-branch, NextAuth with RBAC, server actions with Zod validation and drag-and-drop tables.",
     "biancaDesc": "Custom landing page with serif typography, Framer Motion animations and a layout designed to convey warmth. Firebase Auth, reCAPTCHA-protected form and email delivery via Nodemailer.",
@@ -503,9 +503,9 @@
     "exit": "Exit"
   },
   "metadata": {
-    "title": "Luis Felipe N. Gomes — Full Stack Developer",
+    "title": "Luis Felipe N. Gomes · Full Stack Developer",
     "description": "Full Stack Developer · 5+ years · React, Node, TypeScript · MBA in Software Engineering (USP/Esalq) · Systems Analysis & Dev (Estácio, GPA 8.52/10) · Frontend architecture, design systems and product focus.",
-    "ogTitle": "LFNG — Full Stack Developer",
+    "ogTitle": "LFNG · Full Stack Developer",
     "ogDescription": "Luis Felipe N. Gomes · Full Stack · React, Node, TypeScript, Angular"
   }
 }
