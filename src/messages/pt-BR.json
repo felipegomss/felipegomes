@@ -47,7 +47,7 @@
       "h1": "Automatizei a suíte E2E de sistemas da VIVO (90 milhões de assinantes) em Selenium WebDriver, Cucumber e Ruby, com cobertura dos fluxos críticos de provisionamento e regressão completa antes de cada release.",
       "h2": "Validei fluxos assíncronos em Apache Kafka e executei scripts complexos em PL/SQL (Oracle) sobre Linux para isolar bugs em pipelines de dados que afetavam o faturamento.",
       "h3": "Liderei a migração do monorepo legado do TortoiseSVN para GitLab, levando cerca de 20 engenheiros a um fluxo de versionamento moderno e habilitando pipelines de CI/CD.",
-      "h4": "Desenvolvi funcionalidades em Java nos sistemas validados, com build e gestão de dependências via Maven, contribuindo além da automação de QA."
+      "h4": "Desenvolvi serviços REST no projeto SmartOffers em Java 8 com Spring Boot, integrando tópicos Kafka e com build via Maven, atuando além da automação de QA."
     },
     "parallel": {
       "role": "Desenvolvedor FullStack",

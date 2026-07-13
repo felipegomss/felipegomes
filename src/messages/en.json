@@ -47,7 +47,7 @@
       "h1": "Automated the E2E test suite for VIVO systems (90M+ subscribers) in Selenium WebDriver, Cucumber and Ruby, with coverage of critical provisioning flows and full regression before each release.",
       "h2": "Validated asynchronous flows in Apache Kafka and ran complex PL/SQL (Oracle) scripts on Linux to isolate bugs in data pipelines that affected billing.",
       "h3": "Led the migration of the legacy monorepo from TortoiseSVN to GitLab, moving around 20 engineers onto a modern version-control workflow and enabling CI/CD pipelines.",
-      "h4": "Built Java features for the systems under test, with builds and dependency management via Maven, contributing beyond QA automation."
+      "h4": "Built REST services for the SmartOffers project in Java 8 with Spring Boot, integrating Kafka topics with Maven-based builds, contributing beyond QA automation."
     },
     "parallel": {
       "role": "FullStack Developer",
