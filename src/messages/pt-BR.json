@@ -46,14 +46,16 @@
       "location": "Remoto",
       "h1": "Automatizei a suíte E2E de sistemas da VIVO (90 milhões de assinantes) em Selenium WebDriver, Cucumber e Ruby, com cobertura dos fluxos críticos de provisionamento e regressão completa antes de cada release.",
       "h2": "Validei fluxos assíncronos em Apache Kafka e executei scripts complexos em PL/SQL (Oracle) sobre Linux para isolar bugs em pipelines de dados que afetavam o faturamento.",
-      "h3": "Liderei a migração do monorepo legado do TortoiseSVN para GitLab, levando cerca de 20 engenheiros a um fluxo de versionamento moderno e habilitando pipelines de CI/CD."
+      "h3": "Liderei a migração do monorepo legado do TortoiseSVN para GitLab, levando cerca de 20 engenheiros a um fluxo de versionamento moderno e habilitando pipelines de CI/CD.",
+      "h4": "Desenvolvi funcionalidades em Java nos sistemas validados, com build e gestão de dependências via Maven, contribuindo além da automação de QA."
     },
     "parallel": {
       "role": "Desenvolvedor FullStack",
       "period": "09.2020 - 04.2021",
       "location": "Salvador/BA",
       "h1": "Desenvolvi features fullstack em React e Node.js para uma plataforma de vendas, com foco em melhorias de UX e conversão do funil.",
-      "h2": "Criei APIs auxiliares em Python e gerenciei a persistência de dados em MySQL para workflows internos do time."
+      "h2": "Criei APIs auxiliares em Python e Java com Spring Boot e gerenciei a persistência de dados em MySQL para workflows internos do time.",
+      "h3": "Desenvolvi rotinas embarcadas em Arduino para projetos de IoT do time."
     }
   },
   "skills": {
