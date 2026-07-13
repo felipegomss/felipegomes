@@ -74,7 +74,8 @@
     "backend": "Backend",
     "data": "Bancos de Dados",
     "infra": "Infra & DevOps",
-    "testing": "Testes"
+    "testing": "Testes",
+    "embedded": "Embarcados"
   },
   "openSource": {
     "title": "Open Source"

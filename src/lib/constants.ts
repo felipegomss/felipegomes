@@ -27,18 +27,20 @@ export const skills = [
   "Vitest", "Jest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber",
   "Framer Motion", "GSAP",
   "PWA", "Service Workers",
-  "Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Ruby",
+  "Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Spring Boot", "Ruby",
   "REST", "GraphQL", "SignalR", "RabbitMQ", "Apache Kafka",
   "PostgreSQL", "Supabase", "Prisma", "MySQL", "MongoDB", "Oracle PL/SQL",
-  "Azure DevOps", "AWS", "Docker", "GitHub Actions", "CI/CD", "Sentry",
+  "Azure DevOps", "AWS", "Docker", "Maven", "GitHub Actions", "CI/CD", "Sentry",
   "Stripe", "Resend",
+  "Arduino",
   "Linux",
 ];
 
 export const skillsByCategory = {
   frontend: ["React", "TypeScript", "Next.js", "Angular", "React Router", "Tailwind CSS", "SASS/SCSS", "Radix UI", "shadcn/ui", "Storybook", "Webpack"],
-  backend: ["Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "REST", "GraphQL", "RabbitMQ", "Apache Kafka"],
+  backend: ["Node.js", "Express", "NestJS", ".NET", "Go (Golang)", "Python", "Java", "Spring Boot", "REST", "GraphQL", "RabbitMQ", "Apache Kafka"],
   data: ["PostgreSQL", "Supabase", "MySQL", "MongoDB", "Oracle PL/SQL", "Prisma"],
-  infra: ["AWS", "Azure DevOps", "Docker", "GitHub Actions", "CI/CD", "Sentry", "Linux"],
+  infra: ["AWS", "Azure DevOps", "Docker", "Maven", "GitHub Actions", "CI/CD", "Sentry", "Linux"],
   testing: ["Vitest", "Jest", "Playwright", "Testing Library", "MSW", "Selenium", "Cucumber"],
+  embedded: ["Arduino"],
 };
