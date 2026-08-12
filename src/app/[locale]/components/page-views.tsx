@@ -1,12 +1,15 @@
 import { Eye } from "lucide-react";
 import { unstable_cache } from "next/cache";
 import { eq } from "drizzle-orm";
-import { db, siteCounters, PAGE_VIEWS_COUNTER } from "@/lib/db/client";
 import { AnimatedCount } from "./animated-count";
 
 const getPageViews = unstable_cache(
   async (): Promise<number | null> => {
     try {
+      // Import tardio: o client do banco lança na importação quando falta
+      // DATABASE_URL, e este componente está no header de todas as páginas.
+      const { db, siteCounters, PAGE_VIEWS_COUNTER } = await import("@/lib/db/client");
+
       const [row] = await db
         .select({ value: siteCounters.value })
         .from(siteCounters)
