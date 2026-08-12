@@ -1,31 +1,25 @@
 import { Eye } from "lucide-react";
-import { UMAMI_WEBSITE_ID } from "@/lib/constants";
+import { unstable_cache } from "next/cache";
+import { eq } from "drizzle-orm";
+import { db, siteCounters, PAGE_VIEWS_COUNTER } from "@/lib/db/client";
 import { AnimatedCount } from "./animated-count";
 
-type UmamiStats = {
-  pageviews?: number;
-};
+const getPageViews = unstable_cache(
+  async (): Promise<number | null> => {
+    try {
+      const [row] = await db
+        .select({ value: siteCounters.value })
+        .from(siteCounters)
+        .where(eq(siteCounters.key, PAGE_VIEWS_COUNTER));
 
-async function getPageViews(): Promise<number | null> {
-  const key = process.env.UMAMI_API_KEY;
-  if (!key) return null;
-
-  try {
-    const endAt = Math.floor(Date.now() / 3_600_000) * 3_600_000;
-    const res = await fetch(
-      `https://api.umami.is/v1/websites/${UMAMI_WEBSITE_ID}/stats?startAt=0&endAt=${endAt}`,
-      {
-        headers: { "x-umami-api-key": key },
-        next: { revalidate: 3600 },
-      },
-    );
-    if (!res.ok) return null;
-    const data: UmamiStats = await res.json();
-    return data.pageviews ?? null;
-  } catch {
-    return null;
-  }
-}
+      return row?.value ?? null;
+    } catch {
+      return null;
+    }
+  },
+  ["site-page-views"],
+  { revalidate: 3600 },
+);
 
 export async function PageViews({ locale }: { locale: string }) {
   const views = await getPageViews();

@@ -1,5 +1,14 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  boolean,
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const jobPosts = pgTable(
   "job_posts",
@@ -41,6 +50,18 @@ export type JobStatus = (typeof JOB_STATUSES)[number];
 
 export const JOB_TYPES = ["post", "job"] as const;
 export type JobType = (typeof JOB_TYPES)[number];
+
+// Contadores agregados do site. Uma linha por métrica, incrementada de forma
+// atômica — o detalhamento (páginas, origem, país) fica no Umami.
+export const siteCounters = pgTable("site_counters", {
+  key: text("key").primaryKey(),
+  value: bigint("value", { mode: "number" }).notNull().default(0),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+});
+
+export const PAGE_VIEWS_COUNTER = "page_views";
 
 export const JOB_SOURCES = [
   "github-frontendbr",

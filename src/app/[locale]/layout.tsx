@@ -10,6 +10,7 @@ import Script from "next/script";
 import { notFound } from "next/navigation";
 import { IntroScreen } from "./components/intro-screen";
 import { AdminHotkey } from "./components/admin-hotkey";
+import { TrackView } from "./components/track-view";
 import "./globals.css";
 
 const headingFont = Geist_Mono({
@@ -178,6 +179,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </Providers>
         <Analytics />
+        <TrackView />
       </body>
     </html>
   );
