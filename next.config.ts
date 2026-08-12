@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: "/u/api/send",
+        destination: "https://gateway.umami.is/api/send",
+      },
+      {
         source: "/u/:path*",
         destination: "https://cloud.umami.is/:path*",
       },

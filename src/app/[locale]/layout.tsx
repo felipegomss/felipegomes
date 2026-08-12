@@ -148,12 +148,12 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://api-gateway.umami.dev" crossOrigin="" />
         <PersonJsonLd locale={locale} />
         <Script
           defer
           src="/u/script.js"
           data-website-id={UMAMI_WEBSITE_ID}
+          data-host-url="/u"
           strategy="afterInteractive"
         />
         <Script
