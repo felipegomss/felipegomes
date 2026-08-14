@@ -23,12 +23,12 @@
       "role": "Software Analyst",
       "period": "06.2024 - present",
       "location": "Salvador/BA",
-      "h1": "Drive the frontend of the next generation of AUTOLOAD, a modular SaaS product built from the ground up in Next.js 14, React 18 and TypeScript on a .NET 8 backend (SignalR, multi-tenant PostgreSQL), replacing the legacy on-premise .NET + Vue system and cutting new-client install time by 70%.",
+      "h1": "Drive the frontend of Autoload Cloud, a modular SaaS product built from the ground up in Next.js 14, React 18 and TypeScript on a .NET 8 backend (SignalR, multi-tenant PostgreSQL), replacing the legacy on-premise .NET + Vue system and cutting new-client install time by 70%.",
       "h2": "Cut the frontend build pipeline from 12 to 4 minutes by fixing a Node + Tailwind CSS misconfiguration, speeding up the team's deploy cycle by 3x.",
       "h3": "Created and maintain @automind/react-components, a design system built on Radix UI, Storybook and Chromatic that standardizes the UI across 2 products and eliminated component rewrites between frontend teams.",
       "h4": "Implemented Vitest and Playwright in the Azure DevOps pipeline with full coverage of critical flows (unit + E2E), preventing regressions before release via smoke tests on PR and full regression in CI.",
       "h5": "Run daily code reviews, mentor ~5 junior developers and lead Claude Code adoption across Automind engineering at the request of tech leadership, embedding the agent into design system refactors, specs and tests for ~3x faster delivery.",
-      "h6": "Mentored the developer who built AUTOLOAD's end-to-end RAG pipeline, the product's first AI feature: Llama embeddings via HuggingFace, ChromaDB vector store and GPT-powered response generation on a Python backend."
+      "h6": "Mentored the developer who built Autoload Cloud's end-to-end RAG pipeline, the product's first AI feature: Llama embeddings via HuggingFace, ChromaDB vector store and GPT-powered response generation on a Python backend."
     },
     "branddi": {
       "role": "FullStack Developer",
