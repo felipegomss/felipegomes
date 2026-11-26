@@ -8,7 +8,7 @@ export function IntroScreen({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { phase, display, isLocked, isHolding } = useDecryptAnimation();
 
-  if (pathname.includes("/admin")) return children;
+  if (pathname.includes("/admin") || pathname.includes("/jorgin")) return children;
   if (phase === "done") return children;
 
   return (

@@ -10,12 +10,16 @@ export function proxy(request: NextRequest) {
 
   const isAdminRoute = /^\/(pt-BR|en)\/admin(\/|$)/.test(pathname);
   const isLoginPage = /^\/(pt-BR|en)\/admin\/login(\/|$)/.test(pathname);
+  // Ferramentas pessoais fora de /admin que também exigem login.
+  const isPrivateRoute = /^\/(pt-BR|en)\/jorgin(\/|$)/.test(pathname);
 
-  if (isAdminRoute && !isLoginPage) {
+  if ((isAdminRoute && !isLoginPage) || isPrivateRoute) {
     const session = request.cookies.get("admin_session");
     if (!session || session.value !== process.env.ADMIN_PASSWORD) {
       const locale = pathname.split("/")[1] ?? "pt-BR";
-      return NextResponse.redirect(new URL(`/${locale}/admin/login`, request.url));
+      const loginUrl = new URL(`/${locale}/admin/login`, request.url);
+      if (isPrivateRoute) loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

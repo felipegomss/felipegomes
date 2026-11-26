@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { HomeIcon, SendIcon, InboxIcon, BriefcaseIcon } from "lucide-react";
+import { HomeIcon, SendIcon, InboxIcon, BriefcaseIcon, WormIcon } from "lucide-react";
 
 export type SidebarNavItem = {
 	title: string;
@@ -57,6 +57,17 @@ export function buildNavGroups(locale: string, pathname: string): SidebarNavGrou
 					path: `${base}/jobs`,
 					icon: <BriefcaseIcon />,
 					isActive: startsWith(`${base}/jobs`),
+				},
+			],
+		},
+		{
+			label: "Pets",
+			items: [
+				{
+					title: "Jorgin",
+					path: `/${locale}/jorgin`,
+					icon: <WormIcon />,
+					isActive: startsWith(`/${locale}/jorgin`),
 				},
 			],
 		},

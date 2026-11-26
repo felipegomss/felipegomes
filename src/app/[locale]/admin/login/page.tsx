@@ -31,7 +31,10 @@ export default function AdminLoginPage() {
       return;
     }
 
-    router.replace(`/${locale}/admin`);
+    // Volta para a rota privada que pediu o login (só caminhos internos).
+    const next = new URLSearchParams(window.location.search).get("next");
+    const safeNext = next && /^\/(?!\/)/.test(next) ? next : null;
+    router.replace(safeNext ?? `/${locale}/admin`);
   }
 
   return (

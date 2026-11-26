@@ -2,9 +2,12 @@ import { sql } from "drizzle-orm";
 import {
   bigint,
   boolean,
+  date,
   index,
+  integer,
   jsonb,
   pgTable,
+  real,
   text,
   timestamp,
   uuid,
@@ -73,3 +76,60 @@ export const JOB_SOURCES = [
   "coodesh",
 ] as const;
 export type JobSource = (typeof JOB_SOURCES)[number];
+
+// ── Pets ─────────────────────────────────────────────────────────────────────
+// Um perfil por animal (identificado por slug) e um log genérico de eventos de
+// manejo. O payload específico de cada tipo vai em `data` (jsonb) — ver
+// `src/lib/pets/types.ts` para o formato de cada um.
+export const pets = pgTable("pets", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  species: text("species"),
+  morph: text("morph"),
+  sex: text("sex"),
+  hatchDate: date("hatch_date"),
+  acquiredDate: date("acquired_date"),
+  feedIntervalDays: integer("feed_interval_days").notNull().default(10),
+  tempHotTarget: real("temp_hot_target"),
+  tempColdTarget: real("temp_cold_target"),
+  humidityTarget: real("humidity_target"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+});
+
+export type Pet = typeof pets.$inferSelect;
+export type NewPet = typeof pets.$inferInsert;
+
+export const petLogs = pgTable(
+  "pet_logs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
+    data: jsonb("data").notNull().default(sql`'{}'::jsonb`),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .default(sql`now()`),
+  },
+  (table) => [
+    index("pet_logs_pet_occurred_idx").on(table.petId, table.occurredAt.desc()),
+    index("pet_logs_pet_type_occurred_idx").on(
+      table.petId,
+      table.type,
+      table.occurredAt.desc(),
+    ),
+  ],
+);
+
+export type PetLog = typeof petLogs.$inferSelect;
+export type NewPetLog = typeof petLogs.$inferInsert;
