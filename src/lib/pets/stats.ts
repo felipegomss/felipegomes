@@ -1,131 +1,150 @@
-// Indicadores derivados do log. Puro: roda tanto no servidor quanto no cliente.
-import type { PetDTO, PetLogData, PetLogDTO, PetLogType } from "./types";
+// Indicadores derivados do log. Puro: roda no servidor e no cliente.
+// Todas as contas de "dia" usam o fuso de São Paulo, para o servidor (UTC) e o
+// navegador chegarem ao mesmo número.
+import type { PetDTO, PetLogDTO, PetLogType } from "./types";
 
+export const PET_TZ = "America/Sao_Paulo";
 const DAY = 86_400_000;
 
+const dayKeyFmt = new Intl.DateTimeFormat("en-CA", {
+  timeZone: PET_TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** "YYYY-MM-DD" do instante no fuso de São Paulo. */
+export function dayKey(d: Date | string): string {
+  return dayKeyFmt.format(typeof d === "string" ? new Date(d) : d);
+}
+
+function dayNumber(d: Date | string): number {
+  const [y, m, day] = dayKey(d).split("-").map(Number);
+  return Date.UTC(y, m - 1, day) / DAY;
+}
+
+/** Dias de calendário de `a` até `b` (positivo se `b` depois de `a`). */
+export function daysBetween(a: Date | string, b: Date | string): number {
+  return dayNumber(b) - dayNumber(a);
+}
+
+function addDays(d: Date | string, days: number): Date {
+  return new Date(new Date(d).getTime() + days * DAY);
+}
+
+export type DueInfo = {
+  last: PetLogDTO | null;
+  /** Dias desde o último registro. */
+  daysSince: number | null;
+  nextAt: Date | null;
+  /** Dias até o próximo (negativo = atrasado). */
+  dueInDays: number | null;
+};
+
 export type PetStats = {
-  feeding: {
+  feeding: DueInfo & {
     lastAccepted: PetLogDTO<"feeding"> | null;
-    lastAttempt: PetLogDTO<"feeding"> | null;
-    /** Recusas/regurgitações seguidas desde a última vez que comeu. */
-    missStreak: number;
-    nextDueAt: Date | null;
-    /** Dias até a próxima (negativo = atrasada). */
-    dueInDays: number | null;
-    acceptedLast90d: number;
-  };
-  shed: {
-    last: PetLogDTO<"shed"> | null;
-    /** Média de dias entre mudas (null com menos de 2 registros). */
-    avgIntervalDays: number | null;
-    /** Olho azul registrado depois da última muda. */
-    inBlue: PetLogDTO<"blue"> | null;
-    nextEstimateAt: Date | null;
+    /** Últimas ofertas, da mais antiga para a mais recente. */
+    recent: PetLogDTO<"feeding">[];
   };
   weight: {
     last: PetLogDTO<"weight"> | null;
     previous: PetLogDTO<"weight"> | null;
-    series: { at: Date; grams: number }[];
+    daysSince: number | null;
+    /** Ordem cronológica. */
+    series: { at: string; grams: number }[];
   };
-  last: Partial<Record<PetLogType, PetLogDTO>>;
+  shed: {
+    last: PetLogDTO<"shed"> | null;
+    daysSince: number | null;
+    avgIntervalDays: number | null;
+    nextEstimateAt: Date | null;
+  };
+  water: DueInfo;
+  counts: Record<PetLogType, number>;
 };
-
-export function daysBetween(a: Date, b: Date): number {
-  return Math.floor((startOfDay(b).getTime() - startOfDay(a).getTime()) / DAY);
-}
-
-function startOfDay(d: Date) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
 
 function ofType<T extends PetLogType>(logs: PetLogDTO[], type: T): PetLogDTO<T>[] {
   return logs.filter((l): l is PetLogDTO<T> => l.type === type);
 }
 
-/** `logs` pode vir em qualquer ordem. */
+export function sortLogsDesc(logs: PetLogDTO[]): PetLogDTO[] {
+  return [...logs].sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime());
+}
+
+function due(last: PetLogDTO | null, intervalDays: number, now: Date): DueInfo {
+  if (!last) return { last: null, daysSince: null, nextAt: null, dueInDays: null };
+  const nextAt = addDays(last.occurredAt, intervalDays);
+  return {
+    last,
+    daysSince: daysBetween(last.occurredAt, now),
+    nextAt,
+    dueInDays: daysBetween(now, nextAt),
+  };
+}
+
 export function computePetStats(pet: PetDTO, logs: PetLogDTO[], now = new Date()): PetStats {
-  const sorted = [...logs].sort(
-    (a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
-  );
+  const sorted = sortLogsDesc(logs);
 
-  const last: PetStats["last"] = {};
-  for (const l of sorted) if (!last[l.type]) last[l.type] = l;
-
-  // Alimentação
+  // Alimentação: a próxima conta a partir da última que ele COMEU.
   const feedings = ofType(sorted, "feeding");
   const lastAccepted = feedings.find((f) => f.data.result === "accepted") ?? null;
-  let missStreak = 0;
-  for (const f of feedings) {
-    if (f.data.result === "accepted") break;
-    missStreak++;
-  }
-  // Depois de uma recusa, a próxima tentativa conta a partir da recusa.
-  const anchor = feedings[0] ?? null;
-  const nextDueAt = anchor
-    ? new Date(new Date(anchor.occurredAt).getTime() + pet.feedIntervalDays * DAY)
-    : null;
-  const dueInDays = nextDueAt ? daysBetween(now, nextDueAt) : null;
-  const acceptedLast90d = feedings.filter(
-    (f) => f.data.result === "accepted" && now.getTime() - new Date(f.occurredAt).getTime() <= 90 * DAY,
-  ).length;
+  const feeding = {
+    ...due(lastAccepted, pet.feedIntervalDays, now),
+    lastAccepted,
+    recent: feedings.slice(0, 8).reverse(),
+  };
 
-  // Muda
+  // Peso
+  const weights = ofType(sorted, "weight");
+  const weight = {
+    last: weights[0] ?? null,
+    previous: weights[1] ?? null,
+    daysSince: weights[0] ? daysBetween(weights[0].occurredAt, now) : null,
+    series: weights.map((w) => ({ at: w.occurredAt, grams: w.data.grams })).reverse(),
+  };
+
+  // Muda: média dos últimos intervalos (até 5).
   const sheds = ofType(sorted, "shed");
-  const lastShed = sheds[0] ?? null;
   let avgIntervalDays: number | null = null;
   if (sheds.length >= 2) {
     const recent = sheds.slice(0, 6);
     let total = 0;
     for (let i = 0; i < recent.length - 1; i++) {
-      total += daysBetween(new Date(recent[i + 1].occurredAt), new Date(recent[i].occurredAt));
+      total += daysBetween(recent[i + 1].occurredAt, recent[i].occurredAt);
     }
     avgIntervalDays = Math.round(total / (recent.length - 1));
   }
-  const lastBlue = (last.blue as PetLogDTO<"blue"> | undefined) ?? null;
-  const inBlue =
-    lastBlue && (!lastShed || new Date(lastBlue.occurredAt) > new Date(lastShed.occurredAt))
-      ? lastBlue
-      : null;
-  const nextEstimateAt =
-    lastShed && avgIntervalDays
-      ? new Date(new Date(lastShed.occurredAt).getTime() + avgIntervalDays * DAY)
-      : null;
-
-  // Peso
-  const weights = ofType(sorted, "weight");
-  const series = weights
-    .map((w) => ({ at: new Date(w.occurredAt), grams: (w.data as PetLogData["weight"]).grams }))
-    .reverse();
-
-  return {
-    feeding: {
-      lastAccepted,
-      lastAttempt: anchor,
-      missStreak,
-      nextDueAt,
-      dueInDays,
-      acceptedLast90d,
-    },
-    shed: { last: lastShed, avgIntervalDays, inBlue, nextEstimateAt },
-    weight: { last: weights[0] ?? null, previous: weights[1] ?? null, series },
-    last,
+  const lastShed = sheds[0] ?? null;
+  const shed = {
+    last: lastShed,
+    daysSince: lastShed ? daysBetween(lastShed.occurredAt, now) : null,
+    avgIntervalDays,
+    nextEstimateAt: lastShed && avgIntervalDays ? addDays(lastShed.occurredAt, avgIntervalDays) : null,
   };
+
+  const water = due(ofType(sorted, "water")[0] ?? null, pet.waterIntervalDays, now);
+
+  const counts = { feeding: 0, weight: 0, shed: 0, water: 0, vet: 0, note: 0 } as Record<PetLogType, number>;
+  for (const l of logs) counts[l.type]++;
+
+  return { feeding, weight, shed, water, counts };
 }
 
-/** Idade legível a partir de uma data `YYYY-MM-DD`. */
+/** "2 anos e 8 meses" a partir de "YYYY-MM-DD". */
 export function formatAge(isoDate: string | null, now = new Date()): string | null {
   if (!isoDate) return null;
   const [y, m, d] = isoDate.split("-").map(Number);
-  const birth = new Date(y, m - 1, d);
-  let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
-  if (now.getDate() < birth.getDate()) months--;
+  const [ny, nm, nd] = dayKey(now).split("-").map(Number);
+  let months = (ny - y) * 12 + (nm - m);
+  if (nd < d) months--;
   if (months < 0) return null;
-  if (months < 1) return `${daysBetween(birth, now)} dias`;
+  if (months < 1) return `${daysBetween(`${isoDate}T12:00:00-03:00`, now)} dias`;
   const years = Math.floor(months / 12);
   const rest = months % 12;
-  if (years === 0) return `${rest} ${rest === 1 ? "mês" : "meses"}`;
-  if (rest === 0) return `${years} ${years === 1 ? "ano" : "anos"}`;
-  return `${years}a ${rest}m`;
+  const yLabel = `${years} ${years === 1 ? "ano" : "anos"}`;
+  const mLabel = `${rest} ${rest === 1 ? "mês" : "meses"}`;
+  if (years === 0) return mLabel;
+  if (rest === 0) return yLabel;
+  return `${yLabel} e ${mLabel}`;
 }

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { HomeIcon, SendIcon, InboxIcon, BriefcaseIcon, WormIcon } from "lucide-react";
+import { PET_NAV } from "@/lib/pets/registry";
 
 export type SidebarNavItem = {
 	title: string;
@@ -62,14 +63,12 @@ export function buildNavGroups(locale: string, pathname: string): SidebarNavGrou
 		},
 		{
 			label: "Pets",
-			items: [
-				{
-					title: "Jorgin",
-					path: `/${locale}/jorgin`,
-					icon: <WormIcon />,
-					isActive: startsWith(`/${locale}/jorgin`),
-				},
-			],
+			items: PET_NAV.map((pet) => ({
+				title: pet.name,
+				path: `/${locale}/pets/${pet.slug}`,
+				icon: <WormIcon />,
+				isActive: startsWith(`/${locale}/pets/${pet.slug}`),
+			})),
 		},
 	];
 }

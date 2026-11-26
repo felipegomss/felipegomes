@@ -7,7 +7,6 @@ import {
   integer,
   jsonb,
   pgTable,
-  real,
   text,
   timestamp,
   uuid,
@@ -79,7 +78,7 @@ export type JobSource = (typeof JOB_SOURCES)[number];
 
 // ── Pets ─────────────────────────────────────────────────────────────────────
 // Um perfil por animal (identificado por slug) e um log genérico de eventos de
-// manejo. O payload específico de cada tipo vai em `data` (jsonb) — ver
+// manejo. Novos animais entram por migration (sem tela de cadastro). O payload específico de cada tipo vai em `data` (jsonb) — ver
 // `src/lib/pets/types.ts` para o formato de cada um.
 export const pets = pgTable("pets", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -91,9 +90,7 @@ export const pets = pgTable("pets", {
   hatchDate: date("hatch_date"),
   acquiredDate: date("acquired_date"),
   feedIntervalDays: integer("feed_interval_days").notNull().default(10),
-  tempHotTarget: real("temp_hot_target"),
-  tempColdTarget: real("temp_cold_target"),
-  humidityTarget: real("humidity_target"),
+  waterIntervalDays: integer("water_interval_days").notNull().default(15),
   notes: text("notes"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()

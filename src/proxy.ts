@@ -11,7 +11,7 @@ export function proxy(request: NextRequest) {
   const isAdminRoute = /^\/(pt-BR|en)\/admin(\/|$)/.test(pathname);
   const isLoginPage = /^\/(pt-BR|en)\/admin\/login(\/|$)/.test(pathname);
   // Ferramentas pessoais fora de /admin que também exigem login.
-  const isPrivateRoute = /^\/(pt-BR|en)\/jorgin(\/|$)/.test(pathname);
+  const isPrivateRoute = /^\/(pt-BR|en)\/pets(\/|$)/.test(pathname);
 
   if ((isAdminRoute && !isLoginPage) || isPrivateRoute) {
     const session = request.cookies.get("admin_session");

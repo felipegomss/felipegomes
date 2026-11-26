@@ -25,5 +25,8 @@ function Ping({ path }: { path: string }) {
 export function TrackView() {
   const pathname = usePathname();
 
+  // Ferramentas pessoais (/pets) não entram no contador público.
+  if (pathname.includes("/pets/")) return null;
+
   return <Ping key={pathname} path={pathname} />;
 }

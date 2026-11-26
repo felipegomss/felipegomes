@@ -34,8 +34,8 @@ export async function POST(request: Request, { params }: Ctx) {
   }
 
   const parsed = parseLogData(type, body.data);
-  if ("error" in parsed) {
-    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  if ("errors" in parsed) {
+    return NextResponse.json({ error: "Campos inválidos.", fields: parsed.errors }, { status: 400 });
   }
 
   const notes = typeof body.notes === "string" ? body.notes.trim().slice(0, 4000) || null : null;

@@ -41,8 +41,14 @@ export async function PATCH(request: Request, { params }: Ctx) {
     updates.occurredAt = d;
   }
   if (body.data !== undefined) {
-    const parsed = parseLogData(found.log.type as PetLogType, body.data);
-    if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 });
+    const parsed = parseLogData(
+      found.log.type as PetLogType,
+      body.data,
+      found.log.data as Record<string, unknown>,
+    );
+    if ("errors" in parsed) {
+      return NextResponse.json({ error: "Campos inválidos.", fields: parsed.errors }, { status: 400 });
+    }
     updates.data = parsed.data;
   }
   if (body.notes !== undefined) {
