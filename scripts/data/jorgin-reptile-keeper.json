@@ -1,0 +1,9 @@
+{
+  "source": "reptile-keeper (MongoDB), exportado em 2026-11-26",
+  "pet": {"name":"Jorgin","species":"kingsnake","morph":"Striped","birthDate":"2024-03-06","acquiredDate":"2025-02-17"},
+  "weights": [["2025-02-03",55],["2025-02-21",51],["2025-02-26",50],["2025-03-10",57],["2025-03-28",57],["2026-02-24",225],["2026-06-08",254],["2026-07-28",266],["2026-08-15",260]],
+  "feedings": [["2025-02-24","Camundongos",6,true],["2025-03-06","Camundongos",7,true],["2025-03-18","Camundongos",4,true],["2025-03-20","Camundongos",4,true],["2025-03-25","Camundongos",6,true],["2025-03-30","Camundongos",18,true],["2025-12-12","Camundongos",20,true],["2026-02-01","Camundongos",24,true],["2026-02-16","Camundongos",22,true],["2026-02-26","Camundongos",28,true],["2026-03-03","Camundongos",26,true],["2026-03-09","Camundongos",23,true],["2026-03-16","Camundongos",23,false],["2026-03-18","Camundongos",27,false],["2026-03-21","Camundongos",27,true],["2026-03-29","Camundongos",24,true],["2026-04-16","Camundongos",25,true],["2026-05-21","Camundongos",29,true],["2026-06-09","Camundongos",30,true],["2026-06-29","Camundongos",44,true],["2026-09-05","Ratos",30,true]],
+  "sheds": [["2026-02-02","complete"],["2026-03-22","complete"],["2026-04-16","complete"],["2026-06-10","partial"],["2026-07-19","complete"]],
+  "notes": [],
+  "documents": []
+}
