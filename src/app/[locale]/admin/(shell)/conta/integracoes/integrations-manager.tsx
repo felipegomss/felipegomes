@@ -243,8 +243,8 @@ function ShortcutGuide({ url, onDone }: { url: string; onDone: () => void }) {
             Abra <span className={strong}>Atalhos</span>, toque em <span className={strong}>+</span> e renomeie para <span className={strong}>Salvar no LFNG</span> (toque no nome, no topo).
           </li>
           <li>
-            Toque no nome › <span className={strong}>Detalhes</span> (ou no ⓘ) e ative <span className={strong}>Mostrar na Planilha de Compartilhamento</span>. Nos tipos aceitos, deixe só <span className={strong}>URLs</span>. Aparece no topo
-            “Receber <span className={strong}>URLs</span> de Planilha de Compartilhamento”.
+            Nos detalhes do atalho (ⓘ, ou toque no nome), ligue <span className={strong}>Mostrar ao Compartilhar</span>. É uma configuração do atalho, não uma ação. Nos tipos aceitos, deixe só{" "}
+            <span className={strong}>URLs</span>.
           </li>
           <li>
             Adicione a ação <span className={strong}>Obter Conteúdo do URL</span>. No campo do endereço, cole a URL copiada e, logo depois do <code className={strong}>url=</code>, toque em{" "}
@@ -264,7 +264,7 @@ function ShortcutGuide({ url, onDone }: { url: string; onDone: () => void }) {
         <summary className="flex min-h-11 cursor-pointer items-center px-3">Ou peça para o iOS montar</summary>
         <div className="flex flex-col gap-2 px-3 pb-3 leading-relaxed text-muted-foreground">
           <p>
-            Em <span className={strong}>+</span> › <span className={strong}>Descrever um Atalho</span>, cole o texto abaixo. Depois confira se “Mostrar na Planilha de Compartilhamento” ficou ligado.
+            Em <span className={strong}>+</span> › <span className={strong}>Descrever um Atalho</span>, cole o texto abaixo. Depois confira se “Mostrar ao Compartilhar” ficou ligado.
           </p>
           <code className="block border bg-muted px-2.5 py-2 break-all text-foreground">{describe}</code>
           <CopyButton value={describe} label="Copiar descrição" />
