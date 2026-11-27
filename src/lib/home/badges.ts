@@ -1,6 +1,5 @@
 // Indicadores da sidebar: ponto quando um pet tem pendência urgente e a
 // contagem de vagas novas. Chave = caminho do item na navegação.
-import { upcoming } from "@/lib/calendar/service";
 import { getJobStats } from "@/lib/jobs/stats";
 import { PET_NAV } from "@/lib/pets/registry";
 import { loadPetPage } from "@/lib/pets/repo";
@@ -14,11 +13,10 @@ export type NavBadges = Record<string, NavBadge>;
 export async function getNavBadges(locale: string): Promise<NavBadges> {
   const now = new Date();
   const badges: NavBadges = {};
-  const [pets, jobs, tasks, agenda] = await Promise.allSettled([
+  const [pets, jobs, tasks] = await Promise.allSettled([
     Promise.all(PET_NAV.map((p) => loadPetPage(p.slug))),
     getJobStats(),
     listOpenTasks(),
-    upcoming(now),
   ]);
 
   if (pets.status === "fulfilled") {
@@ -47,10 +45,6 @@ export async function getNavBadges(locale: string): Promise<NavBadges> {
         label: [c.today && `${c.today} para hoje`, c.overdue && `${c.overdue} ${c.overdue === 1 ? "atrasada" : "atrasadas"}`].filter(Boolean).join(", "),
       };
     }
-  }
-  if (agenda.status === "fulfilled") {
-    const n = agenda.value.items.filter((i) => i.kind === "event" && i.date <= agenda.value.today && i.endDate >= agenda.value.today).length;
-    if (n > 0) badges[`/${locale}/admin/agenda`] = { count: n, label: `${n} ${n === 1 ? "compromisso" : "compromissos"} hoje` };
   }
   return badges;
 }

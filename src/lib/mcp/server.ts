@@ -12,10 +12,6 @@ import { loadPetPage } from "@/lib/pets/repo";
 import { computePetStats, sortLogsDesc } from "@/lib/pets/stats";
 import { PET_LOG_LABELS, PET_LOG_TYPES } from "@/lib/pets/types";
 import { dueLabel, groupOf, groupTasks, repeatLabel, todayKey, type TaskDTO } from "@/lib/tasks/model";
-import { dayHeading, timeLabel, type AgendaItem } from "@/lib/calendar/model";
-import { CalendarError, createEvent, deleteEvent, listAgenda, updateEvent } from "@/lib/calendar/service";
-import { GoogleAuthError } from "@/lib/google/oauth";
-import { addDays } from "@/lib/tasks/model";
 import { createTask, deleteTask, getTask, listDoneTasks, listOpenTasks, setTaskDone, updateTask } from "@/lib/tasks/service";
 
 const LOCALE = "pt-BR";
@@ -77,57 +73,6 @@ function toTaskInput(f: TaskFieldInput) {
     }).filter(([, v]) => v !== undefined),
   );
 }
-
-function compactEvent(i: AgendaItem, today: string) {
-  return {
-    id: i.id,
-    agenda_id: i.calendarId,
-    tipo: i.kind === "task" ? "tarefa" : "evento",
-    titulo: i.title,
-    dia: dayHeading(i.date, today),
-    data: i.date,
-    ...(i.endDate !== i.date ? { ate: i.endDate } : {}),
-    horario: timeLabel(i),
-    local: i.location,
-    descricao: i.description,
-    repete: i.recurring,
-  };
-}
-
-/** Erros da agenda viram mensagem para o agente (sem derrubar a chamada). */
-async function agendaCall<T>(fn: () => Promise<T>) {
-  try {
-    return text(await fn());
-  } catch (e) {
-    if (e instanceof CalendarError || e instanceof GoogleAuthError) return fail(e.message);
-    throw e;
-  }
-}
-
-const eventFields = {
-  titulo: z.string().optional(),
-  data: z.string().optional().describe("AAAA-MM-DD"),
-  inicio: z.string().optional().describe("HH:MM (sem início = dia inteiro)"),
-  fim: z.string().optional().describe("HH:MM (padrão: 1 h depois do início)"),
-  ate: z.string().optional().describe("AAAA-MM-DD do último dia, para eventos de vários dias"),
-  dia_inteiro: z.boolean().optional(),
-  local: z.string().optional(),
-  descricao: z.string().optional(),
-};
-type EventFieldInput = { [K in keyof typeof eventFields]?: z.infer<(typeof eventFields)[K]> };
-const toEventInput = (f: EventFieldInput) =>
-  Object.fromEntries(
-    Object.entries({
-      title: f.titulo,
-      date: f.data,
-      start: f.inicio,
-      end: f.fim,
-      endDate: f.ate,
-      allDay: f.dia_inteiro,
-      location: f.local,
-      description: f.descricao,
-    }).filter(([, v]) => v !== undefined),
-  );
 
 const JOB_STATUS_MAP = { novas: "new", contatadas: "contacted", dispensadas: "dismissed" } as const;
 
@@ -193,7 +138,6 @@ export function createMcpServer() {
     "App pessoal do Felipe (lfng.dev): cuidados com os pets, vagas de emprego e emails de contato.",
     `Pets do Felipe: ${pets}. Qualquer pergunta ou registro sobre eles (comeu, pesou, trocou de pele, TPA, veterinário, "como ele está?") usa estas ferramentas pet_* — mesmo que o MCP não seja citado.`,
     "Tarefas e lembretes do Felipe ('me lembra de…', 'anota pra fazer…', 'o que tenho pra fazer?', 'marca X como feita') usam tarefas_*.",
-    "Compromissos e eventos do Google Agenda ('o que tenho amanhã?', 'marca dentista sexta 16h30', 'muda a reunião pra 15h') usam agenda_*. Lembrete sem horário marcado é tarefa (tarefas_criar), não evento.",
     "Perguntas sobre vagas usam vagas_*; 'o que tenho pra hoje?' usa resumo_do_dia.",
     "Datas no fuso de São Paulo. Para enviar email, mostre o rascunho completo e peça confirmação explícita antes de chamar email_enviar.",
   ].join("\n");
@@ -204,7 +148,7 @@ export function createMcpServer() {
     "resumo_do_dia",
     {
       title: "Resumo do dia",
-      description: "Pendências de todos os módulos (tarefas, agenda, pets, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
+      description: "Pendências de todos os módulos (tarefas, pets, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
       annotations: { readOnlyHint: true },
     },
     async () => {
@@ -414,69 +358,6 @@ export function createMcpServer() {
       if (!result.ok) return fail(result.error);
       return text({ excluida: task?.title ?? id });
     },
-  );
-
-  // ── Agenda (Google) ───────────────────────────────────────────────────────
-  server.registerTool(
-    "agenda_listar",
-    {
-      title: "Ver agenda",
-      description: "Eventos do Google Agenda (e tarefas com data, se ligado) num intervalo de dias. Padrão: hoje e os próximos 6 dias.",
-      inputSchema: {
-        de: z.string().optional().describe("AAAA-MM-DD (padrão: hoje)"),
-        ate: z.string().optional().describe("AAAA-MM-DD, inclusive (padrão: de + 6 dias)"),
-      },
-      annotations: { readOnlyHint: true },
-    },
-    async ({ de, ate }) =>
-      agendaCall(async () => {
-        const today = todayKey();
-        const from = de ?? today;
-        const to = ate ?? addDays(from, 6);
-        const { items, settings } = await listAgenda(from, to);
-        if (!settings.connected) return { conectado: false, aviso: "Google Agenda não conectado. O Felipe conecta em lfng.dev › Agenda." };
-        return {
-          hoje: today,
-          agendas: settings.calendars.filter((c) => c.visible).map((c) => ({ id: c.id, nome: c.name, padrao: c.id === settings.defaultId, editavel: c.writable })),
-          itens: items.map((i) => compactEvent(i, today)),
-        };
-      }),
-  );
-
-  server.registerTool(
-    "agenda_criar",
-    {
-      title: "Criar evento",
-      description: "Cria um evento no Google Agenda (na agenda padrão, ou em `agenda_id`). Sem `inicio` vira evento de dia inteiro.",
-      inputSchema: { ...eventFields, titulo: z.string(), data: z.string().describe("AAAA-MM-DD"), agenda_id: z.string().optional() },
-    },
-    async ({ agenda_id, ...f }) =>
-      agendaCall(async () => ({ criado: compactEvent(await createEvent({ ...toEventInput(f), calendarId: agenda_id }), todayKey()) })),
-  );
-
-  server.registerTool(
-    "agenda_editar",
-    {
-      title: "Editar evento",
-      description: "Muda título, data, horário, local ou descrição de um evento (id e agenda_id vêm de agenda_listar). Em evento que se repete, muda só aquela ocorrência.",
-      inputSchema: { id: z.string(), agenda_id: z.string(), ...eventFields },
-    },
-    async ({ id, agenda_id, ...f }) => agendaCall(async () => ({ evento: compactEvent(await updateEvent(agenda_id, id, toEventInput(f)), todayKey()) })),
-  );
-
-  server.registerTool(
-    "agenda_excluir",
-    {
-      title: "Excluir evento",
-      description: "Apaga um evento do Google Agenda. Confirme com o usuário antes.",
-      inputSchema: { id: z.string(), agenda_id: z.string() },
-      annotations: { destructiveHint: true },
-    },
-    async ({ id, agenda_id }) =>
-      agendaCall(async () => {
-        await deleteEvent(agenda_id, id);
-        return { excluido: id };
-      }),
   );
 
   // ── Vagas ─────────────────────────────────────────────────────────────────
