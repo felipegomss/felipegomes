@@ -5,6 +5,7 @@ import {
 	HomeIcon,
 	InboxIcon,
 	LayoutGridIcon,
+	ListChecksIcon,
 	PawPrintIcon,
 	SendIcon,
 	WrenchIcon,
@@ -57,7 +58,10 @@ export function buildNavGroups(
 
 	const groups: SidebarNavGroup[] = [
 		{
-			items: [{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) }],
+			items: [
+				{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) },
+				{ title: "Tarefas", path: `${base}/tarefas`, icon: <ListChecksIcon />, isActive: startsWith(`${base}/tarefas`) },
+			],
 		},
 		{
 			label: "Pets",

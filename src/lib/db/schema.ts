@@ -178,3 +178,28 @@ export const oauthGrants = pgTable("oauth_grants", {
 
 export type OAuthClient = typeof oauthClients.$inferSelect;
 export type OAuthGrant = typeof oauthGrants.$inferSelect;
+
+// Tarefas pessoais. `dueDate` é um dia do calendário (sem fuso); `dueTime`
+// opcional "HH:MM". Repetição: ao concluir, a próxima ocorrência vira outra
+// linha e `spawnedId` aponta para ela (para desfazer a conclusão).
+export const tasks = pgTable(
+  "tasks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    title: text("title").notNull(),
+    notes: text("notes"),
+    list: text("list").notNull().default("Pessoal"),
+    dueDate: date("due_date", { mode: "string" }),
+    dueTime: text("due_time"),
+    repeat: text("repeat").notNull().default("none"),
+    repeatDays: integer("repeat_days").array(),
+    via: text("via"),
+    spawnedId: uuid("spawned_id"),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`now()`),
+  },
+  (table) => [index("tasks_open_due_idx").on(table.completedAt, table.dueDate)],
+);
+
+export type TaskRow = typeof tasks.$inferSelect;

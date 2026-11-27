@@ -11,6 +11,8 @@ import { PET_NAV } from "@/lib/pets/registry";
 import { loadPetPage } from "@/lib/pets/repo";
 import { computePetStats, sortLogsDesc } from "@/lib/pets/stats";
 import { PET_LOG_LABELS, PET_LOG_TYPES } from "@/lib/pets/types";
+import { dueLabel, groupOf, groupTasks, repeatLabel, todayKey, type TaskDTO } from "@/lib/tasks/model";
+import { createTask, deleteTask, getTask, listDoneTasks, listOpenTasks, setTaskDone, updateTask } from "@/lib/tasks/service";
 
 const LOCALE = "pt-BR";
 const DEFAULT_PET = PET_NAV[0]?.slug ?? "jorgin";
@@ -28,6 +30,50 @@ function parseWhen(v?: string): string | undefined {
 
 const RESULT_MAP = { comeu: "accepted", recusou: "refused", regurgitou: "regurgitated" } as const;
 const STATE_MAP = { descongelado: "frozen", pre_abatido: "prekilled", vivo: "live" } as const;
+const REPEAT_MAP = { nao: "none", diaria: "daily", semanal: "weekly", mensal: "monthly" } as const;
+const WEEKDAY_MAP: Record<string, number> = { dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6 };
+
+function compactTask(t: TaskDTO, today: string) {
+  return {
+    id: t.id,
+    tarefa: t.title,
+    lista: t.list,
+    data: t.dueDate,
+    hora: t.dueTime,
+    prazo: dueLabel(t, today),
+    repete: repeatLabel(t),
+    notas: t.notes,
+    concluida_em: t.completedAt,
+    criada_por_agente: t.via === "agent",
+  };
+}
+
+/** Campos de tarefa em português → formato do serviço. */
+const taskFields = {
+  titulo: z.string().optional().describe("Nome da tarefa"),
+  data: z.string().optional().describe("AAAA-MM-DD; string vazia remove a data"),
+  hora: z.string().optional().describe("HH:MM; string vazia remove a hora"),
+  lista: z.string().optional().describe("Ex.: Pessoal, Trabalho, Casa (cria a lista se não existir)"),
+  repetir: z.enum(["nao", "diaria", "semanal", "mensal"]).optional(),
+  dias_semana: z.array(z.enum(["dom", "seg", "ter", "qua", "qui", "sex", "sab"])).optional().describe("Para repetir=semanal"),
+  notas: z.string().optional(),
+};
+type TaskFieldInput = { [K in keyof typeof taskFields]?: z.infer<(typeof taskFields)[K]> };
+
+function toTaskInput(f: TaskFieldInput) {
+  return Object.fromEntries(
+    Object.entries({
+      title: f.titulo,
+      dueDate: f.data === "" ? null : f.data,
+      dueTime: f.hora === "" ? null : f.hora,
+      list: f.lista,
+      repeat: f.repetir ? REPEAT_MAP[f.repetir] : undefined,
+      repeatDays: f.dias_semana?.map((d) => WEEKDAY_MAP[d]),
+      notes: f.notas,
+    }).filter(([, v]) => v !== undefined),
+  );
+}
+
 const JOB_STATUS_MAP = { novas: "new", contatadas: "contacted", dispensadas: "dismissed" } as const;
 
 /** Campos de registro de pet em português → formato interno de `data`. */
@@ -91,6 +137,7 @@ export function createMcpServer() {
   const instructions = [
     "App pessoal do Felipe (lfng.dev): cuidados com os pets, vagas de emprego e emails de contato.",
     `Pets do Felipe: ${pets}. Qualquer pergunta ou registro sobre eles (comeu, pesou, trocou de pele, TPA, veterinário, "como ele está?") usa estas ferramentas pet_* — mesmo que o MCP não seja citado.`,
+    "Tarefas e lembretes do Felipe ('me lembra de…', 'anota pra fazer…', 'o que tenho pra fazer?', 'marca X como feita') usam tarefas_*.",
     "Perguntas sobre vagas usam vagas_*; 'o que tenho pra hoje?' usa resumo_do_dia.",
     "Datas no fuso de São Paulo. Para enviar email, mostre o rascunho completo e peça confirmação explícita antes de chamar email_enviar.",
   ].join("\n");
@@ -101,7 +148,7 @@ export function createMcpServer() {
     "resumo_do_dia",
     {
       title: "Resumo do dia",
-      description: "Pendências de todos os módulos (pets, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
+      description: "Pendências de todos os módulos (tarefas, pets, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
       annotations: { readOnlyHint: true },
     },
     async () => {
@@ -219,6 +266,97 @@ export function createMcpServer() {
     async ({ pet, id }) => {
       const r = await deletePetLog(pet ?? DEFAULT_PET, id);
       return r.ok ? text({ excluido: id }) : fail(r.error);
+    },
+  );
+
+  // ── Tarefas ───────────────────────────────────────────────────────────────
+  server.registerTool(
+    "tarefas_listar",
+    {
+      title: "Listar tarefas",
+      description: "Tarefas abertas agrupadas (atrasadas, hoje, próximos 7 dias, mais tarde, sem data) ou as concluídas nos últimos 30 dias.",
+      inputSchema: {
+        filtro: z.enum(["abertas", "hoje", "atrasadas", "semana", "concluidas"]).optional().describe("Padrão: abertas"),
+        lista: z.string().optional().describe("Só uma lista, ex.: Trabalho"),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ filtro, lista }) => {
+      const today = todayKey();
+      const byList = (t: TaskDTO) => !lista || t.list.toLowerCase() === lista.toLowerCase();
+      if (filtro === "concluidas") {
+        return text({ hoje: today, concluidas: (await listDoneTasks()).filter(byList).map((t) => compactTask(t, today)) });
+      }
+      let open = (await listOpenTasks()).filter(byList);
+      if (filtro === "hoje") open = open.filter((t) => ["overdue", "today"].includes(groupOf(t, today)));
+      if (filtro === "atrasadas") open = open.filter((t) => groupOf(t, today) === "overdue");
+      if (filtro === "semana") open = open.filter((t) => ["overdue", "today", "week"].includes(groupOf(t, today)));
+      return text({
+        hoje: today,
+        grupos: groupTasks(open, today).map((g) => ({ grupo: g.title, tarefas: g.tasks.map((t) => compactTask(t, today)) })),
+      });
+    },
+  );
+
+  server.registerTool(
+    "tarefas_criar",
+    {
+      title: "Criar tarefa",
+      description:
+        "Cria uma tarefa/lembrete. Mais simples: passe `texto` em linguagem natural (ex.: 'pagar a fatura sexta 10h #casa', 'academia toda seg, qua e sex') — data, hora, repetição e #lista saem dele. Campos explícitos têm prioridade sobre o texto.",
+      inputSchema: { texto: z.string().optional().describe("Frase em português com data/hora/#lista"), ...taskFields },
+    },
+    async ({ texto, ...f }) => {
+      const input = toTaskInput(f);
+      if (!texto && !input.title) return fail("Informe `texto` ou `titulo`.");
+      const result = await createTask({ ...(texto ? { text: texto } : {}), ...input }, { via: "agent" });
+      if (!result.ok) return fail(result.error);
+      return text({ criada: compactTask(result.value, todayKey()) });
+    },
+  );
+
+  server.registerTool(
+    "tarefas_concluir",
+    {
+      title: "Concluir tarefa",
+      description: "Marca como feita (ou reabre com desfazer=true). Se ela repete, a próxima ocorrência é criada e devolvida. Use o id de tarefas_listar.",
+      inputSchema: { id: z.string(), desfazer: z.boolean().optional() },
+    },
+    async ({ id, desfazer }) => {
+      const result = await setTaskDone(id, !desfazer);
+      if (!result.ok) return fail(result.error);
+      const today = todayKey();
+      return text({ tarefa: compactTask(result.value.task, today), proxima: result.value.next ? compactTask(result.value.next, today) : null });
+    },
+  );
+
+  server.registerTool(
+    "tarefas_editar",
+    {
+      title: "Editar tarefa",
+      description: "Muda nome, data, hora, lista, repetição ou notas de uma tarefa (use o id de tarefas_listar).",
+      inputSchema: { id: z.string(), ...taskFields },
+    },
+    async ({ id, ...f }) => {
+      const result = await updateTask(id, toTaskInput(f));
+      if (!result.ok) return fail(result.error);
+      return text({ tarefa: compactTask(result.value, todayKey()) });
+    },
+  );
+
+  server.registerTool(
+    "tarefas_excluir",
+    {
+      title: "Excluir tarefa",
+      description: "Apaga uma tarefa. Não dá para desfazer: confirme com o usuário antes. Para tarefa feita, prefira tarefas_concluir.",
+      inputSchema: { id: z.string() },
+      annotations: { destructiveHint: true },
+    },
+    async ({ id }) => {
+      const task = await getTask(id);
+      const result = await deleteTask(id);
+      if (!result.ok) return fail(result.error);
+      return text({ excluida: task?.title ?? id });
     },
   );
 

@@ -7,6 +7,8 @@ import { PET_NAV, petPhoto } from "@/lib/pets/registry";
 import { loadPetPage } from "@/lib/pets/repo";
 import { computePetStats } from "@/lib/pets/stats";
 import type { PetDTO, PetLogDTO } from "@/lib/pets/types";
+import { dueLabel, groupOf, groupTasks, taskCounts, todayKey } from "@/lib/tasks/model";
+import { listOpenTasks } from "@/lib/tasks/service";
 
 export type AlertTone = "danger" | "warn" | "info";
 
@@ -23,7 +25,7 @@ export type HomeModule = {
   id: string;
   title: string;
   href: string;
-  icon: "pet" | "briefcase" | "inbox";
+  icon: "pet" | "briefcase" | "inbox" | "tasks";
   /** Foto (quadrada) no lugar do ícone, quando houver. */
   photo?: string;
   stats: { label: string; value: string }[];
@@ -136,11 +138,50 @@ async function emailModule({ locale, now }: Ctx): Promise<HomeModule> {
   };
 }
 
+/** Atrasadas (urgente) e de hoje (atenção); mais de 3 viram uma linha só. */
+async function tasksModule({ locale, now }: Ctx): Promise<HomeModule> {
+  const open = await listOpenTasks();
+  const today = todayKey(now);
+  const href = `/${locale}/admin/tarefas`;
+  const c = taskCounts(open, today);
+  const groups = groupTasks(open, today);
+  const alerts: HomeAlert[] = [];
+  for (const [id, tone] of [["overdue", "danger"], ["today", "warn"]] as const) {
+    const items = groups.find((g) => g.id === id)?.tasks ?? [];
+    if (items.length > 3) {
+      alerts.push({
+        id: `tasks:${id}`,
+        tone,
+        source: "Tarefas",
+        title: id === "overdue" ? `${plural(items.length, "tarefa atrasada", "tarefas atrasadas")}` : `${items.length} tarefas para hoje`,
+        detail: items.slice(0, 2).map((t) => t.title).join(", ") + "…",
+        href,
+      });
+    } else {
+      for (const t of items) {
+        alerts.push({ id: `task:${t.id}`, tone, source: "Tarefas", title: t.title, detail: dueLabel(t, today) ?? undefined, href });
+      }
+    }
+  }
+  return {
+    id: "tasks",
+    title: "Tarefas",
+    href,
+    icon: "tasks",
+    alerts,
+    stats: [
+      { label: "Hoje", value: String(c.today) },
+      { label: "Atrasadas", value: String(c.overdue) },
+      { label: "7 dias", value: String(open.filter((t) => groupOf(t, today) === "week").length) },
+    ],
+  };
+}
+
 const TONE_ORDER: Record<AlertTone, number> = { danger: 0, warn: 1, info: 2 };
 
 /** Todos os módulos; um módulo que falhar não derruba a home. */
 export async function getHomeData(ctx: Ctx): Promise<{ modules: HomeModule[]; alerts: HomeAlert[] }> {
-  const results = await Promise.allSettled([petModules(ctx), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
+  const results = await Promise.allSettled([tasksModule(ctx).then((m) => [m]), petModules(ctx), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
   const modules = results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
   const alerts = modules.flatMap((m) => m.alerts).sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
   return { modules, alerts };

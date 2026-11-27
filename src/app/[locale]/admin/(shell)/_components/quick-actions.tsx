@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { SendIcon } from "lucide-react";
+import { ListPlusIcon, SendIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PetLogDTO, PetLogType } from "@/lib/pets/types";
 import { LogDialog, type DialogTarget } from "../../../pets/[slug]/_components/log-dialog";
@@ -36,6 +36,10 @@ export function QuickActions({
             {a.label}
           </button>
         ))}
+        <Link href={`/${locale}/admin/tarefas?nova`} className={TILE}>
+          <ListPlusIcon aria-hidden="true" className="size-4 text-muted-foreground" />
+          Nova tarefa
+        </Link>
         <Link href={`/${locale}/admin/email`} className={TILE}>
           <SendIcon aria-hidden="true" className="size-4 text-muted-foreground" />
           Compor email
