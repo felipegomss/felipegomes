@@ -38,7 +38,9 @@ type Props = { locale: string; pet: PetDTO; logs: PetLogDTO[]; nowIso: string };
 export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
   const now = useMemo(() => new Date(nowIso), [nowIso]);
   const stats = useMemo(() => computePetStats(pet, logs, now), [pet, logs, now]);
-  const recent = useMemo(() => sortLogsDesc(logs).slice(0, 6), [logs]);
+  // Mesmo número de linhas da ficha ao lado (7 fixas + notas), para os cards terem a mesma altura.
+  const profileRows = 7 + (pet.notes ? 1 : 0);
+  const recent = useMemo(() => sortLogsDesc(logs).slice(0, profileRows), [logs, profileRows]);
   const weights = useMemo(
     () => sortLogsDesc(logs).filter((l): l is PetLogDTO<"weight"> => l.type === "weight"),
     [logs],
@@ -235,7 +237,7 @@ function FeedingResultBadge({ log }: { log: PetLogDTO<"feeding"> }) {
 function Row({ label, value }: { label: string; value: string | null | undefined }) {
   return (
     // 49px = linha do histórico ao lado (48px + borda), para as divisórias coincidirem.
-    <div className="flex min-h-[49px] items-center justify-between gap-3 border-b py-2 last:border-b-0">
+    <div className="flex min-h-[49px] items-center justify-between gap-3 border-b py-2 last:min-h-12 last:border-b-0">
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="text-right">{value || "—"}</dd>
     </div>
