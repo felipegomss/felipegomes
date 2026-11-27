@@ -9,6 +9,7 @@ import { computePetStats } from "@/lib/pets/stats";
 import type { PetDTO, PetLogDTO } from "@/lib/pets/types";
 import { dueLabel, groupOf, groupTasks, taskCounts, todayKey } from "@/lib/tasks/model";
 import { listOpenTasks } from "@/lib/tasks/service";
+import { linkStats } from "@/lib/salvos/service";
 
 export type AlertTone = "danger" | "warn" | "info";
 
@@ -25,7 +26,7 @@ export type HomeModule = {
   id: string;
   title: string;
   href: string;
-  icon: "pet" | "briefcase" | "inbox" | "tasks";
+  icon: "pet" | "briefcase" | "inbox" | "tasks" | "bookmark";
   /** Foto (quadrada) no lugar do ícone, quando houver. */
   photo?: string;
   stats: { label: string; value: string }[];
@@ -138,6 +139,22 @@ async function emailModule({ locale, now }: Ctx): Promise<HomeModule> {
   };
 }
 
+async function salvosModule({ locale }: Ctx): Promise<HomeModule> {
+  const s = await linkStats();
+  return {
+    id: "salvos",
+    title: "Salvos",
+    href: `/${locale}/admin/salvos`,
+    icon: "bookmark",
+    alerts: [],
+    stats: [
+      { label: "Links", value: String(s.total) },
+      { label: "7 dias", value: String(s.week) },
+      { label: "Categorias", value: String(s.categories) },
+    ],
+  };
+}
+
 /** Atrasadas (urgente) e de hoje (atenção); mais de 3 viram uma linha só. */
 async function tasksModule({ locale, now }: Ctx): Promise<HomeModule> {
   const open = await listOpenTasks();
@@ -181,7 +198,7 @@ const TONE_ORDER: Record<AlertTone, number> = { danger: 0, warn: 1, info: 2 };
 
 /** Todos os módulos; um módulo que falhar não derruba a home. */
 export async function getHomeData(ctx: Ctx): Promise<{ modules: HomeModule[]; alerts: HomeAlert[] }> {
-  const results = await Promise.allSettled([tasksModule(ctx).then((m) => [m]), petModules(ctx), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
+  const results = await Promise.allSettled([tasksModule(ctx).then((m) => [m]), petModules(ctx), salvosModule(ctx).then((m) => [m]), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
   const modules = results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
   const alerts = modules.flatMap((m) => m.alerts).sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
   return { modules, alerts };

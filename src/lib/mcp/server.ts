@@ -12,6 +12,8 @@ import { loadPetPage } from "@/lib/pets/repo";
 import { computePetStats, sortLogsDesc } from "@/lib/pets/stats";
 import { PET_LOG_LABELS, PET_LOG_TYPES } from "@/lib/pets/types";
 import { dueLabel, groupOf, groupTasks, repeatLabel, todayKey, type TaskDTO } from "@/lib/tasks/model";
+import { PLATFORM_LABELS } from "@/lib/salvos/platforms";
+import { deleteLink, getLink, listCategories, saveLink, searchLinks, topTags, updateLink, type SavedLinkDTO } from "@/lib/salvos/service";
 import { createTask, deleteTask, getTask, listDoneTasks, listOpenTasks, setTaskDone, updateTask } from "@/lib/tasks/service";
 
 const LOCALE = "pt-BR";
@@ -72,6 +74,23 @@ function toTaskInput(f: TaskFieldInput) {
       notes: f.notas,
     }).filter(([, v]) => v !== undefined),
   );
+}
+
+/** Item salvo para o agente; `conteudo` só quando pedido (busca), cortado. */
+function compactSalvo(i: SavedLinkDTO, withContent = false) {
+  return {
+    id: i.id,
+    titulo: i.title,
+    link: i.url,
+    plataforma: PLATFORM_LABELS[i.platform],
+    autor: i.author,
+    categoria: i.category,
+    tags: i.tags,
+    resumo: i.summary,
+    nota: i.note,
+    salvo_em: i.createdAt.slice(0, 10),
+    ...(withContent ? { conteudo: i.content?.slice(0, 4000) ?? null } : {}),
+  };
 }
 
 const JOB_STATUS_MAP = { novas: "new", contatadas: "contacted", dispensadas: "dismissed" } as const;
@@ -138,6 +157,7 @@ export function createMcpServer() {
     "App pessoal do Felipe (lfng.dev): cuidados com os pets, vagas de emprego e emails de contato.",
     `Pets do Felipe: ${pets}. Qualquer pergunta ou registro sobre eles (comeu, pesou, trocou de pele, TPA, veterinário, "como ele está?") usa estas ferramentas pet_* — mesmo que o MCP não seja citado.`,
     "Tarefas e lembretes do Felipe ('me lembra de…', 'anota pra fazer…', 'o que tenho pra fazer?', 'marca X como feita') usam tarefas_*.",
+    "Links que o Felipe manda para guardar ('salva isso', um link solto de TikTok/Instagram/X/YouTube/site) usam salvos_salvar. Perguntas que podem estar respondidas no que ele salvou ('como faço aquela polenta?', 'tinha um treino de mobilidade…', receitas, dicas, tutoriais) usam salvos_buscar primeiro: responda com base no conteúdo salvo e cite o link de onde veio; se não achar, diga que não está nos salvos antes de responder por conta própria.",
     "Perguntas sobre vagas usam vagas_*; 'o que tenho pra hoje?' usa resumo_do_dia.",
     "Datas no fuso de São Paulo. Para enviar email, mostre o rascunho completo e peça confirmação explícita antes de chamar email_enviar.",
   ].join("\n");
@@ -148,7 +168,7 @@ export function createMcpServer() {
     "resumo_do_dia",
     {
       title: "Resumo do dia",
-      description: "Pendências de todos os módulos (tarefas, pets, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
+      description: "Pendências e números de todos os módulos (tarefas, pets, salvos, vagas, email) por urgência e os números principais. Use para 'o que tenho pra hoje?'.",
       annotations: { readOnlyHint: true },
     },
     async () => {
@@ -357,6 +377,98 @@ export function createMcpServer() {
       const result = await deleteTask(id);
       if (!result.ok) return fail(result.error);
       return text({ excluida: task?.title ?? id });
+    },
+  );
+
+  // ── Salvos ────────────────────────────────────────────────────────────────
+  server.registerTool(
+    "salvos_salvar",
+    {
+      title: "Salvar link",
+      description:
+        "Guarda um link (TikTok, Instagram, X, YouTube ou site): o app lê legenda/texto e a IA do app categoriza. Se voltar sem categoria (IA do app não configurada), escolha uma das categorias existentes (salvos_categorias) e chame salvos_editar.",
+      inputSchema: {
+        url: z.string().describe("O link"),
+        nota: z.string().optional().describe("Algo que o Felipe disse sobre o link"),
+        categoria: z.string().optional().describe("Só se o Felipe pedir uma categoria específica"),
+        tags: z.array(z.string()).optional(),
+      },
+    },
+    async ({ url, nota, categoria, tags }) => {
+      const r = await saveLink({ url, note: nota, category: categoria, tags }, "agent");
+      if ("error" in r) return fail(r.error);
+      return text({ ja_estava_salvo: r.duplicate, aviso: r.warning ?? null, salvo: compactSalvo(r.item) });
+    },
+  );
+
+  server.registerTool(
+    "salvos_buscar",
+    {
+      title: "Buscar nos salvos",
+      description:
+        "Busca nos links salvos (título, resumo, legenda/texto, tags, nota) e devolve o conteúdo de cada um para você responder. Use palavras-chave curtas e tente variações (ex.: 'polenta', 'fubá', 'angu'); '#tag' filtra por tag. Sem `consulta`, lista os mais recentes.",
+      inputSchema: {
+        consulta: z.string().optional(),
+        categoria: z.string().optional().describe("Filtra por categoria (veja salvos_categorias)"),
+        limite: z.number().int().min(1).max(20).optional().describe("Padrão: 8"),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ consulta, categoria, limite }) => {
+      const { items, total } = await searchLinks({ q: consulta ?? "", category: categoria ?? null, limit: limite ?? 8 });
+      return text({ total, itens: items.map((i) => compactSalvo(i, true)) });
+    },
+  );
+
+  server.registerTool(
+    "salvos_categorias",
+    {
+      title: "Categorias e tags dos salvos",
+      description: "Categorias existentes (com quantidade) e as tags mais usadas.",
+      annotations: { readOnlyHint: true },
+    },
+    async () => {
+      const [cats, tags] = await Promise.all([listCategories(), topTags(40)]);
+      return text({ categorias: cats.map((c) => ({ nome: c.name, links: c.count })), tags: tags.map((t) => t.tag) });
+    },
+  );
+
+  server.registerTool(
+    "salvos_editar",
+    {
+      title: "Editar salvo",
+      description: "Muda título, categoria, tags (lista completa, substitui as atuais) ou nota de um link salvo.",
+      inputSchema: {
+        id: z.string(),
+        titulo: z.string().optional(),
+        categoria: z.string().optional().describe("String vazia remove a categoria"),
+        tags: z.array(z.string()).optional(),
+        nota: z.string().optional(),
+      },
+    },
+    async ({ id, titulo, categoria, tags, nota }) => {
+      const input = Object.fromEntries(
+        Object.entries({ title: titulo, category: categoria === "" ? null : categoria, tags, note: nota }).filter(([, v]) => v !== undefined),
+      );
+      const r = await updateLink(id, input);
+      if (r === null) return fail("Link não encontrado.");
+      if (typeof r === "string") return fail(r);
+      return text({ salvo: compactSalvo(r) });
+    },
+  );
+
+  server.registerTool(
+    "salvos_excluir",
+    {
+      title: "Excluir salvo",
+      description: "Remove um link dos salvos. Confirme com o usuário antes.",
+      inputSchema: { id: z.string() },
+      annotations: { destructiveHint: true },
+    },
+    async ({ id }) => {
+      const item = await getLink(id);
+      if (!item || !(await deleteLink(id))) return fail("Link não encontrado.");
+      return text({ excluido: item.title ?? item.url });
     },
   );
 

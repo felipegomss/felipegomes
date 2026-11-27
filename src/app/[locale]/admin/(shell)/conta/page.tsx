@@ -1,6 +1,7 @@
 import { sessionExpiry } from "@/lib/auth";
 import { formatDay } from "@/lib/format-date";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { listGrants } from "@/lib/oauth";
 import { listPasskeys } from "@/lib/passkeys";
 import { AgentsManager } from "./agents-manager";
@@ -11,7 +12,8 @@ export const dynamic = "force-dynamic";
 
 const SECTION_TITLE = "text-xs font-semibold uppercase tracking-[0.12em]";
 
-export default async function AccountPage() {
+export default async function AccountPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const [passkeys, expiresAt, grants, h] = await Promise.all([listPasskeys(), sessionExpiry(), listGrants(), headers()]);
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "lfng.dev";
   const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
@@ -46,6 +48,17 @@ export default async function AccountPage() {
           lastUsedAt: g.lastUsedAt?.toISOString() ?? null,
         }))}
       />
+
+      <Link
+        href={`/${locale}/admin/conta/integracoes`}
+        className="flex items-center justify-between gap-3 border p-3 outline-none hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring/60"
+      >
+        <span className="flex flex-col gap-0.5">
+          <span className="font-medium">Integrações</span>
+          <span className="text-muted-foreground">IA que categoriza os Salvos, Instagram e atalho do iPhone</span>
+        </span>
+        <span aria-hidden="true" className="text-muted-foreground">→</span>
+      </Link>
 
       <section className="flex flex-col gap-3" aria-labelledby="sec-install">
         <h2 id="sec-install" className={SECTION_TITLE}>

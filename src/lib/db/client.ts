@@ -12,7 +12,9 @@ if (!connectionString) {
 }
 
 // Neon pooled connection: prepare must be disabled (PgBouncer transaction mode).
-const queryClient = postgres(connectionString, { prepare: false });
+// onnotice: o Postgres avisa (NOTICE) quando uma busca só tem palavras comuns
+// ("como", "de"); não é erro, então não polui os logs.
+const queryClient = postgres(connectionString, { prepare: false, onnotice: () => {} });
 
 export const db = drizzle(queryClient, { schema });
 

@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 import {
+	BookmarkIcon,
 	BriefcaseIcon,
 	FingerprintIcon,
 	HomeIcon,
 	InboxIcon,
 	LayoutGridIcon,
+	PlugIcon,
 	ListChecksIcon,
 	PawPrintIcon,
 	SendIcon,
@@ -61,6 +63,7 @@ export function buildNavGroups(
 			items: [
 				{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) },
 				{ title: "Tarefas", path: `${base}/tarefas`, icon: <ListChecksIcon />, isActive: startsWith(`${base}/tarefas`) },
+				{ title: "Salvos", path: `${base}/salvos`, icon: <BookmarkIcon />, isActive: startsWith(`${base}/salvos`) },
 			],
 		},
 		{
@@ -104,7 +107,13 @@ export function buildNavGroups(
 					title: "Acesso e passkeys",
 					path: `${base}/conta`,
 					icon: <FingerprintIcon />,
-					isActive: startsWith(`${base}/conta`),
+					isActive: is(`${base}/conta`),
+				},
+				{
+					title: "Integrações",
+					path: `${base}/conta/integracoes`,
+					icon: <PlugIcon />,
+					isActive: startsWith(`${base}/conta/integracoes`),
 				},
 			],
 		},

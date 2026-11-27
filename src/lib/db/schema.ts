@@ -203,3 +203,52 @@ export const tasks = pgTable(
 );
 
 export type TaskRow = typeof tasks.$inferSelect;
+
+// Salvos: links (TikTok, Instagram, X, YouTube, sites) com o conteúdo lido,
+// categoria e #tags. `content` é o texto que a busca e o agente usam.
+export const savedLinks = pgTable(
+  "saved_links",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    url: text("url").notNull().unique(),
+    platform: text("platform").notNull(),
+    title: text("title"),
+    author: text("author"),
+    thumbnailUrl: text("thumbnail_url"),
+    content: text("content"),
+    summary: text("summary"),
+    category: text("category"),
+    tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
+    note: text("note"),
+    /** pending → ready | error */
+    status: text("status").notNull().default("pending"),
+    error: text("error"),
+    /** "agent" (MCP), "shortcut" (atalho do iPhone) ou null (app) */
+    via: text("via"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`now()`),
+  },
+  (table) => [index("saved_links_created_idx").on(table.createdAt.desc()), index("saved_links_category_idx").on(table.category)],
+);
+
+export type SavedLinkRow = typeof savedLinks.$inferSelect;
+
+// Configurações do app editáveis pela tela (IA, integrações). Segredos dentro
+// de `value` vão criptografados (secret-box).
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`now()`),
+});
+
+// Tokens de acesso para atalhos (ex.: "Salvar no LFNG" do iPhone). Guardamos
+// só o hash; o token aparece uma vez, ao ser criado.
+export const apiTokens = pgTable("api_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  prefix: text("prefix").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+});

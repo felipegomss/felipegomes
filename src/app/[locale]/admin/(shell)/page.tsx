@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { BriefcaseIcon, ChevronRightIcon, InboxIcon, ListChecksIcon, PawPrintIcon } from "lucide-react";
+import { BookmarkIcon, BriefcaseIcon, ChevronRightIcon, InboxIcon, ListChecksIcon, PawPrintIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatLongDate, hourInTz } from "@/lib/format-date";
 import { getHomeData, type AlertTone, type HomeModule } from "@/lib/home/modules";
@@ -38,6 +38,7 @@ const MODULE_ICON: Record<HomeModule["icon"], React.ReactNode> = {
   briefcase: <BriefcaseIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   inbox: <InboxIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   tasks: <ListChecksIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
+  bookmark: <BookmarkIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
 };
 
 const SECTION_TITLE = "text-xs font-semibold uppercase tracking-[0.12em]";
