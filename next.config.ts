@@ -5,6 +5,10 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.18.32"],
+  // Metadados sempre no <head> do HTML inicial (sem streaming). O iOS lê o
+  // apple-touch-icon do HTML ao "Adicionar à Tela de Início"; com streaming,
+  // páginas dinâmicas (pets) mandavam as tags só depois.
+  htmlLimitedBots: /.*/,
   experimental: {
     optimizePackageImports: [
       "nucleo-arcade",
