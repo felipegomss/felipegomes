@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { BriefcaseIcon, ChevronRightIcon, InboxIcon } from "lucide-react";
-import { SnakeIcon } from "@/components/icons/snake-icon";
+import { BriefcaseIcon, ChevronRightIcon, InboxIcon, PawPrintIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatLongDate, hourInTz } from "@/lib/format-date";
 import { getHomeData, type AlertTone, type HomeModule } from "@/lib/home/modules";
@@ -35,7 +34,7 @@ const TONE_DOT: Record<AlertTone, string> = {
 const TONE_LABEL: Record<AlertTone, string> = { danger: "urgente", warn: "atenção", info: "aviso" };
 
 const MODULE_ICON: Record<HomeModule["icon"], React.ReactNode> = {
-  snake: <SnakeIcon className="size-[18px] text-emerald-700 dark:text-emerald-400" />,
+  pet: <PawPrintIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   briefcase: <BriefcaseIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   inbox: <InboxIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
 };
@@ -134,7 +133,12 @@ export default async function AppHomePage({ params }: { params: Promise<{ locale
               className="flex flex-col gap-3.5 border p-4 outline-none transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/60"
             >
               <span className="flex items-center gap-2.5">
-                {MODULE_ICON[m.icon]}
+                {m.photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- arquivo estático já otimizado
+                  <img src={m.photo} alt="" width={24} height={24} className="size-6 border object-cover" />
+                ) : (
+                  MODULE_ICON[m.icon]
+                )}
                 <span className="text-[13px] font-semibold">{m.title}</span>
                 <span className="ml-auto text-[11px] text-muted-foreground">Abrir →</span>
               </span>

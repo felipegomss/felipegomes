@@ -3,7 +3,7 @@
 import { getEmailStats } from "@/lib/email/stats";
 import { formatDay } from "@/lib/format-date";
 import { getJobStats } from "@/lib/jobs/stats";
-import { PET_NAV } from "@/lib/pets/registry";
+import { PET_NAV, petPhoto } from "@/lib/pets/registry";
 import { loadPetPage } from "@/lib/pets/repo";
 import { computePetStats } from "@/lib/pets/stats";
 import type { PetDTO, PetLogDTO } from "@/lib/pets/types";
@@ -23,7 +23,9 @@ export type HomeModule = {
   id: string;
   title: string;
   href: string;
-  icon: "snake" | "briefcase" | "inbox";
+  icon: "pet" | "briefcase" | "inbox";
+  /** Foto (quadrada) no lugar do ícone, quando houver. */
+  photo?: string;
   stats: { label: string; value: string }[];
   alerts: HomeAlert[];
   note?: string;
@@ -59,7 +61,8 @@ export function petSummary(pet: PetDTO, logs: PetLogDTO[], { locale, now }: Ctx)
     id: `pet:${pet.slug}`,
     title: pet.name,
     href,
-    icon: "snake",
+    icon: "pet",
+    photo: petPhoto(pet.slug),
     alerts,
     stats: [
       { label: "Sem comer", value: f.daysSince === null ? "—" : `${f.daysSince} d` },

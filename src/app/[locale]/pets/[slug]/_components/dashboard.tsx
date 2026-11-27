@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRightIcon, PlusIcon } from "lucide-react";
-import { SnakeIcon } from "@/components/icons/snake-icon";
+import { ChevronRightIcon, PawPrintIcon, PlusIcon } from "lucide-react";
+import { petPhoto } from "@/lib/pets/registry";
 import { cn } from "@/lib/utils";
 import { computePetStats, formatAge, sortLogsDesc } from "@/lib/pets/stats";
 import {
@@ -50,6 +50,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
   const open = (type: PetLogType, editing?: PetLogDTO) => setTarget({ type, editing });
 
   const age = formatAge(pet.hatchDate, now);
+  const photo = petPhoto(pet.slug);
   const subtitle = [
     pet.species,
     pet.morph,
@@ -62,9 +63,14 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
   return (
     <div className="flex flex-col gap-8 text-xs">
       <section className="flex items-center gap-4">
-        <div className="grid size-14 shrink-0 place-items-center border text-emerald-700 dark:text-emerald-400">
-          <SnakeIcon className="size-8" strokeWidth={1.5} />
-        </div>
+        {photo ? (
+          // eslint-disable-next-line @next/next/no-img-element -- arquivo estático já otimizado (256 px)
+          <img src={photo} alt={`Ilustração do ${pet.name}`} width={56} height={56} className="size-14 shrink-0 border object-cover" />
+        ) : (
+          <div className="grid size-14 shrink-0 place-items-center border text-emerald-700 dark:text-emerald-400">
+            <PawPrintIcon className="size-7" strokeWidth={1.5} aria-hidden="true" />
+          </div>
+        )}
         <div className="flex min-w-0 flex-col gap-1">
           <h1 className="font-heading text-2xl font-semibold tracking-tight">{pet.name}</h1>
           <p className="text-muted-foreground">{subtitle}</p>
