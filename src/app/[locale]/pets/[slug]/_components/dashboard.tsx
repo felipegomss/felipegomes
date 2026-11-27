@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRightIcon, PlusIcon, WormIcon } from "lucide-react";
+import { ChevronRightIcon, PlusIcon } from "lucide-react";
+import { SnakeIcon } from "@/components/icons/snake-icon";
 import { cn } from "@/lib/utils";
 import { computePetStats, formatAge, sortLogsDesc } from "@/lib/pets/stats";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/lib/pets/types";
 import { LogDialog, type DialogTarget } from "./log-dialog";
 import { WeightChart } from "./weight-chart";
+import { WeightTable } from "./weight-table";
 import {
   Badge,
   LOG_ICON_COLOR,
@@ -37,6 +39,11 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
   const now = useMemo(() => new Date(nowIso), [nowIso]);
   const stats = useMemo(() => computePetStats(pet, logs, now), [pet, logs, now]);
   const recent = useMemo(() => sortLogsDesc(logs).slice(0, 6), [logs]);
+  const weights = useMemo(
+    () => sortLogsDesc(logs).filter((l): l is PetLogDTO<"weight"> => l.type === "weight"),
+    [logs],
+  );
+  const [showTable, setShowTable] = useState(false);
   const [target, setTarget] = useState<DialogTarget>(null);
   const open = (type: PetLogType, editing?: PetLogDTO) => setTarget({ type, editing });
 
@@ -54,7 +61,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
     <div className="flex flex-col gap-8 text-xs">
       <section className="flex items-center gap-4">
         <div className="grid size-14 shrink-0 place-items-center border text-emerald-700 dark:text-emerald-400">
-          <WormIcon className="size-7" strokeWidth={1.5} aria-hidden="true" />
+          <SnakeIcon className="size-8" strokeWidth={1.5} />
         </div>
         <div className="flex min-w-0 flex-col gap-1">
           <h1 className="font-heading text-2xl font-semibold tracking-tight">{pet.name}</h1>
@@ -100,17 +107,31 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
       </section>
 
       <section className="flex flex-col gap-3 md:order-3" aria-labelledby="sec-weight">
-        <div className="flex items-baseline justify-between">
+        <div className="flex items-center justify-between">
           <h2 id="sec-weight" className={SECTION_TITLE}>
             Peso
           </h2>
-          {stats.weight.series.length > 0 && (
-            <span className="text-[11px] text-muted-foreground">
-              {plural(stats.weight.series.length, "pesagem", "pesagens")}
-            </span>
+          {weights.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={showTable}
+              aria-controls="weight-table"
+              onClick={() => setShowTable((v) => !v)}
+              className="inline-flex min-h-11 items-center gap-1 text-[11px] text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60"
+            >
+              {plural(weights.length, "pesagem", "pesagens")}
+              <ChevronRightIcon
+                aria-hidden="true"
+                className={cn("size-3.5 transition-transform", showTable && "rotate-90 lg:rotate-180")}
+              />
+            </button>
           )}
         </div>
-        <WeightChart series={stats.weight.series} now={now} />
+        {/* No desktop a tabela abre ao lado do gráfico, com a mesma altura; no mobile, embaixo. */}
+        <div className={cn("grid gap-3", showTable && "lg:grid-cols-[minmax(0,1fr)_300px]")}>
+          <WeightChart series={stats.weight.series} now={now} />
+          {showTable && <WeightTable id="weight-table" weights={weights} onOpen={(w) => open("weight", w)} />}
+        </div>
       </section>
 
       <section className="flex flex-wrap gap-6 md:order-4">
@@ -138,10 +159,13 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
         </div>
 
         <aside className="flex min-w-0 flex-[1_1_280px] flex-col gap-3" aria-labelledby="sec-profile">
-          <h2 id="sec-profile" className={SECTION_TITLE}>
-            Ficha
-          </h2>
-          <dl className="border px-4 py-1">
+          {/* Mesma altura do cabeçalho "Histórico recente" (o link tem 44px) para os cards alinharem. */}
+          <div className="flex min-h-11 items-center">
+            <h2 id="sec-profile" className={SECTION_TITLE}>
+              Ficha
+            </h2>
+          </div>
+          <dl className="border px-3">
             <Row label="Espécie" value={pet.species} />
             <Row label="Morph" value={pet.morph} />
             <Row label="Sexo" value={pet.sex ? PET_SEX_LABELS[pet.sex] : null} />
@@ -210,7 +234,8 @@ function FeedingResultBadge({ log }: { log: PetLogDTO<"feeding"> }) {
 
 function Row({ label, value }: { label: string; value: string | null | undefined }) {
   return (
-    <div className="flex justify-between gap-3 border-b py-2.5 last:border-b-0">
+    // 49px = linha do histórico ao lado (48px + borda), para as divisórias coincidirem.
+    <div className="flex min-h-[49px] items-center justify-between gap-3 border-b py-2 last:border-b-0">
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="text-right">{value || "—"}</dd>
     </div>

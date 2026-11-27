@@ -56,8 +56,8 @@ export function WeightChart({ series, now = new Date() }: { series: { at: string
       : "");
 
   return (
-    <figure className="m-0 flex flex-col gap-2">
-      <div className="relative border py-4 pr-4 pl-12">
+    <figure className="m-0 h-full">
+      <div className="relative h-full border py-4 pr-4 pl-12">
         <div
           aria-hidden="true"
           className="absolute top-4 bottom-10 left-3 flex flex-col justify-between text-[11px] text-muted-foreground"
@@ -138,31 +138,6 @@ export function WeightChart({ series, now = new Date() }: { series: { at: string
           <span className="absolute right-0">hoje</span>
         </div>
       </div>
-      <details className="text-xs">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center text-muted-foreground hover:text-foreground">
-          Ver como tabela
-        </summary>
-        <table className="mt-1 w-full max-w-sm border-collapse">
-          <thead>
-            <tr className="text-left text-[11px] text-muted-foreground">
-              <th scope="col" className="border-b py-1.5 font-medium">
-                Data
-              </th>
-              <th scope="col" className="border-b py-1.5 text-right font-medium">
-                Peso
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...series].reverse().map((p) => (
-              <tr key={p.at}>
-                <td className="border-b py-1.5">{formatDay(p.at)}</td>
-                <td className="border-b py-1.5 text-right">{fmtNum(p.grams)} g</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </details>
     </figure>
   );
 }
