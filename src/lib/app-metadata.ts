@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { APPLE_TOUCH_ICON_DATA_URI } from "./app-icon-data";
 
 /**
  * Telas de abertura do iPhone (primeiro quadro da animação "CODE → LFNG"),
@@ -28,12 +29,13 @@ const startupImage = SPLASHES.map(([w, h, dpr]) => ({
  * login e pets), para o portfólio público não oferecer "instalar".
  */
 export const appMetadata: Metadata = {
-  manifest: "/app.webmanifest",
+  // ?v: o iOS guarda em cache uma tentativa que falhou; URL nova força baixar de novo.
+  manifest: "/app.webmanifest?v=3",
   robots: { index: false, follow: false },
   appleWebApp: { capable: true, title: "LFNG", statusBarStyle: "black", startupImage },
   icons: {
-    icon: [{ url: "/app/icon-192.png", sizes: "192x192", type: "image/png" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    icon: [{ url: "/app/icon-192.png?v=3", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: APPLE_TOUCH_ICON_DATA_URI, sizes: "180x180" }],
   },
 };
 
