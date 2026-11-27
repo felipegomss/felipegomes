@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { getNavBadges } from "@/lib/home/badges";
 import { isAdmin } from "@/lib/auth";
+import { appMetadata, appViewport } from "@/lib/app-metadata";
 
-export const metadata: Metadata = {
-  title: "Pets",
-  robots: { index: false, follow: false },
-};
+export const metadata: Metadata = { ...appMetadata, title: "Pets" };
+export const viewport = appViewport;
 
 export default async function PetLayout({
   children,
@@ -22,5 +22,5 @@ export default async function PetLayout({
     redirect(`/${locale}/admin/login?next=${encodeURIComponent(`/${locale}/pets/${slug}`)}`);
   }
 
-  return <AppShell>{children}</AppShell>;
+  return <AppShell badges={await getNavBadges(locale)}>{children}</AppShell>;
 }

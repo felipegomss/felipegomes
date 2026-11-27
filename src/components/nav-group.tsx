@@ -18,6 +18,25 @@ import {
 } from "@/components/ui/sidebar";
 import type { SidebarNavGroup, SidebarNavItem } from "@/components/app-shared";
 
+function NavBadgeMark({ badge }: { badge: NonNullable<SidebarNavItem["badge"]> }) {
+	return (
+		<span className="ml-auto flex items-center group-data-[collapsible=icon]:hidden" title={badge.label}>
+			<span className="sr-only">{badge.label}</span>
+			{badge.count !== undefined && (
+				<span aria-hidden="true" className="text-[11px] tabular-nums text-muted-foreground">
+					{badge.count}
+				</span>
+			)}
+			{badge.dot && (
+				<span
+					aria-hidden="true"
+					className={badge.dot === "danger" ? "size-1.5 bg-red-600 dark:bg-red-400" : "size-1.5 bg-amber-500"}
+				/>
+			)}
+		</span>
+	);
+}
+
 function LeafItem({ item }: { item: SidebarNavItem }) {
 	return (
 		<SidebarMenuItem>
@@ -25,6 +44,7 @@ function LeafItem({ item }: { item: SidebarNavItem }) {
 				<Link href={item.path ?? "#"} prefetch>
 					{item.icon}
 					<span>{item.title}</span>
+					{item.badge && <NavBadgeMark badge={item.badge} />}
 				</Link>
 			</SidebarMenuButton>
 		</SidebarMenuItem>

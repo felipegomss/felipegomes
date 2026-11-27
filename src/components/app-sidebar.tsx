@@ -11,13 +11,14 @@ import {
 } from "@/components/ui/sidebar";
 import { useTranslations } from "next-intl";
 import { buildNavGroups } from "@/components/app-shared";
+import type { NavBadges } from "@/lib/home/badges";
 import { NavGroup } from "@/components/nav-group";
 
-export function AppSidebar() {
+export function AppSidebar({ badges }: { badges?: NavBadges }) {
 	const pathname = usePathname();
 	const { locale } = useParams<{ locale: string }>();
 	const tTools = useTranslations("tools");
-	const navGroups = buildNavGroups(locale, pathname, (k) => tTools(k));
+	const navGroups = buildNavGroups(locale, pathname, (k) => tTools(k), badges);
 
 	return (
 		<Sidebar

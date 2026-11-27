@@ -16,7 +16,7 @@ export function AppHeader() {
 	const tTools = useTranslations("tools");
 	const navGroups = buildNavGroups(locale, pathname, (k) => tTools(k));
 	const activeItem = navGroups
-		.flatMap((g) => g.items.flatMap((i) => (i.subItems?.length ? [i, ...i.subItems] : [i])))
+		.flatMap((g) => g.items.flatMap((i) => (i.subItems?.length ? [...i.subItems, i] : [i])))
 		.find((item) => item.isActive);
 
 	return (

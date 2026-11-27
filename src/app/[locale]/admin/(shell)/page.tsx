@@ -1,303 +1,182 @@
 import Link from "next/link";
-import {
-  ArrowRightIcon,
-  BriefcaseIcon,
-  CheckIcon,
-  InboxIcon,
-  MailIcon,
-  SendIcon,
-  StarIcon,
-  XIcon,
-} from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { BriefcaseIcon, ChevronRightIcon, InboxIcon } from "lucide-react";
+import { SnakeIcon } from "@/components/icons/snake-icon";
 import { cn } from "@/lib/utils";
-import { getJobStats } from "@/lib/jobs/stats";
-import { getEmailStats } from "@/lib/email/stats";
-import type { JobSource } from "@/lib/db/schema";
-
-const SOURCE_LABELS: Record<JobSource, string> = {
-  "github-frontendbr": "frontendbr",
-  "github-backendbr": "backend-br",
-  "github-react-brasil": "react-brasil",
-  remoteok: "RemoteOK",
-  "hn-hiring": "HN Hiring",
-  "vagas-com-br": "vagas.com.br",
-  coodesh: "Coodesh",
-};
-
-const RELATIVE_FORMATTER = new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" });
-function relativeTime(date: Date | null): string {
-  if (!date) return "—";
-  const diff = date.getTime() - Date.now();
-  const abs = Math.abs(diff);
-  const minutes = abs / 60000;
-  const hours = minutes / 60;
-  const days = hours / 24;
-  if (minutes < 60) return RELATIVE_FORMATTER.format(Math.round(diff / 60000), "minute");
-  if (hours < 24) return RELATIVE_FORMATTER.format(Math.round(diff / 3600000), "hour");
-  return RELATIVE_FORMATTER.format(Math.round(days), "day");
-}
+import { formatLongDate, hourInTz } from "@/lib/format-date";
+import { getHomeData, type AlertTone, type HomeModule } from "@/lib/home/modules";
+import { PET_NAV } from "@/lib/pets/registry";
+import { loadPetPage } from "@/lib/pets/repo";
+import { sortLogsDesc } from "@/lib/pets/stats";
+import { getToolBySlug, tools, type ToolSlug } from "@/lib/tools";
+import { QuickActions, type QuickPetAction } from "./_components/quick-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminHomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+/** Atalhos fixos de ferramentas na home (rótulos curtos). */
+const PINNED_TOOLS: { slug: ToolSlug; label: string }[] = [
+  { slug: "json", label: "JSON" },
+  { slug: "jwt", label: "JWT" },
+  { slug: "base64", label: "Base64" },
+  { slug: "uuid", label: "UUID" },
+  { slug: "timestamp", label: "Timestamp" },
+  { slug: "regex", label: "Regex" },
+  { slug: "diff", label: "Diff" },
+  { slug: "hash", label: "Hash" },
+  { slug: "password", label: "Senha" },
+  { slug: "person", label: "Pessoa fake" },
+];
+
+const TONE_DOT: Record<AlertTone, string> = {
+  danger: "bg-red-700 dark:bg-red-400",
+  warn: "bg-amber-600 dark:bg-amber-400",
+  info: "bg-blue-700 dark:bg-blue-400",
+};
+const TONE_LABEL: Record<AlertTone, string> = { danger: "urgente", warn: "atenção", info: "aviso" };
+
+const MODULE_ICON: Record<HomeModule["icon"], React.ReactNode> = {
+  snake: <SnakeIcon className="size-[18px] text-emerald-700 dark:text-emerald-400" />,
+  briefcase: <BriefcaseIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
+  inbox: <InboxIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
+};
+
+const SECTION_TITLE = "text-xs font-semibold uppercase tracking-[0.12em]";
+
+function greeting(now: Date) {
+  const h = hourInTz(now);
+  return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+}
+
+export default async function AppHomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const [jobs, email] = await Promise.all([getJobStats(), getEmailStats()]);
+  const now = new Date();
+  const [{ modules, alerts }, t, petPages] = await Promise.all([
+    getHomeData({ locale, now }),
+    getTranslations({ locale, namespace: "tools" }),
+    Promise.all(PET_NAV.map((p) => loadPetPage(p.slug))),
+  ]);
 
-  return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">
-          Visão geral
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Indicadores rápidos das ferramentas do admin.
-        </p>
-      </div>
-
-      <Section
-        title="Vagas"
-        href={`/${locale}/admin/jobs`}
-        meta={
-          jobs.lastScrapedAt
-            ? `última busca ${relativeTime(jobs.lastScrapedAt)}`
-            : "nenhuma busca ainda"
-        }
-      >
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard
-            label="Novas"
-            value={jobs.byStatus.new}
-            icon={<InboxIcon className="size-4" />}
-            tone="info"
-          />
-          <StatCard
-            label="Favoritas"
-            value={jobs.starred}
-            icon={<StarIcon className="size-4" />}
-            tone="warning"
-          />
-          <StatCard
-            label="Contatadas"
-            value={jobs.byStatus.contacted}
-            icon={<CheckIcon className="size-4" />}
-            tone="success"
-          />
-          <StatCard
-            label="Dispensadas"
-            value={jobs.byStatus.dismissed}
-            icon={<XIcon className="size-4" />}
-            tone="muted"
-          />
-        </div>
-
-        {jobs.bySourceBreakdown.length > 0 && (
-          <div className="mt-4 overflow-hidden rounded-lg border border-border bg-card">
-            <div className="grid grid-cols-[1fr_60px_60px_60px_60px] gap-2 border-b border-border bg-muted/40 px-3 py-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-              <div>Fonte</div>
-              <div className="text-right">Total</div>
-              <div className="text-right">Fav</div>
-              <div className="text-right">Cont</div>
-              <div className="text-right">Disp</div>
-            </div>
-            <div className="flex flex-col divide-y divide-border">
-              {jobs.bySourceBreakdown.map((s) => (
-                <div
-                  key={s.source}
-                  className="grid grid-cols-[1fr_60px_60px_60px_60px] items-center gap-2 px-3 py-2 text-xs"
-                >
-                  <div className="truncate font-medium">{SOURCE_LABELS[s.source]}</div>
-                  <div className="text-right tabular-nums text-muted-foreground">{s.total}</div>
-                  <div className={cn("text-right tabular-nums", s.starred > 0 ? "text-amber-500 font-semibold" : "text-muted-foreground/40")}>
-                    {s.starred}
-                  </div>
-                  <div className={cn("text-right tabular-nums", s.contacted > 0 ? "text-emerald-500 font-semibold" : "text-muted-foreground/40")}>
-                    {s.contacted}
-                  </div>
-                  <div className={cn("text-right tabular-nums", s.dismissed > 0 ? "text-foreground" : "text-muted-foreground/40")}>
-                    {s.dismissed}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </Section>
-
-      <Section
-        title="Email"
-        href={`/${locale}/admin/email/sent`}
-        meta={
-          email.lastSentAt
-            ? `último envio ${relativeTime(email.lastSentAt)}`
-            : email.error ?? "nenhum envio"
-        }
-      >
-        {email.available ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard
-              label="Enviados (últ. 100)"
-              value={email.total}
-              icon={<MailIcon className="size-4" />}
-              tone="info"
-            />
-            <StatCard
-              label="Últimos 7 dias"
-              value={email.last7Days}
-              icon={<SendIcon className="size-4" />}
-              tone="info"
-            />
-            <StatCard
-              label="Entregues"
-              value={email.delivered}
-              icon={<CheckIcon className="size-4" />}
-              tone="success"
-            />
-            <StatCard
-              label="Taxa entrega"
-              value={
-                email.deliveryRate === null
-                  ? "—"
-                  : `${Math.round(email.deliveryRate * 100)}%`
-              }
-              icon={<CheckIcon className="size-4" />}
-              tone="success"
-            />
-          </div>
-        ) : (
-          <div className="rounded-md border border-dashed border-border bg-muted/30 px-3 py-4 text-xs text-muted-foreground">
-            {email.error ?? "Stats indisponíveis."}
-          </div>
-        )}
-
-        {email.lastSubject && (
-          <div className="mt-3 truncate text-xs text-muted-foreground">
-            Último assunto: <span className="text-foreground">{email.lastSubject}</span>
-          </div>
-        )}
-      </Section>
-
-      <Section title="Atalhos">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <Shortcut
-            href={`/${locale}/admin/email`}
-            title="Compor email"
-            description="Enviar com templates e CV."
-            icon={<SendIcon className="size-5" />}
-          />
-          <Shortcut
-            href={`/${locale}/admin/jobs`}
-            title="Buscar vagas"
-            description="Coletar das fontes públicas."
-            icon={<BriefcaseIcon className="size-5" />}
-          />
-          <Shortcut
-            href={`/${locale}/admin/email/sent`}
-            title="Histórico de emails"
-            description="Status e detalhes do Resend."
-            icon={<InboxIcon className="size-5" />}
-          />
-        </div>
-      </Section>
-    </div>
+  const quick: QuickPetAction[] = PET_NAV.flatMap((p) => [
+    { slug: p.slug, type: "feeding" as const, label: `${p.name} comeu` },
+    { slug: p.slug, type: "weight" as const, label: `Pesar ${p.name}` },
+    { slug: p.slug, type: "water" as const, label: "Fiz TPA" },
+  ]);
+  const lastFeeding = Object.fromEntries(
+    petPages.flatMap((page) =>
+      page ? [[page.pet.slug, sortLogsDesc(page.logs).find((l) => l.type === "feeding") ?? null]] : [],
+    ),
   );
-}
 
-// ─── Building blocks ─────────────────────────────────────────────────────────
-
-function Section({
-  title,
-  href,
-  meta,
-  children,
-}: {
-  title: string;
-  href?: string;
-  meta?: string;
-  children: React.ReactNode;
-}) {
   return (
-    <section>
-      <div className="mb-3 flex items-end justify-between gap-3">
-        <div>
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-foreground">
-            {title}
+    <div className="flex flex-col gap-8 text-xs">
+      <section className="flex flex-col gap-1">
+        <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{formatLongDate(now)}</p>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight">{greeting(now)}, Felipe</h1>
+      </section>
+
+      {/* No mobile "Registrar agora" vem antes das pendências (polegar). */}
+      <section className="flex flex-col gap-3 md:order-2" aria-labelledby="home-quick">
+        <h2 id="home-quick" className={SECTION_TITLE}>
+          Registrar agora
+        </h2>
+        <QuickActions locale={locale} actions={quick} lastFeeding={lastFeeding} />
+      </section>
+
+      <section className="flex flex-col gap-3 md:order-1" aria-labelledby="home-alerts">
+        <div className="flex items-baseline justify-between">
+          <h2 id="home-alerts" className={SECTION_TITLE}>
+            Pendências
           </h2>
-          {meta && (
-            <p className="text-[11px] text-muted-foreground">{meta}</p>
-          )}
+          {alerts.length > 0 && <span className="text-[11px] text-muted-foreground">{alerts.length}</span>}
         </div>
-        {href && (
-          <Link
-            href={href}
-            className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Abrir <ArrowRightIcon className="size-3" />
-          </Link>
+        {alerts.length === 0 ? (
+          <p className="border border-dashed p-4 text-muted-foreground">Tudo em dia.</p>
+        ) : (
+          <ul className="border">
+            {alerts.map((a) => (
+              <li key={a.id} className="border-b last:border-b-0">
+                <Link
+                  href={a.href}
+                  className="flex min-h-12 items-center gap-3 px-3 py-2 outline-none transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60 max-sm:min-h-14"
+                >
+                  <span className={cn("size-2 shrink-0", TONE_DOT[a.tone])} aria-hidden="true" />
+                  <span className="sr-only">{TONE_LABEL[a.tone]}:</span>
+                  <span className="hidden w-28 shrink-0 text-muted-foreground sm:block">{a.source}</span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    <span className="font-medium">{a.title}</span>
+                    <span className="text-muted-foreground sm:text-[11px]">
+                      <span className="sm:hidden">{a.source}</span>
+                      {a.detail && (
+                        <>
+                          <span className="sm:hidden"> · </span>
+                          {a.detail}
+                        </>
+                      )}
+                    </span>
+                  </span>
+                  <ChevronRightIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
-      {children}
-    </section>
-  );
-}
+      </section>
 
-const TONE_STYLES = {
-  info: "text-sky-500",
-  success: "text-emerald-500",
-  warning: "text-amber-500",
-  muted: "text-muted-foreground",
-} as const;
+      <section className="flex flex-col gap-3 md:order-3" aria-labelledby="home-modules">
+        <h2 id="home-modules" className={SECTION_TITLE}>
+          Módulos
+        </h2>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3">
+          {modules.map((m) => (
+            <Link
+              key={m.id}
+              href={m.href}
+              className="flex flex-col gap-3.5 border p-4 outline-none transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/60"
+            >
+              <span className="flex items-center gap-2.5">
+                {MODULE_ICON[m.icon]}
+                <span className="text-[13px] font-semibold">{m.title}</span>
+                <span className="ml-auto text-[11px] text-muted-foreground">Abrir →</span>
+              </span>
+              <dl className="grid grid-cols-3 gap-2">
+                {m.stats.map((s) => (
+                  <div key={s.label} className="flex flex-col gap-0.5">
+                    <dt className="text-[11px] text-muted-foreground">{s.label}</dt>
+                    <dd className="font-heading text-xl font-semibold">{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              {m.note && <p className="text-[11px] text-muted-foreground">{m.note}</p>}
+            </Link>
+          ))}
+        </div>
+      </section>
 
-function StatCard({
-  label,
-  value,
-  icon,
-  tone = "info",
-}: {
-  label: string;
-  value: number | string;
-  icon: React.ReactNode;
-  tone?: keyof typeof TONE_STYLES;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-3">
-      <div className={cn("flex items-center gap-1.5", TONE_STYLES[tone])}>
-        {icon}
-        <span className="text-[10px] font-medium uppercase tracking-widest">
-          {label}
-        </span>
-      </div>
-      <div className="mt-1 font-heading text-2xl font-semibold tabular-nums">
-        {value}
-      </div>
+      <section className="flex flex-col gap-3 md:order-4" aria-labelledby="home-tools">
+        <div className="flex items-center justify-between">
+          <h2 id="home-tools" className={SECTION_TITLE}>
+            Ferramentas
+          </h2>
+          <Link
+            href={`/${locale}/admin/tools`}
+            className="inline-flex min-h-11 items-center text-xs text-muted-foreground hover:text-foreground"
+          >
+            Todas as {tools.length} →
+          </Link>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {PINNED_TOOLS.filter((p) => getToolBySlug(p.slug)).map((p) => (
+            <Link
+              key={p.slug}
+              href={`/${locale}/admin/tools/${p.slug}`}
+              title={t(getToolBySlug(p.slug)!.titleKey)}
+              className="inline-flex h-9 items-center border px-3 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/60 max-sm:h-10"
+            >
+              {p.label}
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
-  );
-}
-
-function Shortcut({
-  href,
-  title,
-  description,
-  icon,
-}: {
-  href: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-2 rounded-lg border border-border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-muted/40"
-    >
-      <span className="text-muted-foreground transition-colors group-hover:text-foreground">
-        {icon}
-      </span>
-      <div className="font-medium">{title}</div>
-      <div className="text-xs text-muted-foreground">{description}</div>
-    </Link>
   );
 }

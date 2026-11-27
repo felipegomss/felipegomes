@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PET_TZ } from "@/lib/pets/stats";
+import { cleanDate, formatDay } from "@/lib/format-date";
 import {
   FEEDING_RESULT_LABELS,
   PREY_STATE_LABELS,
@@ -81,7 +82,6 @@ export function TypeIcon({ type, size = "md" }: { type: PetLogType; size?: "sm" 
 
 // ── Datas (sempre no fuso de São Paulo) ─────────────────────────────────────
 
-const dayFmt = new Intl.DateTimeFormat("pt-BR", { timeZone: PET_TZ, day: "2-digit", month: "short" });
 const dayYearFmt = new Intl.DateTimeFormat("pt-BR", {
   timeZone: PET_TZ,
   day: "2-digit",
@@ -89,17 +89,10 @@ const dayYearFmt = new Intl.DateTimeFormat("pt-BR", {
   year: "numeric",
 });
 const timeFmt = new Intl.DateTimeFormat("pt-BR", { timeZone: PET_TZ, hour: "2-digit", minute: "2-digit" });
-const yearFmt = new Intl.DateTimeFormat("pt-BR", { timeZone: PET_TZ, year: "numeric" });
 const monthTitleFmt = new Intl.DateTimeFormat("pt-BR", { timeZone: PET_TZ, month: "long", year: "numeric" });
 
-const clean = (s: string) => s.replace(/\./g, "").replace(/ de /g, " ");
-
-/** "05 set" (ou "05 set 2025" fora do ano corrente). */
-export function formatDay(d: Date | string, now = new Date()): string {
-  const date = typeof d === "string" ? new Date(d) : d;
-  const sameYear = yearFmt.format(date) === yearFmt.format(now);
-  return clean((sameYear ? dayFmt : dayYearFmt).format(date));
-}
+const clean = cleanDate;
+export { formatDay };
 
 /** "06 mar 2024" a partir de "YYYY-MM-DD". */
 export function formatIsoDate(iso: string | null): string {

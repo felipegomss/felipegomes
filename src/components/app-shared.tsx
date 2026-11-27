@@ -11,12 +11,14 @@ import {
 import { SnakeIcon } from "@/components/icons/snake-icon";
 import { PET_NAV } from "@/lib/pets/registry";
 import { tools } from "@/lib/tools";
+import type { NavBadge, NavBadges } from "@/lib/home/badges";
 
 export type SidebarNavItem = {
 	title: string;
 	path?: string;
 	icon?: ReactNode;
 	isActive?: boolean;
+	badge?: NavBadge;
 	subItems?: SidebarNavItem[];
 };
 
@@ -32,7 +34,12 @@ type ToolsT = (key: string) => string;
  * Navegação do app (área autenticada). `pathname` decide o item ativo.
  * Módulo novo = um grupo/item aqui (e, se tiver resumo, um módulo da home).
  */
-export function buildNavGroups(locale: string, pathname: string, tTools?: ToolsT): SidebarNavGroup[] {
+export function buildNavGroups(
+	locale: string,
+	pathname: string,
+	tTools?: ToolsT,
+	badges: NavBadges = {},
+): SidebarNavGroup[] {
 	const base = `/${locale}/admin`;
 	const is = (path: string) => pathname === path;
 	const startsWith = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
@@ -47,7 +54,7 @@ export function buildNavGroups(locale: string, pathname: string, tTools?: ToolsT
 		})),
 	];
 
-	return [
+	const groups: SidebarNavGroup[] = [
 		{
 			items: [{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) }],
 		},
@@ -96,6 +103,11 @@ export function buildNavGroups(locale: string, pathname: string, tTools?: ToolsT
 			],
 		},
 	];
+
+	for (const group of groups) {
+		for (const item of group.items) if (item.path && badges[item.path]) item.badge = badges[item.path];
+	}
+	return groups;
 }
 
 export const footerNavLinks: SidebarNavItem[] = [];

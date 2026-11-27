@@ -44,12 +44,15 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [webauthn, setWebauthn] = useState(false);
+  // Começa mostrando a passkey (quase todo navegador suporta) para a tela não pular.
+  const [webauthn, setWebauthn] = useState(true);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!browserSupportsWebAuthn()) return;
-    setWebauthn(true);
+    if (!browserSupportsWebAuthn()) {
+      setWebauthn(false);
+      return;
+    }
     let active = true;
     // Preenchimento automático: o navegador sugere a passkey ao focar o campo.
     browserSupportsWebAuthnAutofill().then((supported) => {
@@ -95,10 +98,13 @@ export default function AdminLoginPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="flex w-full max-w-xs flex-col gap-4 border border-border p-6 text-xs">
-        <h1 className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest">
-          <Lock className="size-3" aria-hidden="true" />
-          Entrar
-        </h1>
+        <div className="flex flex-col gap-1.5">
+          <span className="font-heading text-sm font-bold tracking-tight">LFNG</span>
+          <h1 className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <Lock className="size-3" aria-hidden="true" />
+            Entrar
+          </h1>
+        </div>
 
         {webauthn && (
           <>
