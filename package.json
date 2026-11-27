@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "tsx scripts/generate-static-cv.tsx",
+    "prebuild": "node scripts/migrate.mjs && tsx scripts/generate-static-cv.tsx",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
