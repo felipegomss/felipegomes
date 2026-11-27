@@ -75,8 +75,8 @@ export default async function AppHomePage({ params }: { params: Promise<{ locale
         <h1 className="font-heading text-2xl font-semibold tracking-tight">{greeting(now)}, Felipe</h1>
       </section>
 
-      {/* No mobile "Registrar agora" vem antes das pendências (polegar). */}
-      <section className="flex flex-col gap-3 md:order-2" aria-labelledby="home-quick">
+      {/* No celular as ações rápidas ficam no botão "+" do rodapé. */}
+      <section className="flex flex-col gap-3 max-md:hidden md:order-2" aria-labelledby="home-quick">
         <h2 id="home-quick" className={SECTION_TITLE}>
           Registrar agora
         </h2>
@@ -127,12 +127,12 @@ export default async function AppHomePage({ params }: { params: Promise<{ locale
         <h2 id="home-modules" className={SECTION_TITLE}>
           Módulos
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-3">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fit,minmax(260px,1fr))] md:gap-3">
           {modules.map((m) => (
             <Link
               key={m.id}
               href={m.href}
-              className="flex flex-col gap-3.5 border p-4 outline-none transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/60"
+              className="flex flex-col gap-2 border p-3 outline-none transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/60 md:gap-3.5 md:p-4"
             >
               <span className="flex items-center gap-2.5">
                 {m.photo ? (
@@ -142,9 +142,20 @@ export default async function AppHomePage({ params }: { params: Promise<{ locale
                   MODULE_ICON[m.icon]
                 )}
                 <span className="text-[13px] font-semibold">{m.title}</span>
-                <span className="ml-auto text-[11px] text-muted-foreground">Abrir →</span>
+                <span className="ml-auto text-[11px] text-muted-foreground max-md:hidden">Abrir →</span>
               </span>
-              <dl className="grid grid-cols-3 gap-2">
+              {/* Celular: só o número principal e um de apoio. */}
+              <span className="flex flex-col gap-0.5 md:hidden">
+                <span className="font-heading text-xl font-semibold">
+                  {m.stats[0]?.value} <span className="text-xs font-normal text-muted-foreground">{m.stats[0]?.label.toLowerCase()}</span>
+                </span>
+                {m.stats[1] && (
+                  <span className="text-[11px] text-muted-foreground">
+                    {m.stats[1].label}: {m.stats[1].value}
+                  </span>
+                )}
+              </span>
+              <dl className="grid grid-cols-3 gap-2 max-md:hidden">
                 {m.stats.map((s) => (
                   <div key={s.label} className="flex flex-col gap-0.5">
                     <dt className="text-[11px] text-muted-foreground">{s.label}</dt>

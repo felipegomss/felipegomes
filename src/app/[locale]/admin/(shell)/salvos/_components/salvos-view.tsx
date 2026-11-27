@@ -50,6 +50,10 @@ export function SalvosView({
   const [query, setQuery] = useState(q);
   const [open, setOpen] = useState<SavedLinkDTO | null>(null);
   const first = useRef(true);
+  // "Salvar link" do botão "+" abre com o campo focado.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("novo")) document.getElementById("save-url")?.focus();
+  }, []);
 
   // Busca enquanto digita (com uma pequena espera).
   useEffect(() => {
@@ -107,7 +111,7 @@ export function SalvosView({
       {/* No celular o campo fica fixo no rodapé, perto do polegar. */}
       <form
         onSubmit={save}
-        className="flex flex-col gap-1.5 max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-20 max-md:border-t max-md:bg-background max-md:px-4 max-md:pt-2.5 max-md:pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+        className="flex flex-col gap-1.5 max-md:fixed max-md:inset-x-0 max-md:bottom-[var(--mobile-nav-h)] max-md:z-20 max-md:border-t max-md:bg-background max-md:px-4 max-md:py-2.5"
       >
         <label htmlFor="save-url" className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground max-md:sr-only">
           Salvar link

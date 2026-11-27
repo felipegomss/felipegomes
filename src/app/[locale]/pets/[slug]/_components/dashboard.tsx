@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BotIcon, ChevronRightIcon, PawPrintIcon, PlusIcon } from "lucide-react";
 import { petPhoto } from "@/lib/pets/registry";
@@ -48,6 +49,17 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
   const [showTable, setShowTable] = useState(false);
   const [target, setTarget] = useState<DialogTarget>(null);
   const open = (type: PetLogType, editing?: PetLogDTO) => setTarget({ type, editing });
+  const searchParams = useSearchParams();
+  // ?registrar=feeding|weight|water… (botão "+" do celular) já abre o formulário.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const type = url.searchParams.get("registrar");
+    if (type && (PET_LOG_TYPES as readonly string[]).includes(type)) {
+      setTarget({ type: type as PetLogType });
+      url.searchParams.delete("registrar");
+      window.history.replaceState(null, "", url);
+    }
+  }, [searchParams]);
 
   const age = formatAge(pet.hatchDate, now);
   const photo = petPhoto(pet.slug);

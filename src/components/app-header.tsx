@@ -28,9 +28,12 @@ export function AppHeader() {
 		>
 			<DecorIcon className="hidden md:block" position="bottom-left" />
 			<div className="flex items-center gap-3">
-				<CustomSidebarTrigger />
+				{/* No celular a navegação é a barra do rodapé. */}
+				<span className="max-md:hidden">
+					<CustomSidebarTrigger />
+				</span>
 				<Separator
-					className="mr-2 h-4 data-[orientation=vertical]:self-center"
+					className="mr-2 h-4 max-md:hidden data-[orientation=vertical]:self-center"
 					orientation="vertical"
 				/>
 				<AppBreadcrumbs page={activeItem} />
