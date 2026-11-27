@@ -9,6 +9,7 @@ import {
 	SendIcon,
 	WrenchIcon,
 } from "lucide-react";
+import { SnakeIcon } from "@/components/icons/snake-icon";
 import { PET_NAV } from "@/lib/pets/registry";
 import { tools } from "@/lib/tools";
 import type { NavBadge, NavBadges } from "@/lib/home/badges";
@@ -63,13 +64,8 @@ export function buildNavGroups(
 			items: PET_NAV.map((pet) => ({
 				title: pet.name,
 				path: `/${locale}/pets/${pet.slug}`,
-				// Foto do pet como avatar; sem foto, a patinha do Lucide.
-				icon: pet.photo ? (
-					// eslint-disable-next-line @next/next/no-img-element -- miniatura estática
-					<img src={pet.photo} alt="" width={16} height={16} className="size-4 shrink-0 object-cover" />
-				) : (
-					<PawPrintIcon />
-				),
+				// Ícone da espécie (a foto fica como avatar dentro da página).
+				icon: pet.icon === "snake" ? <SnakeIcon /> : <PawPrintIcon />,
 				isActive: startsWith(`/${locale}/pets/${pet.slug}`),
 			})),
 		},
