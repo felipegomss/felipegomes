@@ -87,8 +87,14 @@ function compactJob(j: Awaited<ReturnType<typeof getJob>>) {
 }
 
 export function createMcpServer() {
-  const server = new McpServer({ name: "lfng", version: "1.0.0" }, { instructions:
-    "App pessoal do Felipe (lfng.dev). Datas no fuso de São Paulo. Para enviar email, mostre o rascunho completo e peça confirmação explícita antes de chamar email_enviar." });
+  const pets = PET_NAV.map((p) => `${p.name} (${p.kind}, slug "${p.slug}")`).join("; ");
+  const instructions = [
+    "App pessoal do Felipe (lfng.dev): cuidados com os pets, vagas de emprego e emails de contato.",
+    `Pets do Felipe: ${pets}. Qualquer pergunta ou registro sobre eles (comeu, pesou, trocou de pele, TPA, veterinário, "como ele está?") usa estas ferramentas pet_* — mesmo que o MCP não seja citado.`,
+    "Perguntas sobre vagas usam vagas_*; 'o que tenho pra hoje?' usa resumo_do_dia.",
+    "Datas no fuso de São Paulo. Para enviar email, mostre o rascunho completo e peça confirmação explícita antes de chamar email_enviar.",
+  ].join("\n");
+  const server = new McpServer({ name: "lfng", version: "1.0.0" }, { instructions });
 
   // ── Geral ─────────────────────────────────────────────────────────────────
   server.registerTool(
@@ -112,7 +118,7 @@ export function createMcpServer() {
     "pet_status",
     {
       title: "Status do pet",
-      description: "Ficha e situação atual do pet: dias sem comer, próxima alimentação, peso, muda, TPA.",
+      description: `Como está o pet (${PET_NAV.map((p) => p.name).join(", ")}): dias sem comer, próxima alimentação, peso, muda, TPA.`,
       inputSchema: { pet: petSlug },
       annotations: { readOnlyHint: true },
     },
