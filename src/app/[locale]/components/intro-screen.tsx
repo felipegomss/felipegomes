@@ -1,14 +1,15 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useDecryptAnimation } from "@/hooks/use-decrypt-animation";
 import { contact } from "@/lib/constants";
 
+/**
+ * Abertura "CODE → LFNG". Roda só ao carregar a página (no portfólio e ao abrir
+ * o app); navegar entre telas não remonta o layout, então não repete.
+ */
 export function IntroScreen({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const { phase, display, isLocked, isHolding } = useDecryptAnimation();
 
-  if (pathname.includes("/admin") || pathname.includes("/pets/")) return children;
   if (phase === "done") return children;
 
   return (

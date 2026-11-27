@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname, useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -14,7 +15,20 @@ import { buildNavGroups } from "@/components/app-shared";
 import type { NavBadges } from "@/lib/home/badges";
 import { NavGroup } from "@/components/nav-group";
 
-export function AppSidebar({ badges }: { badges?: NavBadges }) {
+/**
+ * `badges` chega como promessa do servidor: o menu aparece na hora e os
+ * contadores entram quando o banco responder (sem segurar a página).
+ */
+export function AppSidebar({ badges: badgesPromise }: { badges?: Promise<NavBadges> }) {
+	const [badges, setBadges] = useState<NavBadges>({});
+	useEffect(() => {
+		let active = true;
+		// O que vem do servidor é um "thenable" do React: Promise.resolve normaliza.
+		if (badgesPromise) Promise.resolve(badgesPromise).then((b) => active && setBadges(b), () => {});
+		return () => {
+			active = false;
+		};
+	}, [badgesPromise]);
 	const pathname = usePathname();
 	const { locale } = useParams<{ locale: string }>();
 	const tTools = useTranslations("tools");

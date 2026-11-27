@@ -1,8 +1,10 @@
 // Ícones do app instalável (PWA): o próprio favicon (src/app/icon.svg)
 // renderizado no Chromium, para sair idêntico ao que aparece na aba.
+// Também gera as telas de abertura do iPhone (public/app/splash): o primeiro
+// quadro da animação "CODE → LFNG", para não aparecer tela preta vazia.
 // Uso: node scripts/generate-app-icons.mjs  (precisa do Playwright instalado)
 import { createRequire } from "module";
-import { readFileSync } from "fs";
+import { mkdirSync, readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -33,5 +35,36 @@ for (const { file, size, inset } of ICONS) {
   );
   await page.screenshot({ path: resolve(root, "public/app", file), omitBackground: false });
   console.log(`[icons] ${file}`);
+}
+// ── Telas de abertura (iOS lê uma imagem por tamanho de tela) ───────────────
+// [largura, altura, densidade] em pontos CSS, retrato.
+export const SPLASHES = [
+  [440, 956, 3], // 16/17 Pro Max
+  [430, 932, 3], // 14/15 Pro Max, 15/16 Plus
+  [428, 926, 3], // 12/13 Pro Max, 14 Plus
+  [420, 912, 3], // Air
+  [402, 874, 3], // 16 Pro, 17, 17 Pro
+  [393, 852, 3], // 14 Pro, 15, 15 Pro, 16
+  [390, 844, 3], // 12, 13, 14
+  [375, 812, 3], // X, XS, 11 Pro, mini
+  [414, 896, 2], // XR, 11
+  [375, 667, 2], // SE
+];
+const fonts =
+  '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@900&family=JetBrains+Mono:wght@400&display=block">';
+mkdirSync(resolve(root, "public/app/splash"), { recursive: true });
+for (const [w, h, dpr] of SPLASHES) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: dpr });
+  const p = await ctx.newPage();
+  // Mesmo layout do primeiro quadro da intro (intro-screen.tsx): "CODE" em
+  // branco, Geist Mono 900 / 60px, letra a letra com 1ch; nome embaixo.
+  await p.setContent(`${fonts}<body style="margin:0;background:#0a0a0a;height:100vh;display:flex;align-items:center;justify-content:center;position:relative">
+    <div style="display:flex;gap:2px;font:900 60px/1 'Geist Mono';letter-spacing:-0.025em;color:#fff">${["C", "O", "D", "E"].map((c) => `<span style="width:1ch;text-align:center">${c}</span>`).join("")}</div>
+    <div style="position:absolute;bottom:32px;font:12px 'JetBrains Mono';letter-spacing:.1em;color:rgba(255,255,255,.1)">LUIS FELIPE NASCIMENTO GOMES</div></body>`);
+  await p.evaluate(() => document.fonts.ready);
+  const file = `splash-${w * dpr}x${h * dpr}.png`;
+  await p.screenshot({ path: resolve(root, "public/app/splash", file) });
+  await ctx.close();
+  console.log(`[splash] ${file}`);
 }
 await browser.close();

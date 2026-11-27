@@ -19,5 +19,5 @@ export default async function AdminShellLayout({
     redirect(`/${locale}/admin/login`);
   }
 
-  return <AppShell badges={await getNavBadges(locale)}>{children}</AppShell>;
+  return <AppShell badges={getNavBadges(locale)}>{children}</AppShell>;
 }

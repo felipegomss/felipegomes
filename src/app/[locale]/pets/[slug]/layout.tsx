@@ -22,5 +22,5 @@ export default async function PetLayout({
     redirect(`/${locale}/admin/login?next=${encodeURIComponent(`/${locale}/pets/${slug}`)}`);
   }
 
-  return <AppShell badges={await getNavBadges(locale)}>{children}</AppShell>;
+  return <AppShell badges={getNavBadges(locale)}>{children}</AppShell>;
 }
