@@ -10,7 +10,7 @@ export const appMetadata: Metadata = {
   appleWebApp: { capable: true, title: "LFNG", statusBarStyle: "black" },
   icons: {
     icon: [{ url: "/app/icon-192.png", sizes: "192x192", type: "image/png" }],
-    apple: [{ url: "/app/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: "/app/apple-touch-icon.png?v=2", sizes: "180x180" }],
   },
 };
 
