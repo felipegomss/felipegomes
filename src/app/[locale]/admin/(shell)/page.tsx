@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { BriefcaseIcon, ChevronRightIcon, InboxIcon, ListChecksIcon, PawPrintIcon } from "lucide-react";
+import { BriefcaseIcon, CalendarIcon, ChevronRightIcon, InboxIcon, ListChecksIcon, PawPrintIcon } from "lucide-react";
+import { dayHeading, timeLabel } from "@/lib/calendar/model";
+import { upcoming } from "@/lib/calendar/service";
 import { cn } from "@/lib/utils";
 import { formatLongDate, hourInTz } from "@/lib/format-date";
 import { getHomeData, type AlertTone, type HomeModule } from "@/lib/home/modules";
@@ -38,6 +40,7 @@ const MODULE_ICON: Record<HomeModule["icon"], React.ReactNode> = {
   briefcase: <BriefcaseIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   inbox: <InboxIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
   tasks: <ListChecksIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
+  calendar: <CalendarIcon aria-hidden="true" className="size-[18px] text-muted-foreground" />,
 };
 
 const SECTION_TITLE = "text-xs font-semibold uppercase tracking-[0.12em]";
@@ -50,11 +53,14 @@ function greeting(now: Date) {
 export default async function AppHomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const now = new Date();
-  const [{ modules, alerts }, t, petPages] = await Promise.all([
+  const [{ modules, alerts }, t, petPages, agenda] = await Promise.all([
     getHomeData({ locale, now }),
     getTranslations({ locale, namespace: "tools" }),
     Promise.all(PET_NAV.map((p) => loadPetPage(p.slug))),
+    upcoming(now).catch(() => null),
   ]);
+  // Compromissos de hoje e amanhã (sem tarefas, que já estão nas pendências).
+  const agendaItems = (agenda?.items ?? []).filter((i) => i.kind === "event").slice(0, 6);
 
   const quick: QuickPetAction[] = PET_NAV.flatMap((p) => [
     { slug: p.slug, type: "feeding" as const, label: `${p.name} comeu` },
@@ -121,6 +127,43 @@ export default async function AppHomePage({ params }: { params: Promise<{ locale
           </ul>
         )}
       </section>
+
+      {agenda?.connected && (
+        <section className="flex flex-col gap-3 md:order-2" aria-labelledby="home-agenda">
+          <div className="flex items-center justify-between">
+            <h2 id="home-agenda" className={SECTION_TITLE}>
+              Próximos compromissos
+            </h2>
+            <Link href={`/${locale}/admin/agenda`} className="inline-flex min-h-11 items-center text-xs text-muted-foreground hover:text-foreground">
+              Agenda →
+            </Link>
+          </div>
+          {agendaItems.length === 0 ? (
+            <p className="border border-dashed p-4 text-muted-foreground">Nada marcado para hoje e amanhã.</p>
+          ) : (
+            <ul className="border">
+              {agendaItems.map((i) => (
+                <li key={i.id} className="border-b last:border-b-0">
+                  <Link
+                    href={`/${locale}/admin/agenda?visao=dia&data=${i.date}`}
+                    className="grid min-h-12 grid-cols-[96px_3px_minmax(0,1fr)] items-center gap-3 px-3 py-2 outline-none transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60"
+                  >
+                    <span className="flex flex-col text-[11px]">
+                      <span className="text-muted-foreground">{dayHeading(i.date, agenda.today).split(" · ")[0]}</span>
+                      <span className="font-medium">{i.allDay ? "dia todo" : i.startTime}</span>
+                    </span>
+                    <span className="self-stretch" style={{ background: i.color }} aria-hidden="true" />
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className="truncate font-medium">{i.title}</span>
+                      <span className="truncate text-[11px] text-muted-foreground">{i.location ?? timeLabel(i)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <section className="flex flex-col gap-3 md:order-3" aria-labelledby="home-modules">
         <h2 id="home-modules" className={SECTION_TITLE}>

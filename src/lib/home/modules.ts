@@ -1,5 +1,6 @@
 // Módulos da home. Cada um devolve seus números e suas pendências; a home
 // junta tudo. Módulo novo (tarefas, agenda…) = mais uma função na lista.
+import { upcoming } from "@/lib/calendar/service";
 import { getEmailStats } from "@/lib/email/stats";
 import { formatDay } from "@/lib/format-date";
 import { getJobStats } from "@/lib/jobs/stats";
@@ -25,7 +26,7 @@ export type HomeModule = {
   id: string;
   title: string;
   href: string;
-  icon: "pet" | "briefcase" | "inbox" | "tasks";
+  icon: "pet" | "briefcase" | "inbox" | "tasks" | "calendar";
   /** Foto (quadrada) no lugar do ícone, quando houver. */
   photo?: string;
   stats: { label: string; value: string }[];
@@ -138,6 +139,28 @@ async function emailModule({ locale, now }: Ctx): Promise<HomeModule> {
   };
 }
 
+async function agendaModule({ locale, now }: Ctx): Promise<HomeModule> {
+  const href = `/${locale}/admin/agenda`;
+  const { today, items, connected } = await upcoming(now);
+  const events = items.filter((i) => i.kind === "event");
+  const onDay = (d: string) => events.filter((i) => i.date <= d && i.endDate >= d);
+  const nowHm = new Intl.DateTimeFormat("en-GB", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now);
+  const next = onDay(today).find((i) => !i.allDay && (i.endTime ?? i.startTime)! > nowHm);
+  return {
+    id: "agenda",
+    title: "Agenda",
+    href,
+    icon: "calendar",
+    alerts: [],
+    note: connected ? undefined : "Conecte o Google Agenda.",
+    stats: [
+      { label: "Hoje", value: connected ? String(onDay(today).length) : "—" },
+      { label: "Amanhã", value: connected ? String(events.filter((i) => i.date > today || i.endDate > today).length) : "—" },
+      { label: "Próximo", value: next?.startTime ?? "—" },
+    ],
+  };
+}
+
 /** Atrasadas (urgente) e de hoje (atenção); mais de 3 viram uma linha só. */
 async function tasksModule({ locale, now }: Ctx): Promise<HomeModule> {
   const open = await listOpenTasks();
@@ -181,7 +204,7 @@ const TONE_ORDER: Record<AlertTone, number> = { danger: 0, warn: 1, info: 2 };
 
 /** Todos os módulos; um módulo que falhar não derruba a home. */
 export async function getHomeData(ctx: Ctx): Promise<{ modules: HomeModule[]; alerts: HomeAlert[] }> {
-  const results = await Promise.allSettled([tasksModule(ctx).then((m) => [m]), petModules(ctx), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
+  const results = await Promise.allSettled([tasksModule(ctx).then((m) => [m]), agendaModule(ctx).then((m) => [m]), petModules(ctx), jobsModule(ctx).then((m) => [m]), emailModule(ctx).then((m) => [m])]);
   const modules = results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
   const alerts = modules.flatMap((m) => m.alerts).sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
   return { modules, alerts };

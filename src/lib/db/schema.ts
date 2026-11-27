@@ -203,3 +203,21 @@ export const tasks = pgTable(
 );
 
 export type TaskRow = typeof tasks.$inferSelect;
+
+// Conexão com o Google Agenda (uma só, do dono do app). Tokens guardados
+// criptografados (AES-GCM, chave derivada do segredo da sessão). Os eventos
+// não são copiados: o app lê e escreve direto no Google.
+export const googleAccounts = pgTable("google_accounts", {
+  id: text("id").primaryKey().default("me"),
+  email: text("email"),
+  refreshToken: text("refresh_token").notNull(),
+  accessToken: text("access_token"),
+  accessExpiresAt: timestamp("access_expires_at", { withTimezone: true }),
+  scope: text("scope"),
+  /** Agendas exibidas e a padrão para novos eventos. */
+  calendars: jsonb("calendars").$type<{ visible: string[]; defaultId: string | null }>(),
+  showTasks: boolean("show_tasks").notNull().default(true),
+  connectedAt: timestamp("connected_at", { withTimezone: true }).notNull().default(sql`now()`),
+});
+
+export type GoogleAccount = typeof googleAccounts.$inferSelect;

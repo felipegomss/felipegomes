@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import {
 	BriefcaseIcon,
+	CalendarIcon,
 	FingerprintIcon,
 	HomeIcon,
 	InboxIcon,
@@ -61,6 +62,7 @@ export function buildNavGroups(
 			items: [
 				{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) },
 				{ title: "Tarefas", path: `${base}/tarefas`, icon: <ListChecksIcon />, isActive: startsWith(`${base}/tarefas`) },
+				{ title: "Agenda", path: `${base}/agenda`, icon: <CalendarIcon />, isActive: startsWith(`${base}/agenda`) },
 			],
 		},
 		{
