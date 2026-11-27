@@ -13,6 +13,8 @@ export type Extracted = {
   author: string | null;
   thumbnailUrl: string | null;
   content: string;
+  /** O que é falado no vídeo, quando a plataforma entrega a legenda automática. */
+  transcript?: string | null;
   /** Avisos que não impedem salvar (ex.: Instagram sem token). */
   warning?: string;
 };
@@ -69,11 +71,14 @@ function isPublicHost(url: string): boolean {
 /** Identificação honesta de leitor de links; o Instagram só entrega as meta tags assim. */
 const PREVIEW_UA = "LFNG-LinkPreview/1.0 (+https://lfng.dev)";
 
-async function get(url: string, opts: { accept?: string; maxBytes?: number; ua?: string } = {}): Promise<{ url: string; status: number; text: string } | null> {
+async function get(
+  url: string,
+  opts: { accept?: string; maxBytes?: number; ua?: string; headers?: Record<string, string> } = {},
+): Promise<{ url: string; status: number; text: string; cookies: string } | null> {
   if (!isPublicHost(url)) return null;
   try {
     const res = await fetch(url, {
-      headers: { "user-agent": opts.ua ?? UA, accept: opts.accept ?? "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8", "accept-language": "pt-BR,pt;q=0.9,en;q=0.8" },
+      headers: { "user-agent": opts.ua ?? UA, accept: opts.accept ?? "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8", "accept-language": "pt-BR,pt;q=0.9,en;q=0.8", ...opts.headers },
       redirect: "follow",
       signal: AbortSignal.timeout(10_000),
       cache: "no-store",
@@ -95,7 +100,8 @@ async function get(url: string, opts: { accept?: string; maxBytes?: number; ua?:
         }
       }
     }
-    return { url: res.url || url, status: res.status, text };
+    const cookies = res.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
+    return { url: res.url || url, status: res.status, text, cookies };
   } catch {
     return null;
   }
@@ -218,7 +224,12 @@ async function tiktok(url: string): Promise<Partial<Extracted>> {
     return {};
   }
   const raw = page.text.match(/<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>([\s\S]*?)<\/script>/)?.[1];
-  type Item = { desc?: string; author?: { uniqueId?: string; nickname?: string }; video?: { cover?: string; originCover?: string } };
+  type Subtitle = { Url?: string; LanguageCodeName?: string; Format?: string; Source?: string };
+  type Item = {
+    desc?: string;
+    author?: { uniqueId?: string; nickname?: string };
+    video?: { cover?: string; originCover?: string; subtitleInfos?: Subtitle[]; claInfo?: { originalLanguageInfo?: { language?: string } } };
+  };
   let item: Item | undefined;
   try {
     item = raw ? (JSON.parse(raw) as { __DEFAULT_SCOPE__?: Record<string, { itemInfo?: { itemStruct?: Item } }> }).__DEFAULT_SCOPE__?.["webapp.video-detail"]?.itemInfo?.itemStruct : undefined;
@@ -237,7 +248,45 @@ async function tiktok(url: string): Promise<Partial<Extracted>> {
     author: handle ? `@${handle}` : (item.author?.nickname ?? null),
     thumbnailUrl: item.video?.cover ?? item.video?.originCover ?? null,
     content: item.desc,
+    transcript: await tiktokTranscript(item.video?.subtitleInfos ?? [], item.video?.claInfo?.originalLanguageInfo?.language, page.cookies),
   };
+}
+
+/**
+ * Legenda automática do próprio TikTok (WebVTT), na língua original do vídeo.
+ * Vídeo sem fala, só com música, ou com a legenda desligada pelo autor não tem.
+ */
+async function tiktokTranscript(subs: { Url?: string; LanguageCodeName?: string; Format?: string; Source?: string }[], original: string | undefined, cookies: string): Promise<string | null> {
+  const vtt = subs.filter((s) => s.Url && s.Format === "webvtt");
+  // ASR = reconhecida do áudio; as demais são traduções automáticas.
+  const pick = vtt.find((s) => s.LanguageCodeName === original && s.Source === "ASR") ?? vtt.find((s) => s.Source === "ASR") ?? vtt.find((s) => s.LanguageCodeName?.startsWith("por")) ?? vtt[0];
+  if (!pick?.Url) return null;
+  const res = await get(pick.Url, { accept: "text/vtt,*/*", headers: { referer: "https://www.tiktok.com/", ...(cookies ? { cookie: cookies } : {}) } });
+  if (!res || res.status >= 400) {
+    console.warn(`[salvos] tiktok: legenda ${res?.status ?? "sem resposta"}`);
+    return null;
+  }
+  return vttToText(res.text) || null;
+}
+
+/** WebVTT → texto corrido, com parágrafo novo a cada pausa de mais de 1,5 s. */
+export function vttToText(vtt: string): string {
+  const secs = (t: string) => t.split(":").reduce((acc, p) => acc * 60 + parseFloat(p.replace(",", ".")), 0);
+  const out: string[] = [];
+  let lastEnd = 0;
+  for (const block of vtt.replace(/\r/g, "").split(/\n{2,}/)) {
+    const lines = block.split("\n");
+    const at = lines.findIndex((l) => l.includes("-->"));
+    if (at < 0) continue;
+    const [start, end] = lines[at].split("-->").map((t) => secs(t.trim().split(" ")[0]));
+    const text = decodeEntities(lines.slice(at + 1).join(" ").replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
+    if (!text || text === out.at(-1)) continue;
+    if (out.length && start - lastEnd > 1.5) out.push("\n\n");
+    else if (out.length) out.push(" ");
+    out.push(text);
+    lastEnd = end;
+  }
+  return out.join("").slice(0, MAX_CONTENT);
 }
 
 async function youtube(url: string): Promise<Partial<Extracted>> {
@@ -316,6 +365,7 @@ export async function extract(rawUrl: string): Promise<Extracted> {
     author: data.author?.slice(0, 120) ?? null,
     thumbnailUrl: data.thumbnailUrl && /^https:\/\//.test(data.thumbnailUrl) ? data.thumbnailUrl : null,
     content: (data.content ?? "").slice(0, MAX_CONTENT),
+    transcript: data.transcript ?? null,
     warning: data.warning,
   };
 }

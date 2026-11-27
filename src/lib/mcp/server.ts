@@ -89,7 +89,14 @@ function compactSalvo(i: SavedLinkDTO, withContent = false) {
     resumo: i.summary,
     nota: i.note,
     salvo_em: i.createdAt.slice(0, 10),
-    ...(withContent ? { conteudo: i.content?.slice(0, 4000) ?? null } : {}),
+    ...(withContent
+      ? {
+          detalhes: i.details,
+          conteudo: i.content?.slice(0, 4000) ?? null,
+          // O que é falado no vídeo (legenda automática: pode ter erros de reconhecimento).
+          transcricao: i.transcript?.slice(0, 6000) ?? null,
+        }
+      : {}),
   };
 }
 
@@ -406,7 +413,7 @@ export function createMcpServer() {
     {
       title: "Buscar nos salvos",
       description:
-        "Busca nos links salvos (título, resumo, legenda/texto, tags, nota) e devolve o conteúdo de cada um para você responder. Use palavras-chave curtas e tente variações (ex.: 'polenta', 'fubá', 'angu'); '#tag' filtra por tag. Sem `consulta`, lista os mais recentes.",
+        "Busca nos links salvos (título, resumo, legenda/texto, transcrição do vídeo, tags, nota) e devolve o conteúdo de cada um para você responder. Use palavras-chave curtas e tente variações (ex.: 'polenta', 'fubá', 'angu'); '#tag' filtra por tag. Sem `consulta`, lista os mais recentes.",
       inputSchema: {
         consulta: z.string().optional(),
         categoria: z.string().optional().describe("Filtra por categoria (veja salvos_categorias)"),

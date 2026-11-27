@@ -57,6 +57,13 @@
       "when": 1795807802723,
       "tag": "0007_salvos",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795821276351,
+      "tag": "0008_salvos_transcript",
+      "breakpoints": true
     }
   ]
 }

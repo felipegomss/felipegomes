@@ -216,7 +216,11 @@ export const savedLinks = pgTable(
     author: text("author"),
     thumbnailUrl: text("thumbnail_url"),
     content: text("content"),
+    /** O que é falado no vídeo (legenda automática da plataforma). */
+    transcript: text("transcript"),
     summary: text("summary"),
+    /** Resumo longo da IA: passos, ingredientes, pontos principais. */
+    details: text("details"),
     category: text("category"),
     tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
     note: text("note"),
