@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import { useParams } from "next/navigation";
 import {
   RefreshCwIcon,
@@ -290,8 +290,8 @@ export default function JobsPage() {
 
       {/* Filters */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:flex-wrap">
-        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as JobStatus)}>
-          <TabsList>
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as JobStatus)} className="max-md:w-full">
+          <TabsList className="max-md:grid max-md:w-full max-md:grid-cols-3">
             {JOB_STATUSES.map((s) => (
               <TabsTrigger key={s} value={s}>
                 {STATUS_LABELS[s]}
@@ -312,7 +312,7 @@ export default function JobsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar por título ou conteúdo"
-            className="max-w-sm"
+            className="max-w-sm max-md:max-w-none"
           />
           <Select value={sourceFilter} onValueChange={setSourceFilter}>
             <SelectTrigger className="w-44">
@@ -337,8 +337,9 @@ export default function JobsPage() {
       )}
 
       {/* List */}
-      <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <div className="grid grid-cols-[28px_1fr_140px_80px_100px] gap-3 border-b border-border bg-muted/40 px-3 py-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+      {/* No celular cada vaga é um cartão; a tabela fica para telas largas. */}
+      <div className="overflow-hidden rounded-lg border border-border bg-card max-md:rounded-none max-md:border-0 max-md:bg-transparent">
+        <div className="grid grid-cols-[28px_1fr_140px_80px_100px] gap-3 border-b border-border bg-muted/40 px-3 py-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground max-md:hidden">
           <div></div>
           <div>Título / Empresa</div>
           <div>Fonte</div>
@@ -351,7 +352,7 @@ export default function JobsPage() {
         {loading && jobs.length === 0 ? (
           <div className="flex flex-col divide-y divide-border">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="grid grid-cols-[28px_1fr_140px_80px_100px] items-center gap-3 px-3 py-3">
+              <div key={i} className="grid grid-cols-[28px_1fr_140px_80px_100px] items-center gap-3 px-3 py-3 max-md:grid-cols-[28px_1fr] max-md:[&>*:nth-child(n+3)]:hidden">
                 <Skeleton className="size-4" />
                 <Skeleton className="h-3 w-3/4" />
                 <Skeleton className="h-3 w-20" />
@@ -375,14 +376,57 @@ export default function JobsPage() {
             )}
           </div>
         ) : (
-          <div className="flex flex-col divide-y divide-border">
+          <div className="flex flex-col divide-y divide-border max-md:gap-2.5 max-md:divide-y-0">
             {jobs.map((job) => {
               const hasEmail = (job.contactEmails?.length ?? 0) > 0;
               const hasWpp = (job.contactWhatsapps?.length ?? 0) > 0;
+              const when = formatDate(statusFilter === "contacted" ? job.contactedAt : job.postedAt);
               return (
+                <Fragment key={job.id}>
+                <article className="flex flex-col border bg-card md:hidden">
+                  <button type="button" onClick={() => setSelectedJob(job)} className="flex flex-col gap-1.5 px-3.5 pt-3.5 pb-2.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60">
+                    <span className="text-[15px] leading-snug font-semibold">{job.title || "(sem título)"}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {[job.company, SOURCE_LABELS[job.source], when].filter(Boolean).join(" · ")}
+                    </span>
+                    <span className="flex flex-wrap items-center gap-1.5">
+                      {hasEmail && <MailIcon className="size-3.5 text-emerald-500" aria-label="tem email" />}
+                      {hasWpp && <PhoneIcon className="size-3.5 text-emerald-500" aria-label="tem WhatsApp" />}
+                      {job.matchedKeywords?.slice(0, 3).map((k) => (
+                        <span key={k} className="border px-2 py-px text-xs text-muted-foreground">
+                          {k}
+                        </span>
+                      ))}
+                    </span>
+                  </button>
+                  <div className="grid grid-cols-[48px_1fr_1fr] border-t">
+                    <button
+                      type="button"
+                      onClick={() => toggleStarred(job.id, !job.starred)}
+                      aria-label={job.starred ? "Desfavoritar" : "Favoritar"}
+                      aria-pressed={job.starred}
+                      className="grid h-12 place-items-center border-r text-muted-foreground"
+                    >
+                      <StarIcon className={cn("size-[18px]", job.starred && "fill-amber-500 text-amber-500")} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateStatus(job.id, job.status === "dismissed" ? "new" : "dismissed")}
+                      className="h-12 border-r text-sm text-muted-foreground"
+                    >
+                      {job.status === "dismissed" ? "Voltar pra novas" : "Dispensar"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateStatus(job.id, job.status === "contacted" ? "new" : "contacted")}
+                      className="h-12 text-sm font-semibold"
+                    >
+                      {job.status === "contacted" ? "Voltar pra novas" : "Contatada"}
+                    </button>
+                  </div>
+                </article>
                 <div
-                  key={job.id}
-                  className="grid grid-cols-[28px_1fr_140px_80px_100px] items-center gap-3 px-3 py-3 text-left text-xs transition-colors hover:bg-muted/40"
+                  className="grid grid-cols-[28px_1fr_140px_80px_100px] items-center gap-3 px-3 py-3 text-left text-xs transition-colors hover:bg-muted/40 max-md:hidden"
                 >
                   <button
                     type="button"
@@ -443,6 +487,7 @@ export default function JobsPage() {
                     )}
                   </button>
                 </div>
+                </Fragment>
               );
             })}
           </div>

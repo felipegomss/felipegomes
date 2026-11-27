@@ -20,15 +20,16 @@ export default async function AppToolsPage({ params }: { params: Promise<{ local
           <h2 id={`cat-${category}`} className="text-xs font-semibold uppercase tracking-[0.12em]">
             {t(`categories.${category}`)}
           </h2>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2">
+          <ul className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {items.map((tool) => (
               <li key={tool.slug}>
                 <Link
                   href={`/${locale}/admin/tools/${tool.slug}`}
-                  className="flex h-full flex-col gap-1 border p-3 outline-none transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring/60"
+                  className="flex h-full min-h-11 flex-col justify-center gap-1 border p-3 outline-none transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring/60"
                 >
                   <span className="font-medium">{t(tool.titleKey)}</span>
-                  <span className="text-muted-foreground">{t(tool.descriptionKey)}</span>
+                  {/* No celular só o nome: a lista cabe em menos telas. */}
+                  <span className="text-muted-foreground max-md:hidden">{t(tool.descriptionKey)}</span>
                 </Link>
               </li>
             ))}
