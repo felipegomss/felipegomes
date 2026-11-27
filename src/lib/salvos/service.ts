@@ -147,7 +147,10 @@ const Categorized = z.object({
   tags: z.array(z.string()).describe("3 a 6 tags curtas, minúsculas, sem #"),
 });
 
-async function categorize(e: { url: string; platform: string; title: string | null; author: string | null; content: string }) {
+async function categorize(e: { url: string; platform: string; title: string | null; author: string | null; content: string; note?: string | null }) {
+  // Sem nada para ler, a IA só chutaria (ex.: "Humor"): melhor deixar sem
+  // categoria e pedir uma nota.
+  if (!e.content.trim() && !e.title && !e.note?.trim()) return null;
   const [cats, tags] = await Promise.all([listCategories(), topTags(30)]);
   const out = await aiJson({
     name: "salvo",
@@ -166,6 +169,7 @@ async function categorize(e: { url: string; platform: string; title: string | nu
       `Plataforma: ${e.platform}`,
       e.author ? `Autor: ${e.author}` : null,
       e.title ? `Título original: ${e.title}` : null,
+      e.note ? `Nota do Felipe: ${e.note}` : null,
       "Conteúdo:",
       "<conteudo>",
       e.content.slice(0, 8000) || "(vazio)",
@@ -196,7 +200,7 @@ async function processRow(id: string, opts: { keepManual?: boolean } = {}): Prom
   let ai: Awaited<ReturnType<typeof categorize>> = null;
   let aiError: string | null = null;
   try {
-    ai = await categorize(e);
+    ai = await categorize({ ...e, note: row.note });
   } catch (err) {
     aiError = err instanceof AiError ? err.message : "Falha ao categorizar.";
   }
@@ -219,7 +223,10 @@ async function processRow(id: string, opts: { keepManual?: boolean } = {}): Prom
     })
     .where(eq(savedLinks.id, id))
     .returning();
-  return { item: toDTO(updated), warning: [e.warning, aiError].filter(Boolean).join(" ") || undefined };
+  const unread = !e.content.trim() && !e.title
+    ? "Não consegui ler o conteúdo deste link. Escreva uma nota sobre ele e toque em Reprocessar para categorizar."
+    : null;
+  return { item: toDTO(updated), warning: [e.warning, unread, aiError].filter(Boolean).join(" ") || undefined };
 }
 
 export async function saveLink(input: { url: unknown; note?: unknown; category?: unknown; tags?: unknown }, via: "agent" | "shortcut" | null = null): Promise<SaveResult | { error: string }> {

@@ -1,8 +1,7 @@
 // Lê um link e devolve o que dá para guardar: título, autor, miniatura e o
 // texto (legenda, descrição, texto da página, receita estruturada).
-// Redes sociais pelo oEmbed público de cada uma; Instagram pelo oEmbed da Meta
-// (precisa de token de app); sites pelo HTML.
-import { getMetaToken } from "@/lib/settings";
+// YouTube e X pelo oEmbed público; TikTok e Instagram pela página do post;
+// sites pelo HTML.
 import type { Platform } from "./platforms";
 
 export { PLATFORM_LABELS, PLATFORMS, type Platform } from "./platforms";
@@ -41,6 +40,8 @@ export function normalizeUrl(raw: string): string | null {
   u.hash = "";
   for (const k of [...u.searchParams.keys()]) if (TRACKING.test(k) || (k === "s" && /(^|\.)(x|twitter)\.com$/.test(u.hostname))) u.searchParams.delete(k);
   u.hostname = u.hostname.toLowerCase();
+  // No Instagram nenhum parâmetro identifica o post: tira todos.
+  if (/(^|\.)instagram\.com$/.test(u.hostname)) u.search = "";
   return u.toString().replace(/\?$/, "");
 }
 
@@ -65,11 +66,14 @@ function isPublicHost(url: string): boolean {
 
 // ── HTTP ────────────────────────────────────────────────────────────────────
 
-async function get(url: string, opts: { accept?: string; maxBytes?: number } = {}): Promise<{ url: string; status: number; text: string } | null> {
+/** Identificação honesta de leitor de links; o Instagram só entrega as meta tags assim. */
+const PREVIEW_UA = "LFNG-LinkPreview/1.0 (+https://lfng.dev)";
+
+async function get(url: string, opts: { accept?: string; maxBytes?: number; ua?: string } = {}): Promise<{ url: string; status: number; text: string } | null> {
   if (!isPublicHost(url)) return null;
   try {
     const res = await fetch(url, {
-      headers: { "user-agent": UA, accept: opts.accept ?? "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8", "accept-language": "pt-BR,pt;q=0.9,en;q=0.8" },
+      headers: { "user-agent": opts.ua ?? UA, accept: opts.accept ?? "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8", "accept-language": "pt-BR,pt;q=0.9,en;q=0.8" },
       redirect: "follow",
       signal: AbortSignal.timeout(10_000),
       cache: "no-store",
@@ -99,7 +103,10 @@ async function get(url: string, opts: { accept?: string; maxBytes?: number } = {
 
 async function getJson<T>(url: string): Promise<T | null> {
   const r = await get(url, { accept: "application/json" });
-  if (!r || r.status >= 400) return null;
+  if (!r || r.status >= 400) {
+    console.warn(`[salvos] ${new URL(url).hostname}: ${r?.status ?? "sem resposta"}`);
+    return null;
+  }
   try {
     return JSON.parse(r.text) as T;
   } catch {
@@ -139,8 +146,8 @@ function htmlToText(html: string): string {
 function meta(html: string, name: string): string | null {
   const re = new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]*>`, "i");
   const tag = html.match(re)?.[0];
-  const content = tag?.match(/content=["']([^"']*)["']/i)?.[1];
-  return content ? clean(content) : null;
+  const m = tag?.match(/content=(["'])([\s\S]*?)\1/i);
+  return m?.[2] ? clean(m[2]) : null;
 }
 
 /** Receita em JSON-LD (schema.org/Recipe), comum em sites de receita. */
@@ -200,10 +207,37 @@ function pageExtract(url: string, html: string): Omit<Extracted, "platform"> {
 
 type OEmbed = { title?: string; author_name?: string; author_url?: string; thumbnail_url?: string; html?: string };
 
+/**
+ * TikTok: o oEmbed hoje só devolve o player (sem legenda nem autor). A página
+ * do vídeo traz tudo no JSON __UNIVERSAL_DATA_FOR_REHYDRATION__ (itemStruct).
+ */
 async function tiktok(url: string): Promise<Partial<Extracted>> {
-  const o = await getJson<OEmbed>(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`);
-  if (!o) return {};
-  return { title: o.title ?? null, author: o.author_name ? `@${o.author_url?.split("@")[1] ?? o.author_name}` : null, thumbnailUrl: o.thumbnail_url ?? null, content: o.title ?? "" };
+  const page = await get(url);
+  if (!page || page.status >= 400) {
+    console.warn(`[salvos] tiktok: página ${page?.status ?? "sem resposta"} para ${url}`);
+    return {};
+  }
+  const raw = page.text.match(/<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>([\s\S]*?)<\/script>/)?.[1];
+  type Item = { desc?: string; author?: { uniqueId?: string; nickname?: string }; video?: { cover?: string; originCover?: string } };
+  let item: Item | undefined;
+  try {
+    item = raw ? (JSON.parse(raw) as { __DEFAULT_SCOPE__?: Record<string, { itemInfo?: { itemStruct?: Item } }> }).__DEFAULT_SCOPE__?.["webapp.video-detail"]?.itemInfo?.itemStruct : undefined;
+  } catch {
+    item = undefined;
+  }
+  if (!item?.desc) {
+    console.warn(`[salvos] tiktok: sem legenda no JSON da página (${raw ? "JSON sem itemStruct" : "sem JSON"}) para ${url}`);
+    // Último recurso: meta tags.
+    const desc = meta(page.text, "og:description") ?? meta(page.text, "description");
+    return { title: meta(page.text, "og:title"), thumbnailUrl: meta(page.text, "og:image"), content: desc ?? "" };
+  }
+  const handle = item.author?.uniqueId;
+  return {
+    title: null,
+    author: handle ? `@${handle}` : (item.author?.nickname ?? null),
+    thumbnailUrl: item.video?.cover ?? item.video?.originCover ?? null,
+    content: item.desc,
+  };
 }
 
 async function youtube(url: string): Promise<Partial<Extracted>> {
@@ -234,30 +268,24 @@ async function x(url: string): Promise<Partial<Extracted>> {
   return { title: null, author: o.author_name ? `${o.author_name}${o.author_url ? ` (@${o.author_url.split("/").pop()})` : ""}` : null, content: text };
 }
 
+/**
+ * Instagram: a página pública do post traz a legenda nas meta tags
+ * (og:title = `Nome on Instagram: "legenda"`), sem precisar de token.
+ */
 async function instagram(url: string): Promise<Partial<Extracted>> {
-  const token = await getMetaToken();
-  if (token) {
-    const o = await getJson<OEmbed>(`https://graph.facebook.com/v23.0/instagram_oembed?omitscript=true&url=${encodeURIComponent(url)}&access_token=${encodeURIComponent(token)}`);
-    if (o) {
-      const caption = o.title ?? (o.html ? htmlToText(o.html) : "");
-      return { title: null, author: o.author_name ? `@${o.author_name}` : null, thumbnailUrl: o.thumbnail_url ?? null, content: caption };
-    }
+  const page = await get(url, { ua: PREVIEW_UA });
+  const ogTitle = page && page.status < 400 ? meta(page.text, "og:title") : null;
+  if (!page || !ogTitle) {
+    console.warn(`[salvos] instagram: ${page ? `sem og:title (HTTP ${page.status})` : "sem resposta"} para ${url}`);
+    return {};
   }
-  // Sem token (ou falhou): as meta tags às vezes trazem a legenda.
-  const page = await get(url);
-  const desc = page ? meta(page.text, "og:description") : null;
-  // Formato: "1,234 likes, 56 comments - usuario on November 1: "legenda""
-  const caption =
-    desc
-      ?.replace(/^[\d.,\s\wK]+likes?,[\s\d.,\wK]+comments? - /i, "")
-      .replace(/^[\w.]+ on [^:]+:\s*/i, "")
-      .replace(/^["“]([\s\S]*)["”]\.?$/, "$1")
-      .trim() ?? "";
+  const m = ogTitle.match(/^([\s\S]*?) (?:on|no) Instagram: ["“]([\s\S]*)["”]\.?$/);
+  const handle = meta(page.text, "twitter:title")?.match(/\(@([\w.]+)\)/)?.[1];
   return {
-    title: page ? meta(page.text, "og:title") : null,
-    thumbnailUrl: page ? meta(page.text, "og:image") : null,
-    content: caption,
-    warning: token ? "O Instagram não devolveu a legenda deste post." : "Configure o token da Meta em Integrações para ler legendas do Instagram.",
+    title: null,
+    author: handle ? `@${handle}` : (m?.[1] ?? null),
+    thumbnailUrl: meta(page.text, "og:image"),
+    content: m ? m[2] : ogTitle,
   };
 }
 
@@ -277,7 +305,7 @@ export async function extract(rawUrl: string): Promise<Extracted> {
   else if (platform === "instagram") data = await instagram(url);
 
   // Sites (e redes quando o oEmbed não respondeu): HTML da página.
-  if (platform === "web" || (!data.content && platform !== "instagram")) {
+  if (platform === "web" || (!data.content && platform !== "instagram" && platform !== "tiktok")) {
     const page = await get(url);
     if (page && page.status < 400) data = { ...pageExtract(url, page.text), ...Object.fromEntries(Object.entries(data).filter(([, v]) => v)) };
   }

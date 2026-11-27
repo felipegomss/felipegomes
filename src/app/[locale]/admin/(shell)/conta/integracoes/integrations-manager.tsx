@@ -48,13 +48,11 @@ function CopyButton({ value, label }: { value: string; label: string }) {
 export function IntegrationsManager({
   ai,
   providers,
-  meta,
   tokens,
   shortcutUrl,
 }: {
   ai: AiConfigPublic;
   providers: Provider[];
-  meta: { configured: boolean; keyHint: string | null; fromEnv: boolean };
   tokens: Token[];
   shortcutUrl: string;
 }) {
@@ -62,10 +60,9 @@ export function IntegrationsManager({
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 text-xs">
       <div className="flex flex-col gap-1">
         <h1 className="font-heading text-2xl font-semibold tracking-tight">Integrações</h1>
-        <p className="leading-relaxed text-muted-foreground">Chaves e conexões usadas pelos Salvos. As chaves ficam criptografadas e não voltam para a tela.</p>
+        <p className="text-muted-foreground">O que os Salvos usam para categorizar e receber links.</p>
       </div>
       <AiSection initial={ai} providers={providers} />
-      <MetaSection initial={meta} />
       <ShortcutSection initial={tokens} shortcutUrl={shortcutUrl} />
     </div>
   );
@@ -79,10 +76,12 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
   const [model, setModel] = useState(initial.model);
   const [baseUrl, setBaseUrl] = useState(initial.baseUrl ?? "");
   const [apiKey, setApiKey] = useState("");
+  // Com chave salva, o campo mostra um valor mascarado até a pessoa focar nele.
+  const [editingKey, setEditingKey] = useState(false);
   const [busy, setBusy] = useState<null | "save" | "test" | "remove">(null);
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const p = providers.find((x) => x.id === provider)!;
-  const switching = provider !== cfg.provider;
+  const masked = cfg.configured && provider === cfg.provider && !editingKey && !apiKey;
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -98,6 +97,7 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
     if (!res.ok) return setMsg({ text: data?.error ?? "Não foi possível salvar.", ok: false });
     setCfg(data);
     setApiKey("");
+    setEditingKey(false);
     setMsg({ text: "Salvo. Testando…", ok: true });
     await test();
   }
@@ -116,24 +116,25 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
     setBusy(null);
     if (res.ok) {
       setCfg(await res.json());
-      setMsg({ text: "Chave removida. Os links passam a entrar sem categoria.", ok: true });
+      setMsg({ text: "Chave removida.", ok: true });
     }
   }
 
   return (
     <section className="flex flex-col gap-3" aria-labelledby="sec-ai">
       <h2 id="sec-ai" className={SECTION_TITLE}>
-        IA para categorizar
+        IA
       </h2>
       <form onSubmit={save} className="flex flex-col gap-4 border p-4">
+        <p className="text-muted-foreground">Dá título, resumo, categoria e tags a cada link salvo.</p>
         <p className="text-muted-foreground">
           <Status ok={cfg.configured}>
             {cfg.configured ? (
               <>
-                {providers.find((x) => x.id === cfg.provider)?.label} · {cfg.model} · chave {cfg.keyHint}
+                {providers.find((x) => x.id === cfg.provider)?.label} · {cfg.model}
               </>
             ) : (
-              "Nenhuma IA configurada: os links entram sem categoria (o Claude pode organizar depois)."
+              "Sem chave. Os links entram sem categoria."
             )}
           </Status>
         </p>
@@ -167,7 +168,7 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
           <label className="flex flex-col gap-1.5">
             <span className={LABEL}>URL base</span>
             <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder="https://api.openai.com/v1" className={FIELD} inputMode="url" />
-            <span className="text-[11px] text-muted-foreground">Qualquer API compatível com OpenAI: OpenAI, OpenRouter, Groq, Gemini…</span>
+            <span className="text-[11px] text-muted-foreground">Serve para OpenAI, OpenRouter, Groq, Gemini e outros no mesmo formato.</span>
           </label>
         )}
 
@@ -180,9 +181,11 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
             <span className={LABEL}>Chave da API</span>
             <Input
               type="password"
-              value={apiKey}
+              value={masked ? `${"•".repeat(20)}${cfg.keyHint?.slice(1) ?? ""}` : apiKey}
+              onFocus={() => setEditingKey(true)}
+              onBlur={() => !apiKey && setEditingKey(false)}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder={cfg.configured && !switching ? `salva (${cfg.keyHint}) — deixe vazio para manter` : "cole a chave"}
+              placeholder="Cole a chave"
               autoComplete="off"
               className={FIELD}
             />
@@ -216,87 +219,6 @@ function AiSection({ initial, providers }: { initial: AiConfigPublic; providers:
   );
 }
 
-// ── Instagram ───────────────────────────────────────────────────────────────
-
-function MetaSection({ initial }: { initial: { configured: boolean; keyHint: string | null; fromEnv: boolean } }) {
-  const [state, setState] = useState(initial);
-  const [token, setToken] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
-
-  async function save(value: string) {
-    setBusy(true);
-    setMsg(null);
-    const res = await fetch("/api/settings/meta", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: value }) });
-    const data = await res.json().catch(() => null);
-    setBusy(false);
-    if (!res.ok) return setMsg({ text: data?.error ?? "Não foi possível salvar.", ok: false });
-    setState(data);
-    setToken("");
-    setMsg({ text: value ? "Token salvo." : "Token removido.", ok: true });
-  }
-
-  return (
-    <section className="flex flex-col gap-3" aria-labelledby="sec-meta">
-      <h2 id="sec-meta" className={SECTION_TITLE}>
-        Instagram (Meta)
-      </h2>
-      <div className="flex flex-col gap-4 border p-4">
-        <p className="text-muted-foreground">
-          <Status ok={state.configured || state.fromEnv}>
-            {state.configured ? `Token salvo (${state.keyHint}). Legendas de Reels e posts são lidas.` : state.fromEnv ? "Usando o token da variável de ambiente." : "Sem token: posts do Instagram entram só com o link."}
-          </Status>
-        </p>
-        <details className="border">
-          <summary className="flex min-h-11 cursor-pointer items-center px-3">Como gerar o token (uns 5 minutos)</summary>
-          <ol className="flex list-decimal flex-col gap-1.5 px-3 pb-3 pl-7 leading-relaxed text-muted-foreground">
-            <li>
-              Em <span className="text-foreground">developers.facebook.com</span>, entre com sua conta e clique em <span className="text-foreground">Meus apps › Criar app</span> (tipo “Outro” › “Empresa”).
-            </li>
-            <li>
-              No app, adicione o produto <span className="text-foreground">oEmbed</span> (ou “Instagram oEmbed”).
-            </li>
-            <li>
-              Em <span className="text-foreground">Configurações do app › Básico</span>, copie o <span className="text-foreground">ID do app</span>. Em <span className="text-foreground">Avançado</span>, copie o{" "}
-              <span className="text-foreground">Token do cliente</span>.
-            </li>
-            <li>
-              Cole abaixo no formato <code className="text-foreground">ID_DO_APP|TOKEN_DO_CLIENTE</code> e publique o app (modo “Ativo”).
-            </li>
-          </ol>
-        </details>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (token.trim()) save(token);
-          }}
-          className="flex flex-col gap-2 sm:flex-row"
-        >
-          <label className="flex flex-1 flex-col gap-1.5">
-            <span className="sr-only">Token da Meta</span>
-            <Input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="ID_DO_APP|TOKEN_DO_CLIENTE" autoComplete="off" className={FIELD} />
-          </label>
-          <div className="flex gap-2">
-            {state.configured && (
-              <Button type="button" variant="ghost" size="lg" onClick={() => save("")} disabled={busy} className="h-11 text-red-700 dark:text-red-400">
-                Remover
-              </Button>
-            )}
-            <Button type="submit" size="lg" disabled={busy || !token.trim()} className="h-11">
-              Salvar
-            </Button>
-          </div>
-        </form>
-        {msg && (
-          <p role="status" className={msg.ok ? "text-muted-foreground" : "text-red-800 dark:text-red-400"}>
-            {msg.text}
-          </p>
-        )}
-      </div>
-    </section>
-  );
-}
-
 // ── Atalho do iPhone ────────────────────────────────────────────────────────
 
 /**
@@ -309,13 +231,13 @@ function ShortcutGuide({ url, onDone }: { url: string; onDone: () => void }) {
   return (
     <div className="flex flex-col gap-4 border border-foreground/40 p-3">
       <div className="flex flex-col gap-2">
-        <p className="font-semibold">URL do seu atalho (já com o token). Copie agora: ela não aparece de novo.</p>
+        <p className="font-semibold">URL do atalho. Copie agora, ela não aparece de novo.</p>
         <code className="block border bg-muted px-2.5 py-2 break-all">{url}</code>
         <CopyButton value={url} label="Copiar URL" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="font-semibold">Montar no app Atalhos (3 ações)</p>
+        <p className="font-semibold">No app Atalhos</p>
         <ol className="flex list-decimal flex-col gap-2 pl-4 leading-relaxed text-muted-foreground">
           <li>
             Abra <span className={strong}>Atalhos</span>, toque em <span className={strong}>+</span> e renomeie para <span className={strong}>Salvar no LFNG</span> (toque no nome, no topo).
@@ -339,11 +261,10 @@ function ShortcutGuide({ url, onDone }: { url: string; onDone: () => void }) {
       </div>
 
       <details className="border">
-        <summary className="flex min-h-11 cursor-pointer items-center px-3">Ou: deixar o iOS montar (Descrever um Atalho, Apple Intelligence)</summary>
+        <summary className="flex min-h-11 cursor-pointer items-center px-3">Ou peça para o iOS montar</summary>
         <div className="flex flex-col gap-2 px-3 pb-3 leading-relaxed text-muted-foreground">
           <p>
-            No Atalhos, toque em <span className={strong}>+</span> › <span className={strong}>Descrever um Atalho</span> e cole o texto abaixo. Confira depois se ficou igual aos passos acima (principalmente o “Mostrar na Planilha de
-            Compartilhamento”).
+            Em <span className={strong}>+</span> › <span className={strong}>Descrever um Atalho</span>, cole o texto abaixo. Depois confira se “Mostrar na Planilha de Compartilhamento” ficou ligado.
           </p>
           <code className="block border bg-muted px-2.5 py-2 break-all text-foreground">{describe}</code>
           <CopyButton value={describe} label="Copiar descrição" />
@@ -387,7 +308,7 @@ function ShortcutSection({ initial, shortcutUrl }: { initial: Token[]; shortcutU
       </h2>
       <div className="flex flex-col gap-4 border p-4">
         <p className="leading-relaxed text-muted-foreground">
-          Salva direto do menu Compartilhar do TikTok, Instagram, X, YouTube ou Safari, sem abrir o app. O atalho manda o link com um token; dá para revogar aqui.
+          Salva um link pelo menu Compartilhar, sem abrir o app.
         </p>
 
         {tokens.length > 0 && (

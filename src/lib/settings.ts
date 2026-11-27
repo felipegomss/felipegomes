@@ -1,5 +1,5 @@
-// Configurações editáveis pela tela (Conta › Integrações): provedor de IA,
-// token do Instagram (Meta) e tokens de atalho. Segredos ficam criptografados
+// Configurações editáveis pela tela (Conta › Integrações): provedor de IA
+// e tokens de atalho. Segredos ficam criptografados
 // e nunca voltam para o navegador — só um final ("…a1b2") para reconhecer.
 import { createHash, randomBytes } from "crypto";
 import { and, desc, eq, isNull } from "drizzle-orm";
@@ -73,31 +73,6 @@ export async function saveAiConfig(input: { provider?: unknown; model?: unknown;
 
 export async function clearAiConfig() {
   await db.delete(appSettings).where(eq(appSettings.key, "ai"));
-}
-
-// ── Instagram (Meta oEmbed) ─────────────────────────────────────────────────
-
-type StoredMeta = { accessToken: string };
-
-export async function getMetaToken(): Promise<string | null> {
-  return open((await readSetting<StoredMeta>("meta"))?.accessToken) ?? process.env.META_OEMBED_TOKEN ?? null;
-}
-
-export async function getMetaPublic() {
-  const token = open((await readSetting<StoredMeta>("meta"))?.accessToken);
-  return { configured: !!token, keyHint: hint(token), fromEnv: !token && !!process.env.META_OEMBED_TOKEN };
-}
-
-export async function saveMetaToken(token: unknown): Promise<string | null> {
-  const t = typeof token === "string" ? token.trim() : "";
-  if (!t) {
-    await db.delete(appSettings).where(eq(appSettings.key, "meta"));
-    return null;
-  }
-  // Formato do token de app: "<app id>|<client token>".
-  if (!/^\d+\|[A-Za-z0-9_-]+$/.test(t) && t.length < 40) return "Token inválido. Use “ID do app|token do cliente”.";
-  await writeSetting("meta", { accessToken: seal(t) } satisfies StoredMeta);
-  return null;
 }
 
 // ── Tokens de atalho ────────────────────────────────────────────────────────
