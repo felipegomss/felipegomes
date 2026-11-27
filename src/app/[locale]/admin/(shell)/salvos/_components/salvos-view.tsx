@@ -100,7 +100,7 @@ export function SalvosView({
         <h1 className="font-heading text-2xl font-semibold tracking-tight">Salvos</h1>
         <p className="text-muted-foreground">
           {stats.total} {stats.total === 1 ? "link" : "links"}
-          {stats.week > 0 && ` · ${stats.week} nesta semana`} · Pelo Claude: “salva esse link” ou “como faço aquela polenta que eu salvei?”
+          {stats.week > 0 && ` · ${stats.week} nesta semana`}
         </p>
       </section>
 
