@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRightIcon, PawPrintIcon, PlusIcon } from "lucide-react";
+import { BotIcon, ChevronRightIcon, PawPrintIcon, PlusIcon } from "lucide-react";
 import { petPhoto } from "@/lib/pets/registry";
 import { cn } from "@/lib/utils";
 import { computePetStats, formatAge, sortLogsDesc } from "@/lib/pets/stats";
@@ -197,7 +197,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
 }
 
 export function LogRow({ log, onOpen, showDateFirst }: { log: PetLogDTO; onOpen: () => void; showDateFirst?: boolean }) {
-  const label = `Editar ${lowerLabel(PET_LOG_LABELS[log.type])} de ${formatWhen(log)}`;
+  const label = `Editar ${lowerLabel(PET_LOG_LABELS[log.type])} de ${formatWhen(log)}${log.data.via === "agent" ? " (registrado por um agente)" : ""}`;
   return (
     <button
       type="button"
@@ -219,6 +219,12 @@ export function LogRow({ log, onOpen, showDateFirst }: { log: PetLogDTO; onOpen:
           <span className="font-normal text-muted-foreground sm:hidden"> · {formatWhen(log)}</span>
         </span>
         <span className="truncate text-muted-foreground">
+          {log.data.via === "agent" && (
+            <span className="mr-1.5 inline-flex items-center gap-1 border px-1.5 py-px text-[11px]" title="Registrado por um agente (MCP)">
+              <BotIcon className="size-3" aria-hidden="true" />
+              agente
+            </span>
+          )}
           {log.type === "feeding" && <FeedingResultBadge log={log as PetLogDTO<"feeding">} />}
           {log.type === "feeding" ? summarizeLog(log).replace(/^[^·]+(· )?/, "") : summarizeLog(log)}
         </span>

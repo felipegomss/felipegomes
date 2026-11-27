@@ -1,53 +1,21 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { isAdmin } from "@/lib/auth";
-import { readFileSync } from "fs";
-import { join } from "path";
-import { OutreachEmail } from "@/emails/outreach";
-import { contact, cvFilename } from "@/lib/constants";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendOutreach } from "@/lib/email/outreach";
 
 export async function POST(request: Request) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await request.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: "Body inválido." }, { status: 400 });
   try {
-    if (!(await isAdmin())) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { to, subject, body, locale, attachCv } = await request.json();
-
-    if (!to?.length || !subject || !body) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
-    }
-
-    const attachments: { filename: string; content: Buffer }[] = [];
-
-    if (attachCv) {
-      const cvLocale = locale === "pt-BR" ? "pt-BR" : "en";
-      const fileName = cvFilename(cvLocale);
-      const cvPath = join(process.cwd(), "public/cv", fileName);
-      const content = readFileSync(cvPath);
-      attachments.push({ filename: fileName, content });
-    }
-
-    const fromAddress = locale === "en" ? "hi@lfng.dev" : "ola@lfng.dev";
-
-    const { data, error } = await resend.emails.send({
-      from: `${contact.name} <${fromAddress}>`,
-      to,
-      subject,
-      react: OutreachEmail({ body, locale, attachCv }),
-      attachments,
+    const result = await sendOutreach({
+      to: Array.isArray(body.to) ? body.to : [body.to].filter(Boolean),
+      subject: body.subject,
+      body: body.body,
+      locale: body.locale,
+      attachCv: !!body.attachCv,
     });
-
-    if (error) {
-      return NextResponse.json({ error }, { status: 400 });
-    }
-
-    return NextResponse.json({ id: data?.id });
+    if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
+    return NextResponse.json({ id: result.id });
   } catch {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }

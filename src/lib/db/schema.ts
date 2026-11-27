@@ -150,3 +150,31 @@ export const adminPasskeys = pgTable("admin_passkeys", {
 });
 
 export type AdminPasskey = typeof adminPasskeys.$inferSelect;
+
+// ── OAuth para agentes (MCP) ────────────────────────────────────────────────
+// Clientes se registram sozinhos (Dynamic Client Registration). Cada
+// autorização aprovada vira um grant; tokens são assinados e só valem enquanto
+// o grant não for revogado.
+export const oauthClients = pgTable("oauth_clients", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  redirectUris: text("redirect_uris").array().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+});
+
+export const oauthGrants = pgTable("oauth_grants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: text("client_id")
+    .notNull()
+    .references(() => oauthClients.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+});
+
+export type OAuthClient = typeof oauthClients.$inferSelect;
+export type OAuthGrant = typeof oauthGrants.$inferSelect;

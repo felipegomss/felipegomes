@@ -35,6 +35,10 @@ export async function generateMetadata({
     metadataBase: new URL(BASE_URL),
     title: t("title"),
     description: t("description"),
+    icons: {
+      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    },
     alternates: {
       canonical: `${BASE_URL}/${locale}`,
       languages: {

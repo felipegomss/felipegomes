@@ -44,8 +44,11 @@ export type PetLogData = {
   note: { title?: string };
 };
 
-/** Campos comuns a qualquer `data`. `importedFrom` marca registros sem hora. */
-type Meta = { importedFrom?: string };
+/**
+ * Campos comuns a qualquer `data`. `importedFrom` marca registros sem hora;
+ * `via: "agent"` marca o que foi registrado por um agente (MCP).
+ */
+type Meta = { importedFrom?: string; via?: "agent" };
 
 export type PetLogDTO<T extends PetLogType = PetLogType> = {
   id: string;
@@ -104,7 +107,8 @@ export type FieldErrors = Partial<Record<string, string>>;
 /**
  * Normaliza o `data` recebido para o tipo informado. Em caso de campo
  * obrigatório ausente/inválido, devolve `errors` por campo (para a UI marcar).
- * `previous` preserva metadados como `importedFrom` ao editar.
+ * `previous` preserva metadados (`importedFrom`, `via`) ao editar, ou define
+ * `via` ao criar.
  */
 export function parseLogData(
   type: PetLogType,
@@ -112,7 +116,7 @@ export function parseLogData(
   previous?: Record<string, unknown>,
 ): { data: Record<string, unknown> } | { errors: FieldErrors } {
   const d = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-  const meta = compact({ importedFrom: str(previous?.importedFrom, 40) });
+  const meta = compact({ importedFrom: str(previous?.importedFrom, 40), via: oneOf(previous?.via, ["agent"] as const) });
 
   switch (type) {
     case "feeding": {

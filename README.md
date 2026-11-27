@@ -10,7 +10,6 @@ Personal portfolio and online CV built with Next.js 16, Tailwind CSS 4, and serv
 
 - **Bilingual** — Full PT-BR and English support via `next-intl` with SSG and locale-based routing
 - **Dynamic CV** — Downloadable PDF generated on-the-fly with `@react-pdf/renderer`, cached for 24h
-- **Halftone Shader** — Canvas-based ordered dithering (8x8 Bayer matrix) that transforms a photo into a black & white halftone effect
 - **Decrypt Intro** — Character-scramble animation on first visit (faster on revisits), respects `prefers-reduced-motion`
 - **Three-column editorial layout** — Inspired by [dany.page](https://dany.page) — sidebar, experience timeline, and skills panel
 - **OG image** — Auto-generated with halftone background
@@ -34,7 +33,7 @@ Personal portfolio and online CV built with Next.js 16, Tailwind CSS 4, and serv
 
 **Typography** — Geist Mono for headings, JetBrains Mono for body. Monospace-only aesthetic.
 
-**Colors** — Neutral OKLCH palette with light/dark mode via CSS custom properties. No accent hue — the design relies on contrast, spacing, and the halftone photo for visual interest.
+**Colors** — Neutral OKLCH palette with light/dark mode via CSS custom properties. No accent hue — the design relies on contrast, spacing, and the black & white portrait for visual interest.
 
 **Tokens** — All colors, radii, and semantic values defined as CSS variables in `globals.css` following the shadcn/ui convention.
 
@@ -43,7 +42,7 @@ Personal portfolio and online CV built with Next.js 16, Tailwind CSS 4, and serv
 ```
 src/
 ├── app/[locale]/
-│   ├── components/       # UI components (sidebar, experience, skills, halftone, intro)
+│   ├── components/       # UI components (sidebar, experience, skills, intro)
 │   ├── api/cv/           # Dynamic PDF CV generation endpoint
 │   ├── data/             # Portfolio data (jobs, projects)
 │   ├── layout.tsx        # Root layout (fonts, metadata, i18n)

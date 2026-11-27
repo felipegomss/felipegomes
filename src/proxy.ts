@@ -18,7 +18,10 @@ export async function proxy(request: NextRequest) {
     if (!(await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value))) {
       const locale = pathname.split("/")[1] ?? "pt-BR";
       const loginUrl = new URL(`/${locale}/admin/login`, request.url);
-      if (isPrivateRoute) loginUrl.searchParams.set("next", pathname);
+      // Volta para onde estava (com a query: a aprovação do OAuth depende dela).
+      if (!/^\/(pt-BR|en)\/admin\/?$/.test(pathname)) {
+        loginUrl.searchParams.set("next", pathname + request.nextUrl.search);
+      }
       return NextResponse.redirect(loginUrl);
     }
   }

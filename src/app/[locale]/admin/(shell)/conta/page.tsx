@@ -1,6 +1,9 @@
 import { sessionExpiry } from "@/lib/auth";
 import { formatDay } from "@/lib/format-date";
+import { headers } from "next/headers";
+import { listGrants } from "@/lib/oauth";
 import { listPasskeys } from "@/lib/passkeys";
+import { AgentsManager } from "./agents-manager";
 import { PasskeyManager } from "./passkey-manager";
 import { SignOutButton } from "./sign-out-button";
 
@@ -9,7 +12,10 @@ export const dynamic = "force-dynamic";
 const SECTION_TITLE = "text-xs font-semibold uppercase tracking-[0.12em]";
 
 export default async function AccountPage() {
-  const [passkeys, expiresAt] = await Promise.all([listPasskeys(), sessionExpiry()]);
+  const [passkeys, expiresAt, grants, h] = await Promise.all([listPasskeys(), sessionExpiry(), listGrants(), headers()]);
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "lfng.dev";
+  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const mcpUrl = `${proto}://${host}/api/mcp`;
   const now = new Date();
 
   return (
@@ -28,6 +34,16 @@ export default async function AccountPage() {
           backedUp: p.backedUp,
           createdAt: p.createdAt.toISOString(),
           lastUsedAt: p.lastUsedAt?.toISOString() ?? null,
+        }))}
+      />
+
+      <AgentsManager
+        mcpUrl={mcpUrl}
+        grants={grants.map((g) => ({
+          id: g.id,
+          clientName: g.clientName,
+          createdAt: g.createdAt.toISOString(),
+          lastUsedAt: g.lastUsedAt?.toISOString() ?? null,
         }))}
       />
 

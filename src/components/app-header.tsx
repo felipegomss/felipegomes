@@ -36,7 +36,7 @@ export function AppHeader() {
 				<AppBreadcrumbs page={activeItem} />
 			</div>
 			<div className="flex items-center gap-3">
-				<NavUser name="Luis Felipe" email="felipe.gomes@automind.co" />
+				<NavUser name="Luis Felipe" email="felipe.gomes@automind.co" avatarUrl="/felipe.webp" />
 			</div>
 		</header>
 	);

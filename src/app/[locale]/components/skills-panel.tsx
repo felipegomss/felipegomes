@@ -5,7 +5,7 @@ import { contact, skills } from "@/lib/constants";
 import { githubFetch } from "@/lib/github";
 import { projects, type Project } from "../data/portfolio";
 import { GridCell } from "./grid-cell";
-import { HalftoneImage } from "./halftone-image";
+import Image from "next/image";
 import { OpenSourceSection } from "./open-source-section";
 import { ProjectItem } from "./project-item";
 import { RecentPostsSection } from "./recent-posts-section";
@@ -41,11 +41,14 @@ export async function SkillsPanel() {
   return (
     <aside aria-label="Skills and projects" className="flex flex-col md:contents">
       <GridCell col="right" className="hidden md:block bg-grid-pattern">
-        <HalftoneImage
+        <Image
           src="/felipe.webp"
           alt={contact.name}
           width={1200}
           height={1200}
+          priority
+          sizes="(min-width: 768px) 33vw, 100vw"
+          className="block h-auto w-full"
         />
       </GridCell>
 

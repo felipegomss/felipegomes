@@ -7,7 +7,7 @@ import { Sidebar } from "./components/sidebar";
 import { ExperienceSection } from "./components/experience-section";
 import { SkillsPanel } from "./components/skills-panel";
 import { ContentGrid } from "./components/content-grid";
-import { HalftoneImage } from "./components/halftone-image";
+import Image from "next/image";
 
 export default async function Home({
   params,
@@ -22,11 +22,14 @@ export default async function Home({
       <Sidebar locale={locale} />
 
       <div className="border-b border-border md:hidden">
-        <HalftoneImage
+        <Image
           src="/felipe.webp"
           alt={contact.name}
           width={1200}
           height={1200}
+          priority
+          sizes="(min-width: 768px) 33vw, 100vw"
+          className="block h-auto w-full"
         />
       </div>
 

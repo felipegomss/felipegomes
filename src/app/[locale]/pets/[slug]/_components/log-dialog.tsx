@@ -375,6 +375,9 @@ function LogForm({
       {editing?.data.importedFrom && (
         <p className="text-[11px] text-muted-foreground">Importado do reptile-keeper (sem hora).</p>
       )}
+      {editing?.data.via === "agent" && (
+        <p className="text-[11px] text-muted-foreground">Registrado por um agente (MCP).</p>
+      )}
 
       {formError && (
         <p role="alert" className="text-xs text-red-800 dark:text-red-400">
