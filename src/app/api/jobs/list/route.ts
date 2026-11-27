@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { isAdmin } from "@/lib/auth";
 import { and, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
 import { db, jobPosts, JOB_STATUSES, JOB_SOURCES } from "@/lib/db/client";
 
 export async function GET(request: Request) {
-  const session = (await cookies()).get("admin_session");
-  if (!session || session.value !== process.env.ADMIN_PASSWORD) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

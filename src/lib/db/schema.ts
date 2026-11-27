@@ -130,3 +130,23 @@ export const petLogs = pgTable(
 
 export type PetLog = typeof petLogs.$inferSelect;
 export type NewPetLog = typeof petLogs.$inferInsert;
+
+// ── Passkeys do admin (WebAuthn) ────────────────────────────────────────────
+// Uma linha por credencial (Touch ID do Mac, Face ID do iPhone…). Com o
+// Chaveiro do iCloud, a mesma passkey costuma aparecer em todos os aparelhos.
+export const adminPasskeys = pgTable("admin_passkeys", {
+  /** ID da credencial em base64url. */
+  id: text("id").primaryKey(),
+  publicKey: text("public_key").notNull(),
+  counter: bigint("counter", { mode: "number" }).notNull().default(0),
+  transports: text("transports").array(),
+  deviceType: text("device_type"),
+  backedUp: boolean("backed_up").notNull().default(false),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+});
+
+export type AdminPasskey = typeof adminPasskeys.$inferSelect;

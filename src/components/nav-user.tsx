@@ -28,7 +28,7 @@ export function NavUser({ name, email, avatarUrl }: NavUserProps) {
 	const { locale } = useParams<{ locale: string }>();
 
 	async function handleLogout() {
-		await fetch("/api/email/session", { method: "DELETE" });
+		await fetch("/api/auth/session", { method: "DELETE" });
 		router.replace(`/${locale}/admin/login`);
 	}
 

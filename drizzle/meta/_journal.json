@@ -22,6 +22,13 @@
       "when": 1795737023130,
       "tag": "0002_pets",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795798831775,
+      "tag": "0003_admin_passkeys",
+      "breakpoints": true
     }
   ]
 }

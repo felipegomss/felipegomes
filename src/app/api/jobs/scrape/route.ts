@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { isAdmin } from "@/lib/auth";
 import { VERCEL_ADAPTERS } from "@/lib/jobs/adapters";
 import { ingestJobs, type IngestResult } from "@/lib/jobs/ingest";
 import type { JobSource } from "@/lib/db/schema";
@@ -13,8 +13,7 @@ type SourceReport = {
 
 async function isAuthorized(request: Request): Promise<boolean> {
   // 1) Manual trigger from the admin UI uses the session cookie.
-  const cookie = (await cookies()).get("admin_session");
-  if (cookie?.value === process.env.ADMIN_PASSWORD) return true;
+  if (await isAdmin()) return true;
 
   // 2) Vercel Cron sets `Authorization: Bearer ${CRON_SECRET}` automatically
   //    when CRON_SECRET is configured as an env var.

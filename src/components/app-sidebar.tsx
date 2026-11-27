@@ -9,13 +9,15 @@ import {
 	SidebarHeader,
 	SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { useTranslations } from "next-intl";
 import { buildNavGroups } from "@/components/app-shared";
 import { NavGroup } from "@/components/nav-group";
 
 export function AppSidebar() {
 	const pathname = usePathname();
 	const { locale } = useParams<{ locale: string }>();
-	const navGroups = buildNavGroups(locale, pathname);
+	const tTools = useTranslations("tools");
+	const navGroups = buildNavGroups(locale, pathname, (k) => tTools(k));
 
 	return (
 		<Sidebar

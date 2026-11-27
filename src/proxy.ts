@@ -2,10 +2,11 @@ import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "./lib/session";
 
 const intlMiddleware = createMiddleware(routing);
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAdminRoute = /^\/(pt-BR|en)\/admin(\/|$)/.test(pathname);
@@ -14,8 +15,7 @@ export function proxy(request: NextRequest) {
   const isPrivateRoute = /^\/(pt-BR|en)\/pets(\/|$)/.test(pathname);
 
   if ((isAdminRoute && !isLoginPage) || isPrivateRoute) {
-    const session = request.cookies.get("admin_session");
-    if (!session || session.value !== process.env.ADMIN_PASSWORD) {
+    if (!(await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value))) {
       const locale = pathname.split("/")[1] ?? "pt-BR";
       const loginUrl = new URL(`/${locale}/admin/login`, request.url);
       if (isPrivateRoute) loginUrl.searchParams.set("next", pathname);

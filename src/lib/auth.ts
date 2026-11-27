@@ -1,9 +1,7 @@
 import { cookies } from "next/headers";
+import { SESSION_COOKIE, verifySessionToken } from "./session";
 
-export const ADMIN_COOKIE = "admin_session";
-
-/** True quando o cookie de sessão do admin bate com `ADMIN_PASSWORD`. */
+/** True quando há uma sessão de admin válida (token assinado e não expirado). */
 export async function isAdmin(): Promise<boolean> {
-  const session = (await cookies()).get(ADMIN_COOKIE);
-  return !!session && !!process.env.ADMIN_PASSWORD && session.value === process.env.ADMIN_PASSWORD;
+  return verifySessionToken((await cookies()).get(SESSION_COOKIE)?.value);
 }

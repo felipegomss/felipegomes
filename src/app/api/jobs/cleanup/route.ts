@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { isAdmin } from "@/lib/auth";
 import { and, eq, lt, sql } from "drizzle-orm";
 import { db, jobPosts } from "@/lib/db/client";
 
@@ -7,8 +7,7 @@ const NEW_AGE_DAYS = 30;
 const DISMISSED_AGE_DAYS = 7;
 
 async function isAuthorized(request: Request): Promise<boolean> {
-  const cookie = (await cookies()).get("admin_session");
-  if (cookie?.value === process.env.ADMIN_PASSWORD) return true;
+  if (await isAdmin()) return true;
 
   const auth = request.headers.get("authorization") ?? "";
   if (process.env.CRON_SECRET && auth === `Bearer ${process.env.CRON_SECRET}`) {

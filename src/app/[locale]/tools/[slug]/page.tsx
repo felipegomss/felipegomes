@@ -1,50 +1,10 @@
-import dynamic from "next/dynamic";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { BASE_URL } from "@/lib/constants";
 import { getToolBySlug, tools } from "@/lib/tools";
-import { JsonTool } from "../../components/tools/json-tool";
-import { JwtTool } from "../../components/tools/jwt-tool";
-import { Base64Tool } from "../../components/tools/base64-tool";
-import { UrlTool } from "../../components/tools/url-tool";
-import { UuidTool } from "../../components/tools/uuid-tool";
-import { HashTool } from "../../components/tools/hash-tool";
-import { PasswordTool } from "../../components/tools/password-tool";
-import { TimestampTool } from "../../components/tools/timestamp-tool";
-import { ColorTool } from "../../components/tools/color-tool";
-import { CaseTool } from "../../components/tools/case-tool";
-import { JsonYamlTool } from "../../components/tools/json-yaml-tool";
-import { RegexTool } from "../../components/tools/regex-tool";
-import { CronTool } from "../../components/tools/cron-tool";
-import { DiffTool } from "../../components/tools/diff-tool";
-import { SlugTool } from "../../components/tools/slug-tool";
-import { QrcodeTool } from "../../components/tools/qrcode-tool";
-import { MarkdownTool } from "../../components/tools/markdown-tool";
-import { ImageTool } from "../../components/tools/image-tool";
-
-const PersonTool = dynamic(() =>
-  import("../../components/tools/person-tool").then((m) => ({
-    default: m.PersonTool,
-  })),
-);
-const AddressTool = dynamic(() =>
-  import("../../components/tools/address-tool").then((m) => ({
-    default: m.AddressTool,
-  })),
-);
-const CompanyTool = dynamic(() =>
-  import("../../components/tools/company-tool").then((m) => ({
-    default: m.CompanyTool,
-  })),
-);
-const LoremTool = dynamic(() =>
-  import("../../components/tools/lorem-tool").then((m) => ({
-    default: m.LoremTool,
-  })),
-);
-
+import { ToolRenderer } from "../../components/tools/tool-renderer";
 export function generateStaticParams() {
   return tools.flatMap((tool) =>
     routing.locales.map((locale) => ({ locale, slug: tool.slug })),
@@ -113,28 +73,7 @@ export default async function ToolPage({
         </p>
       </header>
 
-      {slug === "json" && <JsonTool />}
-      {slug === "jwt" && <JwtTool />}
-      {slug === "base64" && <Base64Tool />}
-      {slug === "url" && <UrlTool />}
-      {slug === "uuid" && <UuidTool />}
-      {slug === "hash" && <HashTool />}
-      {slug === "password" && <PasswordTool />}
-      {slug === "timestamp" && <TimestampTool />}
-      {slug === "color" && <ColorTool />}
-      {slug === "case" && <CaseTool />}
-      {slug === "slug" && <SlugTool />}
-      {slug === "json-yaml" && <JsonYamlTool />}
-      {slug === "regex" && <RegexTool />}
-      {slug === "cron" && <CronTool />}
-      {slug === "diff" && <DiffTool />}
-      {slug === "person" && <PersonTool />}
-      {slug === "address" && <AddressTool />}
-      {slug === "company" && <CompanyTool />}
-      {slug === "lorem" && <LoremTool />}
-      {slug === "qrcode" && <QrcodeTool />}
-      {slug === "markdown" && <MarkdownTool />}
-      {slug === "image" && <ImageTool />}
+      <ToolRenderer slug={tool.slug} />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { DecorIcon } from "@/components/ui/decor-icon";
 import { Separator } from "@/components/ui/separator";
 import { AppBreadcrumbs } from "@/components/app-breadcrumbs";
+import { useTranslations } from "next-intl";
 import { buildNavGroups } from "@/components/app-shared";
 import { CustomSidebarTrigger } from "@/components/custom-sidebar-trigger";
 import { NavUser } from "@/components/nav-user";
@@ -12,7 +13,8 @@ import { NavUser } from "@/components/nav-user";
 export function AppHeader() {
 	const pathname = usePathname();
 	const { locale } = useParams<{ locale: string }>();
-	const navGroups = buildNavGroups(locale, pathname);
+	const tTools = useTranslations("tools");
+	const navGroups = buildNavGroups(locale, pathname, (k) => tTools(k));
 	const activeItem = navGroups
 		.flatMap((g) => g.items.flatMap((i) => (i.subItems?.length ? [i, ...i.subItems] : [i])))
 		.find((item) => item.isActive);

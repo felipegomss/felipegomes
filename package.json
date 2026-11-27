@@ -16,6 +16,8 @@
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
     "@react-pdf/renderer": "^4.3.2",
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.3",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^2.0.1",
     "class-variance-authority": "^0.7.1",

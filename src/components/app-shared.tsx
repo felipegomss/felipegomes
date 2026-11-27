@@ -1,7 +1,16 @@
 import type { ReactNode } from "react";
-import { HomeIcon, SendIcon, InboxIcon, BriefcaseIcon } from "lucide-react";
+import {
+	BriefcaseIcon,
+	FingerprintIcon,
+	HomeIcon,
+	InboxIcon,
+	LayoutGridIcon,
+	SendIcon,
+	WrenchIcon,
+} from "lucide-react";
 import { SnakeIcon } from "@/components/icons/snake-icon";
 import { PET_NAV } from "@/lib/pets/registry";
+import { tools } from "@/lib/tools";
 
 export type SidebarNavItem = {
 	title: string;
@@ -16,51 +25,31 @@ export type SidebarNavGroup = {
 	items: SidebarNavItem[];
 };
 
-/** Build nav groups for a given locale. `pathname` decides which item is active. */
-export function buildNavGroups(locale: string, pathname: string): SidebarNavGroup[] {
+/** Tradutor do namespace "tools" (títulos das ferramentas). */
+type ToolsT = (key: string) => string;
+
+/**
+ * Navegação do app (área autenticada). `pathname` decide o item ativo.
+ * Módulo novo = um grupo/item aqui (e, se tiver resumo, um módulo da home).
+ */
+export function buildNavGroups(locale: string, pathname: string, tTools?: ToolsT): SidebarNavGroup[] {
 	const base = `/${locale}/admin`;
 	const is = (path: string) => pathname === path;
 	const startsWith = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
+	const toolsBase = `${base}/tools`;
+	const toolItems: SidebarNavItem[] = [
+		{ title: "Todas", path: toolsBase, icon: <LayoutGridIcon />, isActive: is(toolsBase) },
+		...tools.map((tool) => ({
+			title: tTools ? tTools(tool.titleKey) : tool.slug,
+			path: `${toolsBase}/${tool.slug}`,
+			isActive: is(`${toolsBase}/${tool.slug}`),
+		})),
+	];
+
 	return [
 		{
-			label: "Home",
-			items: [
-				{
-					title: "Visão geral",
-					path: base,
-					icon: <HomeIcon />,
-					isActive: is(base),
-				},
-			],
-		},
-		{
-			label: "Email",
-			items: [
-				{
-					title: "Compor",
-					path: `${base}/email`,
-					icon: <SendIcon />,
-					isActive: is(`${base}/email`),
-				},
-				{
-					title: "Enviados",
-					path: `${base}/email/sent`,
-					icon: <InboxIcon />,
-					isActive: startsWith(`${base}/email/sent`),
-				},
-			],
-		},
-		{
-			label: "Vagas",
-			items: [
-				{
-					title: "Lista",
-					path: `${base}/jobs`,
-					icon: <BriefcaseIcon />,
-					isActive: startsWith(`${base}/jobs`),
-				},
-			],
+			items: [{ title: "Início", path: base, icon: <HomeIcon />, isActive: is(base) }],
 		},
 		{
 			label: "Pets",
@@ -70,6 +59,41 @@ export function buildNavGroups(locale: string, pathname: string): SidebarNavGrou
 				icon: <SnakeIcon />,
 				isActive: startsWith(`/${locale}/pets/${pet.slug}`),
 			})),
+		},
+		{
+			label: "Trabalho",
+			items: [
+				{ title: "Vagas", path: `${base}/jobs`, icon: <BriefcaseIcon />, isActive: startsWith(`${base}/jobs`) },
+				{ title: "Compor email", path: `${base}/email`, icon: <SendIcon />, isActive: is(`${base}/email`) },
+				{
+					title: "Emails enviados",
+					path: `${base}/email/sent`,
+					icon: <InboxIcon />,
+					isActive: startsWith(`${base}/email/sent`),
+				},
+			],
+		},
+		{
+			label: "Ferramentas",
+			items: [
+				{
+					title: "Ferramentas",
+					icon: <WrenchIcon />,
+					isActive: startsWith(toolsBase),
+					subItems: toolItems,
+				},
+			],
+		},
+		{
+			label: "Conta",
+			items: [
+				{
+					title: "Acesso e passkeys",
+					path: `${base}/conta`,
+					icon: <FingerprintIcon />,
+					isActive: startsWith(`${base}/conta`),
+				},
+			],
 		},
 	];
 }
