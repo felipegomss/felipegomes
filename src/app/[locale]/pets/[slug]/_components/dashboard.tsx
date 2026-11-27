@@ -297,7 +297,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <article className={cn("flex flex-col gap-2 border p-3 md:gap-3 md:p-4", empty && "border-dashed")}>
+    <article className={cn("flex flex-col gap-2.5 border p-3 max-md:[&>span:last-child]:mt-auto md:gap-3 md:p-4", empty && "border-dashed")}>
       <div className="flex items-center justify-between">
         <h3 className="text-[11px] font-normal uppercase tracking-widest text-muted-foreground">{title}</h3>
         <span aria-hidden="true" className={cn("[&>svg]:size-4", LOG_ICON_COLOR[type])}>
@@ -309,15 +309,28 @@ function Card({
   );
 }
 
-function BigNumber({ value, unit, aside }: { value: string; unit: string; aside?: React.ReactNode }) {
+/**
+ * Número grande do cartão. No celular a unidade longa vai embaixo do número,
+ * em uma linha só (`shortUnit`); unidade curta como "g" fica ao lado (`inline`).
+ */
+function BigNumber({ value, unit, shortUnit, inline, aside }: { value: string; unit: string; shortUnit?: string; inline?: boolean; aside?: React.ReactNode }) {
   return (
-    <div className="flex flex-wrap items-baseline gap-x-1.5">
-      <span className="font-heading text-3xl font-semibold tracking-tighter">{value}</span>
-      <span className="text-muted-foreground max-md:leading-tight">{unit}</span>
-      {aside && <span className="ml-auto text-[11px] font-medium">{aside}</span>}
+    <div className={cn("flex items-baseline gap-x-1.5", !inline && "max-md:flex-col max-md:gap-y-0.5")}>
+      <span className="font-heading text-3xl leading-none font-semibold tracking-tighter">{value}</span>
+      {unit && (
+        <span className="text-muted-foreground min-[360px]:whitespace-nowrap">
+          <span className={cn(shortUnit && "max-md:hidden")}>{unit}</span>
+          {shortUnit && <span className="md:hidden">{shortUnit}</span>}
+        </span>
+      )}
+      {aside && <span className="ml-auto text-[11px] font-medium whitespace-nowrap">{aside}</span>}
     </div>
   );
 }
+
+/** "hoje" no lugar de "0 dias…". */
+const sinceProps = (days: number, one: string, many: string, short: string) =>
+  days === 0 ? { value: "hoje", unit: "" } : { value: String(days), unit: days === 1 ? one : many, shortUnit: days === 1 ? short.replace("dias", "dia") : short };
 
 function EmptyCard({ title, type, text, onRegister }: { title: string; type: PetLogType; text: string; onRegister: () => void }) {
   return (
@@ -363,7 +376,7 @@ function FeedingCard({ stats, pet, now, onRegister }: { stats: Stats; pet: PetDT
   const refusedCount = f.recent.filter((r) => r.data.result !== "accepted").length;
   return (
     <Card title="Alimentação" type="feeding">
-      <BigNumber value={String(f.daysSince)} unit={f.daysSince === 1 ? "dia sem comer" : "dias sem comer"} />
+      <BigNumber {...sinceProps(f.daysSince, "dia sem comer", "dias sem comer", "dias sem comer")} />
       <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(f.lastAccepted.occurredAt, now)}
         {d.prey ? ` · ${d.prey}` : ""}
@@ -419,6 +432,7 @@ function WeightCard({ stats, now, onRegister }: { stats: Stats; now: Date; onReg
   return (
     <Card title="Peso" type="weight">
       <BigNumber
+        inline
         value={fmtNum(grams)}
         unit="g"
         aside={
@@ -447,7 +461,7 @@ function ShedCard({ stats, now, onRegister }: { stats: Stats; now: Date; onRegis
   const passed = s.nextEstimateAt && s.nextEstimateAt.getTime() < now.getTime();
   return (
     <Card title="Muda" type="shed">
-      <BigNumber value={String(s.daysSince)} unit={s.daysSince === 1 ? "dia desde a última" : "dias desde a última"} />
+      <BigNumber {...sinceProps(s.daysSince, "dia desde a última", "dias desde a última", "dias atrás")} />
       <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(s.last.occurredAt, now)} · {s.last.data.complete ? "completa" : "parcial"}
         {s.avgIntervalDays ? ` · média de ${s.avgIntervalDays} dias entre mudas` : ""}
@@ -455,8 +469,8 @@ function ShedCard({ stats, now, onRegister }: { stats: Stats; now: Date; onRegis
       {s.nextEstimateAt && (
         <Badge tone={passed ? "warn" : "neutral"}>
           {passed ? "esperada" : "próxima"}
-          <span className="max-md:hidden">&nbsp;por volta de</span>
-          <span className="md:hidden">&nbsp;~</span>&nbsp;{formatDay(s.nextEstimateAt, now)}
+          <span className="max-md:hidden">&nbsp;por volta de {formatDay(s.nextEstimateAt, now)}</span>
+          <span className="md:hidden">&nbsp;~ {formatDay(s.nextEstimateAt, s.nextEstimateAt)}</span>
         </Badge>
       )}
     </Card>
@@ -477,7 +491,7 @@ function WaterCard({ stats, pet, now, onRegister }: { stats: Stats; pet: PetDTO;
   }
   return (
     <Card title="TPA" type="water">
-      <BigNumber value={String(w.daysSince)} unit={w.daysSince === 1 ? "dia desde a última" : "dias desde a última"} />
+      <BigNumber {...sinceProps(w.daysSince, "dia desde a última", "dias desde a última", "dias atrás")} />
       <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(w.last.occurredAt, now)} · a cada {pet.waterIntervalDays} dias
       </p>

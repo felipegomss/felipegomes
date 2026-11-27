@@ -59,7 +59,7 @@ export const BADGE_TONES = {
 
 export function Badge({ tone, children }: { tone: keyof typeof BADGE_TONES; children: ReactNode }) {
   return (
-    <span className={cn("inline-flex w-fit items-center px-2 py-0.5 text-[11px] font-medium", BADGE_TONES[tone])}>
+    <span className={cn("inline-flex w-fit items-center px-2 py-0.5 text-[11px] font-medium min-[360px]:whitespace-nowrap", BADGE_TONES[tone])}>
       {children}
     </span>
   );
