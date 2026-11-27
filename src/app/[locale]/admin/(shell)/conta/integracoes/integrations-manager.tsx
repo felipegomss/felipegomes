@@ -299,6 +299,64 @@ function MetaSection({ initial }: { initial: { configured: boolean; keyHint: str
 
 // ── Atalho do iPhone ────────────────────────────────────────────────────────
 
+/**
+ * Passo a passo do atalho (iOS 27). A URL já leva o token; o link compartilhado
+ * entra no fim, depois de "url=", então o atalho é só: receber › obter › notificar.
+ */
+function ShortcutGuide({ url, onDone }: { url: string; onDone: () => void }) {
+  const describe = `Quando eu compartilhar um link, use Obter Conteúdo do URL com o endereço ${url} seguido do link compartilhado, e mostre o resultado em uma notificação.`;
+  const strong = "text-foreground";
+  return (
+    <div className="flex flex-col gap-4 border border-foreground/40 p-3">
+      <div className="flex flex-col gap-2">
+        <p className="font-semibold">URL do seu atalho (já com o token). Copie agora: ela não aparece de novo.</p>
+        <code className="block border bg-muted px-2.5 py-2 break-all">{url}</code>
+        <CopyButton value={url} label="Copiar URL" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <p className="font-semibold">Montar no app Atalhos (3 ações)</p>
+        <ol className="flex list-decimal flex-col gap-2 pl-4 leading-relaxed text-muted-foreground">
+          <li>
+            Abra <span className={strong}>Atalhos</span>, toque em <span className={strong}>+</span> e renomeie para <span className={strong}>Salvar no LFNG</span> (toque no nome, no topo).
+          </li>
+          <li>
+            Toque no nome › <span className={strong}>Detalhes</span> (ou no ⓘ) e ative <span className={strong}>Mostrar na Planilha de Compartilhamento</span>. Nos tipos aceitos, deixe só <span className={strong}>URLs</span>. Aparece no topo
+            “Receber <span className={strong}>URLs</span> de Planilha de Compartilhamento”.
+          </li>
+          <li>
+            Adicione a ação <span className={strong}>Obter Conteúdo do URL</span>. No campo do endereço, cole a URL copiada e, logo depois do <code className={strong}>url=</code>, toque em{" "}
+            <span className={strong}>Entrada do Atalho</span> na barra de variáveis. Não precisa mexer em método, cabeçalho nem corpo.
+          </li>
+          <li>
+            Adicione <span className={strong}>Mostrar Notificação</span> e escolha <span className={strong}>Conteúdo do URL</span>.
+          </li>
+          <li>
+            Teste: no TikTok, Instagram, X ou Safari, toque em <span className={strong}>Compartilhar</span> › <span className={strong}>Salvar no LFNG</span> (talvez em “Mais” / “Editar ações” na primeira vez). Deve aparecer
+            “Salvo em …”.
+          </li>
+        </ol>
+      </div>
+
+      <details className="border">
+        <summary className="flex min-h-11 cursor-pointer items-center px-3">Ou: deixar o iOS montar (Descrever um Atalho, Apple Intelligence)</summary>
+        <div className="flex flex-col gap-2 px-3 pb-3 leading-relaxed text-muted-foreground">
+          <p>
+            No Atalhos, toque em <span className={strong}>+</span> › <span className={strong}>Descrever um Atalho</span> e cole o texto abaixo. Confira depois se ficou igual aos passos acima (principalmente o “Mostrar na Planilha de
+            Compartilhamento”).
+          </p>
+          <code className="block border bg-muted px-2.5 py-2 break-all text-foreground">{describe}</code>
+          <CopyButton value={describe} label="Copiar descrição" />
+        </div>
+      </details>
+
+      <Button type="button" variant="ghost" size="lg" className="self-start" onClick={onDone}>
+        Pronto
+      </Button>
+    </div>
+  );
+}
+
 function ShortcutSection({ initial, shortcutUrl }: { initial: Token[]; shortcutUrl: string }) {
   const router = useRouter();
   const [tokens, setTokens] = useState(initial);
@@ -351,36 +409,7 @@ function ShortcutSection({ initial, shortcutUrl }: { initial: Token[]; shortcutU
         )}
 
         {created ? (
-          <div className="flex flex-col gap-3 border border-foreground/40 p-3">
-            <p className="font-semibold">Token criado. Copie agora: ele não aparece de novo.</p>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <code className="min-w-0 flex-1 truncate border bg-muted px-2.5 py-2">{created.token}</code>
-              <CopyButton value={created.token} label="Copiar token" />
-            </div>
-            <ol className="flex list-decimal flex-col gap-1.5 pl-4 leading-relaxed text-muted-foreground">
-              <li>
-                No app <span className="text-foreground">Atalhos</span>, toque em <span className="text-foreground">+</span> e dê o nome <span className="text-foreground">Salvar no LFNG</span>.
-              </li>
-              <li>
-                Toque no <span className="text-foreground">ⓘ</span> e ligue <span className="text-foreground">Mostrar na Planilha de Compartilhamento</span> (tipos: URLs e Texto).
-              </li>
-              <li>
-                Adicione a ação <span className="text-foreground">Obter Conteúdo do URL</span> com a URL <code className="break-all text-foreground">{shortcutUrl}</code>
-                <CopyButton value={shortcutUrl} label="Copiar URL" />
-              </li>
-              <li>
-                Nela: Método <span className="text-foreground">POST</span>; Cabeçalho <code className="text-foreground">Authorization</code> = <code className="text-foreground">Bearer </code>+ o token; Corpo{" "}
-                <span className="text-foreground">JSON</span> com o campo <code className="text-foreground">url</code> = <span className="text-foreground">Entrada do Atalho</span>.
-              </li>
-              <li>
-                Adicione <span className="text-foreground">Obter Valor do Dicionário</span> (chave <code className="text-foreground">message</code>) e <span className="text-foreground">Mostrar Notificação</span> com o resultado.
-              </li>
-            </ol>
-            <Button type="button" variant="ghost" size="lg" className="self-start" onClick={() => setCreated(null)}>
-              Pronto
-            </Button>
-          </div>
-        ) : (
+          <ShortcutGuide url={`${shortcutUrl}?t=${created.token}&url=`} onDone={() => setCreated(null)} />        ) : (
           <Button type="button" size="lg" onClick={create} disabled={busy} className="self-start">
             {tokens.length ? "Criar outro token" : "Criar token para o atalho"}
           </Button>

@@ -127,14 +127,19 @@ export async function revokeApiToken(id: string) {
   return res.length > 0;
 }
 
-/** Valida "Authorization: Bearer lfng_…" e registra o uso. */
+/**
+ * Valida o token do atalho — no cabeçalho ("Authorization: Bearer lfng_…") ou
+ * na URL (?t=lfng_…, mais simples de montar no app Atalhos) — e registra o uso.
+ */
 export async function verifyApiToken(request: Request): Promise<boolean> {
-  const m = request.headers.get("authorization")?.match(/^Bearer\s+(lfng_[A-Za-z0-9_-]+)$/);
-  if (!m) return false;
+  const fromHeader = request.headers.get("authorization")?.match(/^Bearer\s+(lfng_[A-Za-z0-9_-]+)$/)?.[1];
+  const fromQuery = new URL(request.url).searchParams.get("t")?.match(/^lfng_[A-Za-z0-9_-]+$/)?.[0];
+  const token = fromHeader ?? fromQuery;
+  if (!token) return false;
   const [row] = await db
     .select()
     .from(apiTokens)
-    .where(and(eq(apiTokens.tokenHash, hash(m[1])), isNull(apiTokens.revokedAt)))
+    .where(and(eq(apiTokens.tokenHash, hash(token)), isNull(apiTokens.revokedAt)))
     .limit(1);
   if (!row) return false;
   await db.update(apiTokens).set({ lastUsedAt: new Date() }).where(eq(apiTokens.id, row.id));
