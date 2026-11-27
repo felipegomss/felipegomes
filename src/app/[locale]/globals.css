@@ -280,3 +280,8 @@ code[data-theme*=" "] span {
   .app-touch .text-2xs { font-size: 0.75rem; }
   .app-touch [data-slot="tabs-list"] { height: auto; }
 }
+
+/* O app tem o próprio "puxar para atualizar": desliga o elástico/refresh nativo. */
+@media (max-width: 767px) {
+  html:has(.app-touch) { overscroll-behavior-y: none; }
+}

@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BookmarkIcon, BotIcon, LoaderIcon, SearchIcon, SmartphoneIcon } from "lucide-react";
+import { BookmarkIcon, BotIcon, LoaderIcon, SearchIcon, SmartphoneIcon, Trash2Icon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { SwipeRow } from "@/components/swipe-row";
+import { UndoBar } from "@/components/undo-bar";
 import { cn } from "@/lib/utils";
 import { formatDay } from "@/lib/format-date";
 import { PLATFORM_LABELS, type Platform } from "@/lib/salvos/platforms";
@@ -96,6 +98,43 @@ export function SalvosView({
     startTransition(() => router.refresh());
   }
 
+  // Excluir deslizando: some na hora e só apaga de verdade depois do prazo do "Desfazer".
+  const [removed, setRemoved] = useState<SavedLinkDTO | null>(null);
+  const removal = useRef<{ id: string; timer: ReturnType<typeof setTimeout> } | null>(null);
+  const flushRemoval = (keepalive = false) => {
+    const r = removal.current;
+    if (!r) return;
+    removal.current = null;
+    clearTimeout(r.timer);
+    void fetch(`/api/salvos/${r.id}`, { method: "DELETE", keepalive })
+      .catch(() => null)
+      .then(() => {
+        if (keepalive) return;
+        setRemoved((cur) => (cur?.id === r.id ? null : cur));
+        startTransition(() => router.refresh());
+      });
+  };
+  function remove(item: SavedLinkDTO) {
+    flushRemoval();
+    setRemoved(item);
+    removal.current = { id: item.id, timer: setTimeout(() => flushRemoval(), 6000) };
+  }
+  function undoRemove() {
+    if (removal.current) clearTimeout(removal.current.timer);
+    removal.current = null;
+    setRemoved(null);
+  }
+  // Saiu da tela antes do prazo: apaga já.
+  useEffect(() => {
+    const onHide = () => flushRemoval(true);
+    window.addEventListener("pagehide", onHide);
+    return () => {
+      window.removeEventListener("pagehide", onHide);
+      flushRemoval(true);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const shown = removed ? items.filter((i) => i.id !== removed.id) : items;
+
   const noCategory = total > 0 && categories.reduce((s, c) => s + c.count, 0) < stats.total;
 
   return (
@@ -176,7 +215,7 @@ export function SalvosView({
         </nav>
       </div>
 
-      {items.length === 0 ? (
+      {shown.length === 0 ? (
         <p className="border border-dashed p-6 text-center text-muted-foreground">
           {q || category !== null ? "Nada encontrado." : "Nenhum link salvo ainda. Cole o primeiro acima ou mande pelo Claude."}
         </p>
@@ -188,14 +227,21 @@ export function SalvosView({
             </p>
           )}
           <ul className="grid gap-3 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-sm:gap-0 max-sm:border">
-            {items.map((i) => (
+            {shown.map((i) => (
               <li key={i.id} className="max-sm:border-b max-sm:last:border-b-0">
-                <Card item={i} onOpen={() => setOpen(i)} />
+                <SwipeRow
+                  left={{ label: "Excluir", icon: <Trash2Icon />, className: "bg-red-700 text-white", onCommit: () => remove(i) }}
+                  className="h-full sm:bg-transparent"
+                >
+                  <Card item={i} onOpen={() => setOpen(i)} />
+                </SwipeRow>
               </li>
             ))}
           </ul>
         </>
       )}
+
+      <UndoBar message={removed && "Link excluído"} onUndo={undoRemove} className="max-md:right-4 max-md:bottom-[calc(var(--mobile-nav-h)+4.75rem)]" />
 
       <SalvoDialog item={open} categories={categories.map((c) => c.name)} tags={tags} onClose={() => setOpen(null)} onChanged={(it) => setOpen(it)} />
     </div>
@@ -246,7 +292,7 @@ function Card({ item: i, onOpen }: { item: SavedLinkDTO; onOpen: () => void }) {
       type="button"
       onClick={onOpen}
       className={cn(
-        "flex h-full w-full text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/60",
+        "flex h-full w-full text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-inset",
         "max-sm:gap-3 max-sm:px-3 max-sm:py-2.5 max-sm:hover:bg-muted/60",
         "sm:flex-col sm:border sm:bg-card sm:hover:border-foreground/40",
         i.status === "error" && "sm:border-dashed",

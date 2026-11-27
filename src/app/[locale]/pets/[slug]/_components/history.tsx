@@ -54,8 +54,8 @@ export function PetHistory({ pet, logs }: { pet: PetDTO; logs: PetLogDTO[] }) {
         <div className="flex flex-col gap-1">
           <h1 className="font-heading text-2xl font-semibold tracking-tight">Histórico</h1>
           <p className="text-muted-foreground">
-            {logs.length} registros do {pet.name}, do mais recente ao mais antigo. Toque num registro para editar ou
-            excluir.
+            {logs.length} registros do {pet.name}
+            <span className="max-md:hidden">, do mais recente ao mais antigo. Toque num registro para editar ou excluir</span>.
           </p>
         </div>
         <DropdownMenu>
@@ -79,7 +79,7 @@ export function PetHistory({ pet, logs }: { pet: PetDTO; logs: PetLogDTO[] }) {
         </DropdownMenu>
       </div>
 
-      <div role="group" aria-label="Filtrar por tipo" className="flex flex-wrap gap-1">
+      <div role="group" aria-label="Filtrar por tipo" className="flex gap-1 max-md:-mx-4 max-md:overflow-x-auto max-md:px-4 md:flex-wrap">
         {filters.map((f) => (
           <button
             key={f.value}
@@ -90,7 +90,7 @@ export function PetHistory({ pet, logs }: { pet: PetDTO; logs: PetLogDTO[] }) {
               setLimit(PAGE);
             }}
             className={cn(
-              "h-9 border px-3 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/60 sm:h-8",
+              "h-9 shrink-0 border px-3 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/60 sm:h-8",
               filter === f.value
                 ? "border-foreground bg-foreground font-medium text-background"
                 : "border-border text-muted-foreground hover:text-foreground",

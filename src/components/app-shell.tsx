@@ -4,6 +4,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppHeader } from "@/components/app-header";
 import { AppSidebar } from "@/components/app-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import type { NavBadges } from "@/lib/home/badges";
 
 /**
@@ -31,6 +32,7 @@ export function AppShell({ children, badges }: { children: React.ReactNode; badg
 				</div>
 			</SidebarInset>
 			<MobileNav badges={badges} />
+			<PullToRefresh />
 		</SidebarProvider>
 	);
 }

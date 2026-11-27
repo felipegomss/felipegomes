@@ -47,6 +47,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
     [logs],
   );
   const [showTable, setShowTable] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [target, setTarget] = useState<DialogTarget>(null);
   const open = (type: PetLogType, editing?: PetLogDTO) => setTarget({ type, editing });
   const searchParams = useSearchParams();
@@ -73,7 +74,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
     .join(" · ");
 
   return (
-    <div className="flex flex-col gap-8 text-xs">
+    <div className="flex flex-col gap-6 text-xs md:gap-8">
       <section className="flex items-center gap-4">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element -- arquivo estático já otimizado (256 px)
@@ -91,16 +92,16 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
 
       {/* No mobile "Registrar" vem antes do status (polegar); no desktop, depois. */}
       <section className="flex flex-col gap-3 md:order-2" aria-labelledby="sec-register">
-        <h2 id="sec-register" className={SECTION_TITLE}>
+        <h2 id="sec-register" className={cn(SECTION_TITLE, "max-md:sr-only")}>
           Registrar
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(104px,1fr))] gap-2">
+        <div className="gap-2 max-md:-mx-4 max-md:flex max-md:overflow-x-auto max-md:px-4 md:grid md:grid-cols-[repeat(auto-fit,minmax(104px,1fr))]">
           {PET_LOG_TYPES.map((type) => (
             <button
               key={type}
               type="button"
               onClick={() => open(type)}
-              className="flex h-16 flex-col items-center justify-center gap-2 border text-xs transition-colors outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/60"
+              className="flex h-11 shrink-0 items-center justify-center gap-2 border px-3 text-xs transition-colors outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60 md:h-16 md:flex-col md:px-0"
             >
               <span aria-hidden="true" className={cn("[&>svg]:size-[18px]", LOG_ICON_COLOR[type])}>
                 {LOG_ICONS[type]}
@@ -118,7 +119,7 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
           </h2>
           <span className="text-[11px] text-muted-foreground">hoje · {formatDay(now, now)}</span>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] md:gap-3">
           <FeedingCard stats={stats} pet={pet} now={now} onRegister={() => open("feeding")} />
           <WeightCard stats={stats} now={now} onRegister={() => open("weight")} />
           <ShedCard stats={stats} now={now} onRegister={() => open("shed")} />
@@ -169,8 +170,9 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
             <p className="border border-dashed p-4 text-muted-foreground">Nada registrado ainda.</p>
           ) : (
             <ul className="border">
-              {recent.map((log) => (
-                <li key={log.id} className="border-b last:border-b-0">
+              {recent.map((log, i) => (
+                // No celular bastam os 4 últimos; o resto está em "Ver tudo".
+                <li key={log.id} className={cn("border-b last:border-b-0", i === 3 && "max-md:border-b-0", i > 3 && "max-md:hidden")}>
                   <LogRow log={log} onOpen={() => open(log.type, log)} />
                 </li>
               ))}
@@ -180,12 +182,23 @@ export function PetDashboard({ locale, pet, logs, nowIso }: Props) {
 
         <aside className="flex min-w-0 flex-[1_1_280px] flex-col gap-3" aria-labelledby="sec-profile">
           {/* Mesma altura do cabeçalho "Histórico recente" (o link tem 44px) para os cards alinharem. */}
-          <div className="flex min-h-11 items-center">
+          <div className="flex min-h-11 items-center max-md:hidden">
             <h2 id="sec-profile" className={SECTION_TITLE}>
               Ficha
             </h2>
           </div>
-          <dl className="border px-3">
+          {/* No celular a ficha fica recolhida: quase nunca muda. */}
+          <button
+            type="button"
+            aria-expanded={showProfile}
+            aria-controls="profile-rows"
+            onClick={() => setShowProfile((v) => !v)}
+            className={cn(SECTION_TITLE, "flex min-h-11 items-center justify-between outline-none focus-visible:ring-2 focus-visible:ring-ring/60 md:hidden")}
+          >
+            Ficha
+            <ChevronRightIcon aria-hidden="true" className={cn("size-4 text-muted-foreground transition-transform", showProfile && "rotate-90")} />
+          </button>
+          <dl id="profile-rows" className={cn("border px-3", !showProfile && "max-md:hidden")}>
             <Row label="Espécie" value={pet.species} />
             <Row label="Morph" value={pet.morph} />
             <Row label="Sexo" value={pet.sex ? PET_SEX_LABELS[pet.sex] : null} />
@@ -284,7 +297,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <article className={cn("flex flex-col gap-3 border p-4", empty && "border-dashed")}>
+    <article className={cn("flex flex-col gap-2 border p-3 md:gap-3 md:p-4", empty && "border-dashed")}>
       <div className="flex items-center justify-between">
         <h3 className="text-[11px] font-normal uppercase tracking-widest text-muted-foreground">{title}</h3>
         <span aria-hidden="true" className={cn("[&>svg]:size-4", LOG_ICON_COLOR[type])}>
@@ -298,9 +311,9 @@ function Card({
 
 function BigNumber({ value, unit, aside }: { value: string; unit: string; aside?: React.ReactNode }) {
   return (
-    <div className="flex items-baseline gap-1.5">
+    <div className="flex flex-wrap items-baseline gap-x-1.5">
       <span className="font-heading text-3xl font-semibold tracking-tighter">{value}</span>
-      <span className="text-muted-foreground">{unit}</span>
+      <span className="text-muted-foreground max-md:leading-tight">{unit}</span>
       {aside && <span className="ml-auto text-[11px] font-medium">{aside}</span>}
     </div>
   );
@@ -310,14 +323,14 @@ function EmptyCard({ title, type, text, onRegister }: { title: string; type: Pet
   return (
     <Card title={title} type={type} empty>
       <p className="font-medium">Nenhum registro ainda</p>
-      <p className="leading-relaxed text-muted-foreground">{text}</p>
+      <p className="leading-relaxed text-muted-foreground max-md:hidden">{text}</p>
       <button
         type="button"
         onClick={onRegister}
         className="inline-flex h-8 w-fit items-center gap-1.5 border px-2.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/60"
       >
         <PlusIcon className="size-3.5" aria-hidden="true" />
-        Registrar {lowerLabel(PET_LOG_LABELS[type])}
+        Registrar<span className="max-md:sr-only"> {lowerLabel(PET_LOG_LABELS[type])}</span>
       </button>
     </Card>
   );
@@ -328,7 +341,8 @@ function DueBadge({ dueInDays, nextAt, now }: { dueInDays: number; nextAt: Date;
   if (dueInDays === 0) return <Badge tone="warn">é hoje</Badge>;
   return (
     <Badge tone="neutral">
-      próxima em {plural(dueInDays, "dia", "dias")} · {formatDay(nextAt, now)}
+      próxima em {plural(dueInDays, "dia", "dias")}
+      <span className="max-md:hidden">&nbsp;· {formatDay(nextAt, now)}</span>
     </Badge>
   );
 }
@@ -350,14 +364,14 @@ function FeedingCard({ stats, pet, now, onRegister }: { stats: Stats; pet: PetDT
   return (
     <Card title="Alimentação" type="feeding">
       <BigNumber value={String(f.daysSince)} unit={f.daysSince === 1 ? "dia sem comer" : "dias sem comer"} />
-      <p className="leading-relaxed text-muted-foreground">
+      <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(f.lastAccepted.occurredAt, now)}
         {d.prey ? ` · ${d.prey}` : ""}
         {d.preyWeightG !== undefined ? ` · ${fmtNum(d.preyWeightG)} g` : ""} · a cada {pet.feedIntervalDays} dias
       </p>
       <DueBadge dueInDays={f.dueInDays} nextAt={f.nextAt} now={now} />
       {f.recent.length > 0 && (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 max-md:hidden">
           <span className="text-[11px] text-muted-foreground">Últimas {f.recent.length} ofertas</span>
           <div
             className="flex gap-1"
@@ -416,7 +430,7 @@ function WeightCard({ stats, now, onRegister }: { stats: Stats; now: Date; onReg
           )
         }
       />
-      <p className="leading-relaxed text-muted-foreground">
+      <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Pesado em {formatDay(w.last.occurredAt, now)}
         {w.previous && ` · anterior ${fmtNum(w.previous.data.grams)} g em ${formatDay(w.previous.occurredAt, now)}`}
       </p>
@@ -434,13 +448,15 @@ function ShedCard({ stats, now, onRegister }: { stats: Stats; now: Date; onRegis
   return (
     <Card title="Muda" type="shed">
       <BigNumber value={String(s.daysSince)} unit={s.daysSince === 1 ? "dia desde a última" : "dias desde a última"} />
-      <p className="leading-relaxed text-muted-foreground">
+      <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(s.last.occurredAt, now)} · {s.last.data.complete ? "completa" : "parcial"}
         {s.avgIntervalDays ? ` · média de ${s.avgIntervalDays} dias entre mudas` : ""}
       </p>
       {s.nextEstimateAt && (
         <Badge tone={passed ? "warn" : "neutral"}>
-          {passed ? "esperada" : "próxima"} por volta de {formatDay(s.nextEstimateAt, now)}
+          {passed ? "esperada" : "próxima"}
+          <span className="max-md:hidden">&nbsp;por volta de</span>
+          <span className="md:hidden">&nbsp;~</span>&nbsp;{formatDay(s.nextEstimateAt, now)}
         </Badge>
       )}
     </Card>
@@ -462,7 +478,7 @@ function WaterCard({ stats, pet, now, onRegister }: { stats: Stats; pet: PetDTO;
   return (
     <Card title="TPA" type="water">
       <BigNumber value={String(w.daysSince)} unit={w.daysSince === 1 ? "dia desde a última" : "dias desde a última"} />
-      <p className="leading-relaxed text-muted-foreground">
+      <p className="leading-relaxed text-muted-foreground max-md:hidden">
         Última: {formatDay(w.last.occurredAt, now)} · a cada {pet.waterIntervalDays} dias
       </p>
       <DueBadge dueInDays={w.dueInDays} nextAt={w.nextAt} now={now} />

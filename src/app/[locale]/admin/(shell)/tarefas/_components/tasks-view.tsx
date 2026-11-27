@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { BotIcon, CalendarIcon, ChevronRightIcon, PencilIcon, PlusIcon, RepeatIcon } from "lucide-react";
+import { BotIcon, CalendarIcon, CheckIcon, ChevronRightIcon, PencilIcon, PlusIcon, RepeatIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SwipeRow } from "@/components/swipe-row";
+import { UndoBar } from "@/components/undo-bar";
 import { cn } from "@/lib/utils";
 import {
   dayLabel,
@@ -53,6 +55,26 @@ export function TasksView({
   // Conclusões otimistas: some/volta na hora, o servidor confirma depois.
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
   const [announce, setAnnounce] = useState("");
+  // "Desfazer" por alguns segundos depois de concluir.
+  const [undo, setUndo] = useState<TaskDTO | null>(null);
+  // A dica do gesto some depois da primeira vez que ele é usado.
+  const [swiped, setSwiped] = useState(true);
+  useEffect(() => {
+    try {
+      setSwiped(localStorage.getItem("lfng-swipe-used") === "1");
+    } catch {
+      setSwiped(false);
+    }
+  }, []);
+  const markSwiped = () => {
+    setSwiped(true);
+    try {
+      localStorage.setItem("lfng-swipe-used", "1");
+    } catch {}
+  };
+  const queue = useRef<Record<string, Promise<Response | null>>>({});
+  const undoTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(undoTimer.current), []);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // "Nova tarefa" da home abre com o campo focado (depois que o layout monta).
@@ -106,12 +128,21 @@ export function TasksView({
   async function toggle(t: TaskDTO, value: boolean) {
     setToggled((s) => ({ ...s, [t.id]: value }));
     setAnnounce(value ? `Concluída: ${t.title}.` : `Reaberta: ${t.title}.`);
-    const res = await fetch(`/api/tasks/${t.id}`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ done: value }),
-    });
-    if (!res.ok) {
+    clearTimeout(undoTimer.current);
+    setUndo(value ? t : null);
+    if (value) undoTimer.current = setTimeout(() => setUndo(null), 6000);
+    // Um pedido por vez por tarefa: "Desfazer" tocado antes de o servidor
+    // responder ao "concluir" não pode chegar primeiro.
+    const send = () =>
+      fetch(`/api/tasks/${t.id}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ done: value }),
+      }).catch(() => null);
+    const run = (queue.current[t.id] ?? Promise.resolve(null)).then(send);
+    queue.current[t.id] = run;
+    const res = await run;
+    if (!res?.ok) {
       setToggled((s) => ({ ...s, [t.id]: !value }));
       setAnnounce("Não foi possível salvar. Tente de novo.");
       return;
@@ -199,6 +230,8 @@ export function TasksView({
         </p>
       )}
 
+      {groups.length > 0 && !swiped && <p className="-mb-3 text-muted-foreground md:hidden">Deslize a tarefa para a direita para concluir.</p>}
+
       {groups.map((g) => (
         <section key={g.id} className="flex flex-col gap-2" aria-labelledby={`grp-${g.id}`}>
           <div className="flex items-baseline gap-2">
@@ -209,7 +242,7 @@ export function TasksView({
           </div>
           <ul className="border">
             {g.tasks.map((t) => (
-              <TaskRow key={t.id} task={t} group={g.id} today={today} done={false} onToggle={toggle} onEdit={setEditing} />
+              <TaskRow key={t.id} task={t} group={g.id} today={today} done={false} onToggle={toggle} onSwipe={markSwiped} onEdit={setEditing} />
             ))}
           </ul>
         </section>
@@ -250,6 +283,8 @@ export function TasksView({
         {announce}
       </p>
 
+      <UndoBar message={undo && `Concluída: ${undo.title}`} onUndo={() => undo && toggle(undo, false)} />
+
       <TaskDialog task={editing} lists={lists} today={today} onClose={() => setEditing(null)} />
     </div>
   );
@@ -277,8 +312,10 @@ function TaskRow({
   today,
   done,
   onToggle,
+  onSwipe,
   onEdit,
 }: {
+  onSwipe?: () => void;
   task: TaskDTO;
   group: TaskGroupId;
   today: string;
@@ -289,7 +326,11 @@ function TaskRow({
   const due = done ? (t.completedAt ? `concluída ${dayLabel(t.completedAt.slice(0, 10), today)}` : null) : dueLabel(t, today);
   const repeat = repeatLabel(t);
   return (
-    <li className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center border-b last:border-b-0 sm:grid-cols-[44px_minmax(0,1fr)_auto_44px]">
+    <li className="border-b last:border-b-0">
+      <SwipeRow
+        right={done ? undefined : { label: "Concluir", icon: <CheckIcon />, className: "bg-emerald-700 text-white", onCommit: () => (onSwipe?.(), onToggle(t, true)) }}
+        className="grid grid-cols-[44px_minmax(0,1fr)_auto] items-center sm:grid-cols-[44px_minmax(0,1fr)_auto_44px]"
+      >
       <label className="grid size-11 cursor-pointer place-items-center">
         <input
           type="checkbox"
@@ -339,6 +380,7 @@ function TaskRow({
       >
         <PencilIcon aria-hidden="true" className="size-3.5" />
       </button>
+      </SwipeRow>
     </li>
   );
 }
